@@ -1,0 +1,13 @@
+<!-- @dsCard group="Ассистент" height=140 -->
+<!doctype html>
+<html lang="ru">
+<head><meta charset="utf-8"><title>ChatComposer — превью</title>
+</head>
+<body>
+<div id="root" class="kk-preview"></div>
+<script>
+  var C = window.Cabinet, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h('div', { style: { width: '100%', maxWidth: 560 } }, h(C.ChatComposer, { onAttach: function () {}, onSend: function () {} })));
+</script>
+</body>
+</html>

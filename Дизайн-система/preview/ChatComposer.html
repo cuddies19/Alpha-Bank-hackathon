@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.setAttribute('data-theme', new URLSearchParams(location.search).get('theme') || 'light');</script>
+<link rel="stylesheet" href="../tokens.css"><link rel="stylesheet" href="../components/bundle.css"><script src="../components/lib/react.production.min.js"></script><script src="../components/lib/react-dom.production.min.js"></script><script src="../components/bundle.js"></script>
+<title>ChatComposer — превью</title>
+</head>
+<body>
+<div id="root" class="kk-preview"></div>
+<script>
+  var C = window.Cabinet, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h('div', { style: { width: '100%', maxWidth: 560 } }, h(C.ChatComposer, { onAttach: function () {}, onSend: function () {} })));
+</script>
+</body>
+</html>

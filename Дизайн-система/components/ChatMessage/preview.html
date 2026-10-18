@@ -1,0 +1,20 @@
+<!-- @dsCard group="Ассистент" height=520 -->
+<!doctype html>
+<html lang="ru">
+<head><meta charset="utf-8"><title>ChatMessage — превью</title>
+<style>.chat{display:flex;flex-direction:column;gap:var(--space-4);max-width:560px;padding:var(--space-4);background:var(--surface);border-radius:var(--radius-xl)}</style>
+</head>
+<body>
+<div id="root" class="kk-preview kk-preview--col"></div>
+<script>
+  var C = window.Cabinet, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h('div', { className: 'chat' },
+    h(C.ChatMessage, { role: 'user', time: '10:31' }, 'Нужно закупить товар к распродажам, а деньги от маркетплейса придут только через две недели'),
+    h(C.ChatMessage, { role: 'assistant', time: '10:31', footer: [
+        h(C.Chip, { key: 1 }, 'До 1 млн ₽'), h(C.Chip, { key: 2, selected: true }, '1–3 млн ₽'), h(C.Chip, { key: 3 }, 'Больше 3 млн ₽')] },
+      h('p', null, 'Понимаю: нужны деньги на закупку до поступления выручки.'), h('p', null, 'Сколько планируете потратить на партию?')),
+    h(C.ChatMessage, { role: 'user', time: '10:32' }, 'Около 2,5 млн'),
+    h(C.ChatMessage, { role: 'assistant', typing: true })));
+</script>
+</body>
+</html>

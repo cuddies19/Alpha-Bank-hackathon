@@ -1,0 +1,23 @@
+<!-- @dsCard group="Кредитный путь" height=800 -->
+<!doctype html>
+<html lang="ru">
+<head><meta charset="utf-8"><title>ProductCard — превью</title>
+</head>
+<body>
+<div id="root" class="kk-preview"></div>
+<script>
+  var C = window.Cabinet, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h('div', { style: { maxWidth: 560 } }, h(C.ProductCard, {
+    recommended: true,
+    name: 'Кредитная линия',
+    purpose: 'На закупки к сезону: берёте частями, проценты — только на выбранную сумму.',
+    amount: C.formatMoney(3000000),
+    amountLabel: 'Лимит до',
+    params: [{ label: 'Срок', value: '18 мес.' }, { label: 'Ставка', value: 'от ' + C.formatPercent(14.5) }, { label: 'Без залога', value: 'Да' }],
+    reasons: ['Выплаты маркетплейса приходят раз в две недели — линия закрывает разрыв на это время', 'Закупки повторяются каждый сезон: лимит восстанавливается после погашения', 'Платёж — 18% чистого потока, это комфортная нагрузка'],
+    primaryAction: { label: 'Оформить заявку' },
+    secondaryAction: { label: 'Сравнить с кредитом' }
+  }, h(C.PaymentLoadMeter, { payment: 84200, cashFlow: 460000 }))));
+</script>
+</body>
+</html>

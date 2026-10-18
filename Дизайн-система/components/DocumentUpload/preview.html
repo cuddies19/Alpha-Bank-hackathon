@@ -1,0 +1,17 @@
+<!-- @dsCard group="Поля" height=530 -->
+<!doctype html>
+<html lang="ru">
+<head><meta charset="utf-8"><title>DocumentUpload — превью</title>
+</head>
+<body>
+<div id="root" class="kk-preview"></div>
+<script>
+  var C = window.Cabinet, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h('div', { style: { width: '100%', maxWidth: 560 } }, h(C.DocumentUpload, { onFiles: function () {}, onRemove: function () {}, files: [
+    { name: 'Устав_ООО.pdf', size: '2,4 МБ', status: 'ok' },
+    { name: 'Выписка_по_счёту_6_мес.pdf', size: '860 КБ', status: 'checking' },
+    { name: 'Паспорт_директора.jpg', status: 'error', message: 'Фото обрезано: не видно страницы с подписью. Загрузите разворот целиком.' },
+    { name: 'Договор_поставки.pdf', status: 'uploading', progress: 64 }] })));
+</script>
+</body>
+</html>

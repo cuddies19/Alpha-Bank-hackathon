@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.setAttribute('data-theme', new URLSearchParams(location.search).get('theme') || 'light');</script>
+<link rel="stylesheet" href="../tokens.css"><link rel="stylesheet" href="../components/bundle.css"><script src="../components/lib/react.production.min.js"></script><script src="../components/lib/react-dom.production.min.js"></script><script src="../components/bundle.js"></script>
+<title>Button — превью</title>
+<style>.row{display:flex;flex-wrap:wrap;gap:var(--space-3);align-items:center}</style>
+</head>
+<body>
+<div id="root" class="kk-preview kk-preview--col"></div>
+<script>
+  var C = window.Cabinet, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+    h('div', { className: 'row' },
+      h(C.Button, { variant: 'primary' }, 'Оформить заявку'),
+      h(C.Button, { variant: 'secondary' }, 'Сравнить продукты'),
+      h(C.Button, { variant: 'ghost' }, 'Позже'),
+      h(C.Button, { variant: 'link' }, 'Условия продукта')),
+    h('div', { className: 'row' },
+      h(C.Button, { variant: 'primary', size: 'lg', iconRight: 'chevron-right' }, 'Продолжить'),
+      h(C.Button, { variant: 'secondary', size: 'sm', iconLeft: 'upload' }, 'Загрузить'),
+      h(C.Button, { variant: 'primary', loading: true }, 'Отправляем'),
+      h(C.Button, { variant: 'primary', disabled: true }, 'Недоступно'))));
+</script>
+</body>
+</html>

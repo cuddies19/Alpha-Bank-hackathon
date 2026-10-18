@@ -1,0 +1,60 @@
+<!-- @dsCard height=288 -->
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Кредитный кабинет</title>
+<style>
+  html, body { margin:0; height:100%; }
+  body { background:var(--bg); color:var(--ink); font-family:var(--font-sans); overflow:hidden; }
+  .cover { position:relative; height:288px; overflow:hidden; }
+  .art { position:absolute; top:0; left:480px; width:480px; height:288px; overflow:hidden; }
+  .art svg { display:block; width:480px; height:288px; }
+  .brand { fill:var(--brand); }
+  .deep { fill:var(--ink); }
+  .tile-fill { fill:var(--line-strong); }
+  .ok { fill:var(--success); }
+  .cut { fill:var(--bg); }
+  .slab { rx:var(--radius-lg); }
+  .tile { rx:var(--radius-md); }
+  .pill { rx:12px; }
+  .pill-sm { rx:4px; }
+  .words { position:absolute; left:var(--space-6); bottom:var(--space-6); max-width:440px; }
+  .name { margin:0; font-size:80px; line-height:.95; font-weight:800; letter-spacing:-.03em; color:var(--ink); }
+  .tag { margin:var(--space-3) 0 0 3px; font-size:14px; line-height:20px; color:var(--ink-secondary); }
+</style>
+</head>
+<body>
+<div class="cover">
+<div class="art" aria-hidden="true">
+<svg viewBox="0 0 480 288" width="480" height="288">
+<!--
+  blocks      brand 144×240 slab bled off the top (the identity red, largest) · ink 288×128 bled off the right edge (the graphite) · line-strong tiles above it (the neutral field the red sits on) · success 56×24 pill once (it only ever means «одобрено») — ≈35% of 960×288
+  arrangement one tall brand slab with a modular dashboard beside it: a two-row tile field over a deep panel, bottoms on one line space-6 above the edge, space-4 gutters
+  pattern     tiles, from «модульный кабинет: карточки radius-lg, плитки и Chip»: radius-md tiles at a space-12 pitch, two merged two-wide like ProductCard and MetricTile; three bg pills cut into the ink panel like Chip
+  scales      sides in space-2 multiples; gutters space-4, tile gap space-2, pitch space-12; corners radius-lg (slab, panel), radius-md (tiles), pills rx half their height
+-->
+<rect class="brand slab" x="24" y="-16" width="144" height="240" rx="16"/>
+<rect class="ok pill" x="24" y="240" width="56" height="24" rx="12"/>
+<rect class="tile-fill tile" x="184" y="24" width="88" height="40" rx="12"/>
+<rect class="tile-fill tile" x="280" y="24" width="40" height="40" rx="12"/>
+<rect class="tile-fill tile" x="328" y="24" width="40" height="40" rx="12"/>
+<rect class="tile-fill tile" x="376" y="24" width="88" height="40" rx="12"/>
+<rect class="tile-fill tile" x="184" y="72" width="40" height="40" rx="12"/>
+<rect class="tile-fill tile" x="232" y="72" width="136" height="40" rx="12"/>
+<rect class="tile-fill tile" x="376" y="72" width="40" height="40" rx="12"/>
+<rect class="tile-fill tile" x="424" y="72" width="40" height="40" rx="12"/>
+<rect class="deep slab" x="184" y="136" width="312" height="128" rx="16"/>
+<rect class="cut pill" x="208" y="160" width="96" height="24" rx="12"/>
+<rect class="cut pill" x="312" y="160" width="72" height="24" rx="12"/>
+<rect class="cut pill" x="208" y="192" width="120" height="24" rx="12"/>
+<rect class="brand pill-sm" x="208" y="232" width="152" height="8" rx="4"/>
+</svg>
+</div>
+<div class="words">
+<h1 class="name">Кредитный кабинет</h1>
+<p class="tag">Кредит под задачу бизнеса, с ИИ-ассистентом</p>
+</div>
+</div>
+</body>
+</html>

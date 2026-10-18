@@ -1,0 +1,18 @@
+<!-- @dsCard group="Кредитный путь" height=400 -->
+<!doctype html>
+<html lang="ru">
+<head><meta charset="utf-8"><title>StatusTracker — превью</title>
+</head>
+<body>
+<div id="root" class="kk-preview"></div>
+<script>
+  var C = window.Cabinet, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h(C.Card, { style: { maxWidth: 560, width: '100%' } }, h(C.StatusTracker, { stages: [
+    { title: 'Заявка отправлена', status: 'done', time: 'Сегодня, 10:42' },
+    { title: 'Проверка данных', status: 'done', time: '10:44' },
+    { title: 'Проверка документов', status: 'attention', description: 'Нужна выписка по счёту в другом банке за 6 месяцев — без неё банк не увидит часть выручки.', action: h(C.Button, { variant: 'primary', size: 'sm', iconLeft: 'upload' }, 'Загрузить выписку') },
+    { title: 'Решение банка', status: 'pending', time: 'после проверки' },
+    { title: 'Подписание и деньги на счёте', status: 'pending' }] })));
+</script>
+</body>
+</html>

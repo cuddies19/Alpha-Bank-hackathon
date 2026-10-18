@@ -1,0 +1,47 @@
+<!-- @dsCard group="Примеры экранов" height=900 width=1440 -->
+<!doctype html>
+<html lang="ru">
+<head><meta charset="utf-8"><title>ExampleScreen — превью</title>
+<style>.ex{display:grid;grid-template-columns:var(--sidebar-width) minmax(0,1fr) var(--assistant-width);min-height:800px;background:var(--bg)}
+.ex-nav{display:flex;flex-direction:column;gap:var(--space-1);padding:var(--space-6) var(--space-4);background:var(--surface);border-right:1px solid var(--line)}
+.ex-brand{padding:0 var(--space-3) var(--space-5)}
+.ex-link{display:block;padding:10px var(--space-3);border-radius:var(--radius-md);color:var(--ink);text-decoration:none}
+.ex-link:hover{background:var(--surface-muted)}
+.ex-link.is-active{background:var(--surface-inverse);color:var(--ink-inverse);font-weight:600}
+.ex-main{padding:var(--space-10) var(--space-8);display:flex;flex-direction:column;gap:var(--space-1);min-width:0}
+.ex-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-4);margin-top:var(--space-6);align-items:start}
+.ex-assistant{display:flex;flex-direction:column;gap:var(--space-4);padding:var(--space-6) var(--space-5);background:var(--surface);border-left:1px solid var(--line)}
+.ex-head{display:flex;align-items:center;justify-content:space-between}
+.ex-chat{flex:1;display:flex;flex-direction:column;gap:var(--space-4);justify-content:flex-end}</style>
+</head>
+<body>
+<div id="root" class=""></div>
+<script>
+  var C = window.Cabinet, h = React.createElement;
+  var nav = ['Главная', 'Финансирование', 'Мои заявки', 'Мои кредиты', 'Документы'];
+  var screen = h('div', { className: 'ex' },
+    h('nav', { className: 'ex-nav', 'aria-label': 'Разделы кабинета' },
+      h('div', { className: 'ex-brand title-3' }, 'Кабинет'),
+      nav.map(function (n, i) { return h('a', { key: i, href: '#', className: 'ex-link body' + (i === 1 ? ' is-active' : ''), 'aria-current': i === 1 ? 'page' : undefined }, n); })),
+    h('main', { className: 'ex-main' },
+      h('h1', { className: 'title-1', style: { margin: 0 } }, 'Подбор финансирования'),
+      h('p', { className: 'body', style: { margin: '4px 0 0', color: 'var(--ink-secondary)' } }, 'Задача: закупка к распродажам, около ' + C.formatMoney(2500000)),
+      h('div', { className: 'ex-cards' },
+        h(C.ProductCard, { recommended: true, name: 'Кредитная линия', purpose: 'Берёте частями, проценты — только на выбранную сумму.', amount: C.formatMoney(3000000), amountLabel: 'Лимит до',
+          params: [{ label: 'Срок', value: '18 мес.' }, { label: 'Ставка', value: 'от ' + C.formatPercent(14.5) }],
+          reasons: ['Закрывает разрыв до выплаты маркетплейса', 'Лимит восстанавливается к следующему сезону'],
+          primaryAction: { label: 'Оформить заявку' } }, h(C.PaymentLoadMeter, { payment: 84200, cashFlow: 460000 })),
+        h(C.ProductCard, { name: 'Кредит на любые цели', purpose: 'Вся сумма сразу, равные платежи.', amount: C.formatMoney(2500000), amountLabel: 'Сумма',
+          params: [{ label: 'Срок', value: '24 мес.' }, { label: 'Ставка', value: 'от ' + C.formatPercent(13) }],
+          reasons: ['Подойдёт, если закупка разовая'], secondaryAction: { label: 'Выбрать' } }, h(C.PaymentLoadMeter, { payment: 119000, cashFlow: 460000 })))),
+    h('aside', { className: 'ex-assistant', 'aria-label': 'Ассистент' },
+      h('div', { className: 'ex-head' }, h('span', { className: 'title-3' }, 'Ассистент'), h(C.Badge, { tone: 'success' }, 'Онлайн')),
+      h('div', { className: 'ex-chat' },
+        h(C.ChatMessage, { role: 'user' }, 'Около 2,5 млн, деньги нужны до 1 ноября'),
+        h(C.ChatMessage, { role: 'assistant' }, h('p', null, 'По счёту видно: поступления стабильные, выплаты маркетплейса приходят раз в две недели.'), h('p', null, 'Предлагаю кредитную линию — платёж останется в комфортной зоне.')),
+        h(C.ChatMessage, { role: 'assistant', footer: [h(C.Chip, { key: 1 }, 'Почему не кредит?'), h(C.Chip, { key: 2 }, 'Оформить линию')] }, 'Сравнение — слева. Что уточнить?')),
+      h(C.ChatComposer, { onSend: function () {}, onAttach: function () {} })));
+  ReactDOM.createRoot(document.getElementById('root')).render(screen);
+</script>
+</body>
+</html>

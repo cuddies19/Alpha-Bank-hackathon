@@ -1,0 +1,18 @@
+<!-- @dsCard group="Основа" height=450 -->
+<!doctype html>
+<html lang="ru">
+<head><meta charset="utf-8"><title>Alert — превью</title>
+<style>.stack{display:flex;flex-direction:column;gap:var(--space-3);max-width:600px}</style>
+</head>
+<body>
+<div id="root" class="kk-preview kk-preview--col"></div>
+<script>
+  var C = window.Cabinet, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h('div', { className: 'stack' },
+    h(C.Alert, { tone: 'assistant', title: 'Через 9 дней возможен кассовый разрыв', action: h(C.Button, { variant: 'primary', size: 'sm' }, 'Подобрать решение') }, 'По графику платежей поставщикам не хватит около ' + C.formatMoney(640000) + ' до выплаты маркетплейса 28 октября.'),
+    h(C.Alert, { tone: 'success', title: 'Заявка одобрена' }, 'Подпишите договор в кабинете — деньги придут на счёт в день подписания.'),
+    h(C.Alert, { tone: 'warning', title: 'Нужен ещё один документ', onClose: function () {} }, 'Банк просит выписку по счёту в другом банке за 6 месяцев.'),
+    h(C.Alert, { tone: 'danger', title: 'Не удалось отправить заявку' }, 'Проверьте соединение и отправьте ещё раз — данные сохранены.')));
+</script>
+</body>
+</html>
