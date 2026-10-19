@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Решение: нужны документы — мобильная версия</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div class="kn-mobile">
+  <dc-import name="MobileTop" mode="flow" title="Решение по заявке" sub="ООО «Лён и Дуб» · № 2026-10-0141" back="M-Login.dc.html" unread="1" hint-size="390px,60px"></dc-import>
+  <div class="kn-mobile__body">
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <x-import component-from-global-scope="Cabinet.Badge" tone="{{badgeTone}}">{{badge}}</x-import>
+      <h1 class="title-1">Банку нужны ещё два документа</h1>
+      <p class="body" style="color: var(--ink-secondary);">Чтобы принять решение, специалисту не хватает полной картины по выручке.</p>
+    </div>
+    <section class="kk-card kk-card--sm" style="gap: 12px; padding: 20px 16px;">
+      <div style="display: flex; flex-direction: column; gap: 2px; padding-bottom: 12px; border-bottom: 1px solid var(--line);"><span class="body-strong">Бухгалтерская отчётность за 2025 год</span><span class="body-sm" style="color: var(--ink-secondary);">Чтобы увидеть выручку и долги компании целиком</span></div>
+      <div style="display: flex; flex-direction: column; gap: 2px;"><span class="body-strong">Выписка из другого банка за 6 месяцев</span><span class="body-sm" style="color: var(--ink-secondary);">Без неё банк не увидит часть выручки</span></div>
+      <sc-if value="{{open}}" hint-placeholder-val="{{yes}}">
+        <x-import component-from-global-scope="Cabinet.DocumentUpload" label="Выбрать файл или сфотографировать" files="{{files}}"></x-import>
+      </sc-if>
+    </section>
+    <sc-if value="{{open}}" hint-placeholder-val="{{yes}}">
+      <label class="kn-field">
+        <span class="label">Комментарий для специалиста</span>
+        <textarea class="kn-textarea" rows="3" placeholder="Необязательно"></textarea>
+      </label>
+    </sc-if>
+    <sc-if value="{{sent}}" hint-placeholder-val="{{no}}">
+      <x-import component-from-global-scope="Cabinet.Alert" tone="success" title="Документы отправлены">Заявка вернулась на рассмотрение — обычно до 2 часов. Сообщим о решении здесь.</x-import>
+    </sc-if>
+  </div>
+  <sc-if value="{{open}}" hint-placeholder-val="{{yes}}">
+    <div class="kn-mbar">
+      <x-import component-from-global-scope="Cabinet.Button" variant="primary" size="lg" full-width="{{yes}}" on-click="{{send}}">Отправить на повторное рассмотрение</x-import>
+      <p class="caption" style="text-align: center; color: var(--warning);">Ответьте до 30 октября, иначе заявка закроется</p>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1450}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const sent = !!s.sent;
+    return {
+      yes: true, no: false, open: !sent, sent,
+      badge: sent ? 'Повторное рассмотрение' : 'Нужны документы', badgeTone: sent ? 'info' : 'warning',
+      send: () => this.setState({ sent: true }),
+      files: [
+        { name: 'Отчётность_2025.pdf', size: '2,4 МБ', status: 'ok' },
+        { name: 'Выписка_другой_банк.pdf', status: 'uploading', progress: 72 }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

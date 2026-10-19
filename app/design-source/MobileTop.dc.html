@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Мобильная шапка</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<header class="{{cls}}" style="font-family: var(--font-sans); color: var(--ink);">
+  <sc-if value="{{isFlow}}" hint-placeholder-val="{{no}}">
+    <a class="kn-ibtn" href="{{back}}" aria-label="Назад">
+      <svg class="kn-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11.5 5.5L5 12l6.5 6.5"></path></svg>
+    </a>
+  </sc-if>
+  <sc-if value="{{isRoot}}" hint-placeholder-val="{{yes}}">
+    <span class="kn-avatar" style="width: 36px; height: 36px; margin-right: 8px;">{{initials}}</span>
+  </sc-if>
+  <div class="kn-mtop__title">
+    <b>{{title}}</b>
+    <span>{{sub}}</span>
+  </div>
+  <a class="kn-ibtn" href="B14-Notifications.dc.html" aria-label="Уведомления: {{unread}} новых">
+    <svg class="kn-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 10a6 6 0 0 1 12 0c0 4.5 1.5 6.5 2 7H4c.5-.5 2-2.5 2-7z"></path><path d="M10 20.2a2.2 2.2 0 0 0 4 0"></path></svg>
+    <span class="kn-ibtn__count">{{unread}}</span>
+  </a>
+</header>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","options":["root","flow"],"default":"root"},"title":{"editor":"text","default":"ООО «Дом и уют»"},"sub":{"editor":"text","default":"Игорь Соколов"},"initials":{"editor":"text","default":"ДУ"},"back":{"editor":"text","default":"M-Home.dc.html"},"unread":{"editor":"text","default":"2"},"$preview":{"width":390,"height":60}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const flow = (this.props.mode ?? 'root') === 'flow';
+    return {
+      yes: true, no: false,
+      isFlow: flow, isRoot: !flow,
+      cls: 'kn-mtop' + (flow ? ' kn-mtop--flow' : ''),
+      title: this.props.title ?? 'ООО «Дом и уют»',
+      sub: this.props.sub ?? 'Игорь Соколов',
+      initials: this.props.initials ?? 'ДУ',
+      back: this.props.back ?? 'M-Home.dc.html',
+      unread: this.props.unread ?? '2'
+    };
+  }
+}
+</script>
+</body>
+</html>

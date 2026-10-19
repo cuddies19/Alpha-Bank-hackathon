@@ -1,0 +1,945 @@
+{
+ "v": 3,
+ "attachments": {},
+ "createdOnFiles": {
+  "at": "2026-10-19T18:50:11.389Z",
+  "v": 1
+ },
+ "title": "Кредитный кабинет — макет",
+ "launch": {
+  "view": "canvas",
+  "page": "start"
+ },
+ "pages": [
+  {
+   "id": "start",
+   "name": "Вход и проверка"
+  },
+  {
+   "id": "client",
+   "name": "Клиент · desktop"
+  },
+  {
+   "id": "mobile",
+   "name": "Клиент · мобильный"
+  },
+  {
+   "id": "bank",
+   "name": "Консоль аналитика"
+  },
+  {
+   "id": "components",
+   "name": "Новые компоненты"
+  },
+  {
+   "id": "states",
+   "name": "Системные состояния"
+  }
+ ],
+ "boards": {
+  "Main.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 900,
+   "title": "A1 · Вход и выбор роли",
+   "page": "start",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "A1-States.dc.html": {
+   "x": 1520,
+   "y": 0,
+   "w": 1120,
+   "h": 720,
+   "title": "A1 · Состояния входа",
+   "page": "start"
+  },
+  "A2-Demo.dc.html": {
+   "x": 2720,
+   "y": 0,
+   "w": 1440,
+   "h": 900,
+   "title": "A2 · Панель проверки",
+   "page": "start",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "B1-Home.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 1300,
+   "title": "B1 · Главная",
+   "page": "client",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "B1-States.dc.html": {
+   "x": 1520,
+   "y": 0,
+   "w": 1440,
+   "h": 680,
+   "title": "B1 · Состояния",
+   "page": "client",
+   "is_interactive": true
+  },
+  "B2-Need.dc.html": {
+   "x": 3040,
+   "y": 0,
+   "w": 1440,
+   "h": 1150,
+   "title": "B2 · Подбор: задача",
+   "page": "client",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "B2-Dialog.dc.html": {
+   "x": 4560,
+   "y": 0,
+   "w": 1440,
+   "h": 1150,
+   "title": "B2 · Подбор в диалоге с ассистентом",
+   "page": "client",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "B2-Goal.dc.html": {
+   "x": 6080,
+   "y": 0,
+   "w": 1440,
+   "h": 1300,
+   "title": "B2 · Подбор через цель",
+   "page": "client",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "B3-Offers.dc.html": {
+   "x": 0,
+   "y": 1720,
+   "w": 1440,
+   "h": 2400,
+   "title": "B3 · Рекомендация и калькулятор",
+   "page": "client",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "B3-States.dc.html": {
+   "x": 1520,
+   "y": 1720,
+   "w": 1200,
+   "h": 620,
+   "title": "B3 · Состояния",
+   "page": "client",
+   "is_interactive": true
+  },
+  "B4-Catalog.dc.html": {
+   "x": 2800,
+   "y": 1720,
+   "w": 1440,
+   "h": 1200,
+   "title": "B4 · Каталог продуктов",
+   "page": "client",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "B5-Step1.dc.html": {
+   "x": 0,
+   "y": 4540,
+   "w": 1440,
+   "h": 1250,
+   "title": "B5 · Шаг 1. Параметры",
+   "page": "client",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "B5-Step2.dc.html": {
+   "x": 1520,
+   "y": 4540,
+   "w": 1440,
+   "h": 1550,
+   "title": "B5 · Шаг 2. Компания",
+   "page": "client",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "B5-Step3.dc.html": {
+   "x": 3040,
+   "y": 4540,
+   "w": 1440,
+   "h": 1650,
+   "title": "B5 · Шаг 3. Финансы и документы",
+   "page": "client",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "B5-Step4.dc.html": {
+   "x": 4560,
+   "y": 4540,
+   "w": 1440,
+   "h": 1500,
+   "title": "B5 · Шаг 4. Проверка и отправка",
+   "page": "client",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "B5-States.dc.html": {
+   "x": 6080,
+   "y": 4540,
+   "w": 1200,
+   "h": 760,
+   "title": "B5 · Состояния",
+   "page": "client"
+  },
+  "B6-Sent.dc.html": {
+   "x": 7360,
+   "y": 4540,
+   "w": 1440,
+   "h": 950,
+   "title": "B6 · Заявка отправлена",
+   "page": "client",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "B7-Applications.dc.html": {
+   "x": 8880,
+   "y": 4540,
+   "w": 1440,
+   "h": 950,
+   "title": "B7 · Мои заявки",
+   "page": "client",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "B8-Status.dc.html": {
+   "x": 0,
+   "y": 6610,
+   "w": 1440,
+   "h": 1500,
+   "title": "B8 · Статус: у специалиста",
+   "page": "client",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "B8-Ready.dc.html": {
+   "x": 1520,
+   "y": 6610,
+   "w": 1440,
+   "h": 1250,
+   "title": "B8 · Статус: решение готово",
+   "page": "client",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "B8-Variants.dc.html": {
+   "x": 3040,
+   "y": 6610,
+   "w": 1440,
+   "h": 1000,
+   "title": "B8 · Варианты статуса",
+   "page": "client",
+   "is_interactive": true
+  },
+  "B9a-Approved.dc.html": {
+   "x": 4560,
+   "y": 6610,
+   "w": 1440,
+   "h": 1550,
+   "title": "B9a · Одобрено",
+   "page": "client",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "B9b-Counter.dc.html": {
+   "x": 6080,
+   "y": 6610,
+   "w": 1440,
+   "h": 1450,
+   "title": "B9b · Предложение банка",
+   "page": "client",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "B9c-Docs.dc.html": {
+   "x": 7600,
+   "y": 6610,
+   "w": 1440,
+   "h": 1450,
+   "title": "B9c · Нужны документы",
+   "page": "client",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "B9d-Decline.dc.html": {
+   "x": 9120,
+   "y": 6610,
+   "w": 1440,
+   "h": 1550,
+   "title": "B9d · Отказ",
+   "page": "client",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "B10-Sign.dc.html": {
+   "x": 0,
+   "y": 8580,
+   "w": 1440,
+   "h": 1300,
+   "title": "B10 · Подписание",
+   "page": "client",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "B11-Issued.dc.html": {
+   "x": 1520,
+   "y": 8580,
+   "w": 1440,
+   "h": 950,
+   "title": "B11 · Деньги зачислены",
+   "page": "client",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "B12-Loans.dc.html": {
+   "x": 3040,
+   "y": 8580,
+   "w": 1440,
+   "h": 1450,
+   "title": "B12 · Мои кредиты",
+   "page": "client",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "B13-Documents.dc.html": {
+   "x": 4560,
+   "y": 8580,
+   "w": 1440,
+   "h": 1100,
+   "title": "B13 · Документы",
+   "page": "client",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "B14-Notifications.dc.html": {
+   "x": 6080,
+   "y": 8580,
+   "w": 1440,
+   "h": 1100,
+   "title": "B14 · Уведомления",
+   "page": "client",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "B15-Profile.dc.html": {
+   "x": 7600,
+   "y": 8580,
+   "w": 1440,
+   "h": 1400,
+   "title": "B15 · Профиль компании и согласия",
+   "page": "client",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "AssistantPanel.dc.html": {
+   "x": 0,
+   "y": 10450,
+   "w": 400,
+   "h": 2100,
+   "title": "B16 · Панель ассистента",
+   "page": "client",
+   "is_interactive": true
+  },
+  "B16-States.dc.html": {
+   "x": 480,
+   "y": 10450,
+   "w": 1672,
+   "h": 900,
+   "title": "B16 · Состояния ассистента",
+   "page": "client",
+   "is_interactive": true
+  },
+  "M-Login.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 390,
+   "h": 920,
+   "title": "A1 · Вход · 390",
+   "page": "mobile",
+   "is_interactive": true
+  },
+  "M-Home.dc.html": {
+   "x": 470,
+   "y": 0,
+   "w": 390,
+   "h": 1700,
+   "title": "B1 · Главная · 390",
+   "page": "mobile",
+   "is_interactive": true
+  },
+  "M-Need.dc.html": {
+   "x": 940,
+   "y": 0,
+   "w": 390,
+   "h": 1350,
+   "title": "B2 · Подбор · 390",
+   "page": "mobile",
+   "is_interactive": true
+  },
+  "M-Assistant.dc.html": {
+   "x": 1410,
+   "y": 0,
+   "w": 390,
+   "h": 900,
+   "title": "B16 · Ассистент · 390",
+   "page": "mobile",
+   "is_interactive": true
+  },
+  "M-Offers.dc.html": {
+   "x": 1880,
+   "y": 0,
+   "w": 390,
+   "h": 2000,
+   "title": "B3 · Рекомендация · 390",
+   "page": "mobile",
+   "is_interactive": true
+  },
+  "M-Step1.dc.html": {
+   "x": 0,
+   "y": 2420,
+   "w": 390,
+   "h": 1350,
+   "title": "B5 · Шаг 1 · 390",
+   "page": "mobile",
+   "is_interactive": true
+  },
+  "M-Step3.dc.html": {
+   "x": 470,
+   "y": 2420,
+   "w": 390,
+   "h": 1550,
+   "title": "B5 · Шаг 3 · 390",
+   "page": "mobile",
+   "is_interactive": true
+  },
+  "M-Sent.dc.html": {
+   "x": 940,
+   "y": 2420,
+   "w": 390,
+   "h": 900,
+   "title": "B6 · Отправлена · 390",
+   "page": "mobile",
+   "is_interactive": true
+  },
+  "M-Status.dc.html": {
+   "x": 1410,
+   "y": 2420,
+   "w": 390,
+   "h": 1450,
+   "title": "B8 · Статус · 390",
+   "page": "mobile",
+   "is_interactive": true
+  },
+  "M-Approved.dc.html": {
+   "x": 0,
+   "y": 4390,
+   "w": 390,
+   "h": 1550,
+   "title": "B9a · Одобрено · 390",
+   "page": "mobile",
+   "is_interactive": true
+  },
+  "M-Counter.dc.html": {
+   "x": 470,
+   "y": 4390,
+   "w": 390,
+   "h": 1600,
+   "title": "B9b · Предложение банка · 390",
+   "page": "mobile",
+   "is_interactive": true
+  },
+  "M-Docs.dc.html": {
+   "x": 940,
+   "y": 4390,
+   "w": 390,
+   "h": 1450,
+   "title": "B9c · Нужны документы · 390",
+   "page": "mobile",
+   "is_interactive": true
+  },
+  "M-Decline.dc.html": {
+   "x": 1410,
+   "y": 4390,
+   "w": 390,
+   "h": 1650,
+   "title": "B9d · Отказ · 390",
+   "page": "mobile",
+   "is_interactive": true
+  },
+  "M-Sign.dc.html": {
+   "x": 1880,
+   "y": 4390,
+   "w": 390,
+   "h": 1350,
+   "title": "B10 · Подписание · 390",
+   "page": "mobile",
+   "is_interactive": true
+  },
+  "M-Issued.dc.html": {
+   "x": 2350,
+   "y": 4390,
+   "w": 390,
+   "h": 900,
+   "title": "B11 · Деньги зачислены · 390",
+   "page": "mobile",
+   "is_interactive": true
+  },
+  "C1-Queue.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 1100,
+   "title": "C1 · Очередь заявок",
+   "page": "bank",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "C2-Summary.dc.html": {
+   "x": 1520,
+   "y": 0,
+   "w": 1440,
+   "h": 1400,
+   "title": "C2 · Карточка: Сводка",
+   "page": "bank",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "C2-Client.dc.html": {
+   "x": 3040,
+   "y": 0,
+   "w": 1440,
+   "h": 1400,
+   "title": "C2 · Карточка: Клиент",
+   "page": "bank",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "C2-Checks.dc.html": {
+   "x": 4560,
+   "y": 0,
+   "w": 1440,
+   "h": 1450,
+   "title": "C2 · Карточка: Внешние проверки",
+   "page": "bank",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "C2-Risk.dc.html": {
+   "x": 6080,
+   "y": 0,
+   "w": 1440,
+   "h": 1500,
+   "title": "C2 · Карточка: Оценка риска",
+   "page": "bank",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "C2-Docs.dc.html": {
+   "x": 7600,
+   "y": 0,
+   "w": 1440,
+   "h": 1250,
+   "title": "C2 · Карточка: Документы",
+   "page": "bank",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "C2-History.dc.html": {
+   "x": 9120,
+   "y": 0,
+   "w": 1440,
+   "h": 1300,
+   "title": "C2 · Карточка: История",
+   "page": "bank",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "DecisionPanel.dc.html": {
+   "x": 0,
+   "y": 1920,
+   "w": 384,
+   "h": 1150,
+   "title": "C3 · Панель решения (интерактивная)",
+   "page": "bank",
+   "is_interactive": true
+  },
+  "C3-Panels.dc.html": {
+   "x": 464,
+   "y": 1920,
+   "w": 1320,
+   "h": 2050,
+   "title": "C3 · Варианты решения и подтверждение",
+   "page": "bank",
+   "is_interactive": true
+  },
+  "C4-Pipeline.dc.html": {
+   "x": 0,
+   "y": 4390,
+   "w": 1440,
+   "h": 1350,
+   "title": "C4 · Конвейер",
+   "page": "bank",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "C5-Integrations.dc.html": {
+   "x": 1520,
+   "y": 4390,
+   "w": 1440,
+   "h": 1000,
+   "title": "C5 · Внешние источники",
+   "page": "bank",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "C6-Audit.dc.html": {
+   "x": 3040,
+   "y": 4390,
+   "w": 1440,
+   "h": 1200,
+   "title": "C6 · Журнал аудита",
+   "page": "bank",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "C7-Rules.dc.html": {
+   "x": 4560,
+   "y": 4390,
+   "w": 1440,
+   "h": 1150,
+   "title": "C7 · Продукты и правила",
+   "page": "bank",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "C-States.dc.html": {
+   "x": 6080,
+   "y": 4390,
+   "w": 1200,
+   "h": 1050,
+   "title": "C · Состояния консоли",
+   "page": "bank"
+  },
+  "NavClient.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 248,
+   "h": 900,
+   "title": "Навигация клиента",
+   "page": "components",
+   "is_interactive": true
+  },
+  "NavBank.dc.html": {
+   "x": 328,
+   "y": 0,
+   "w": 248,
+   "h": 900,
+   "title": "Навигация банка",
+   "page": "components",
+   "is_interactive": true
+  },
+  "HeaderClient.dc.html": {
+   "x": 656,
+   "y": 0,
+   "w": 1192,
+   "h": 72,
+   "title": "Шапка клиента",
+   "page": "components",
+   "is_interactive": true
+  },
+  "HeaderBank.dc.html": {
+   "x": 1928,
+   "y": 0,
+   "w": 1192,
+   "h": 72,
+   "title": "Шапка консоли",
+   "page": "components",
+   "is_interactive": true
+  },
+  "C2Head.dc.html": {
+   "x": 3200,
+   "y": 0,
+   "w": 1192,
+   "h": 200,
+   "title": "Шапка карточки заявки с вкладками",
+   "page": "components",
+   "is_interactive": true
+  },
+  "MobileTop.dc.html": {
+   "x": 4472,
+   "y": 0,
+   "w": 390,
+   "h": 60,
+   "title": "Мобильная шапка",
+   "page": "components",
+   "is_interactive": true
+  },
+  "NavMobile.dc.html": {
+   "x": 4942,
+   "y": 0,
+   "w": 390,
+   "h": 72,
+   "title": "Нижняя навигация",
+   "page": "components",
+   "is_interactive": true
+  },
+  "Comp-Data.dc.html": {
+   "x": 0,
+   "y": 1320,
+   "w": 1440,
+   "h": 2200,
+   "title": "Данные: таблицы, оценка, проверки",
+   "page": "components",
+   "is_interactive": true
+  },
+  "Comp-Controls.dc.html": {
+   "x": 1520,
+   "y": 1320,
+   "w": 1440,
+   "h": 2100,
+   "title": "Ввод и всплывающие элементы",
+   "page": "components",
+   "is_interactive": true
+  },
+  "D-States.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 1900,
+   "title": "D · Системные состояния",
+   "page": "states",
+   "is_interactive": true
+  }
+ },
+ "order": [
+  "Main.dc.html",
+  "A1-States.dc.html",
+  "A2-Demo.dc.html",
+  "B1-Home.dc.html",
+  "B1-States.dc.html",
+  "B2-Need.dc.html",
+  "B2-Dialog.dc.html",
+  "B2-Goal.dc.html",
+  "B3-Offers.dc.html",
+  "B3-States.dc.html",
+  "B4-Catalog.dc.html",
+  "B5-Step1.dc.html",
+  "B5-Step2.dc.html",
+  "B5-Step3.dc.html",
+  "B5-Step4.dc.html",
+  "B5-States.dc.html",
+  "B6-Sent.dc.html",
+  "B7-Applications.dc.html",
+  "B8-Status.dc.html",
+  "B8-Ready.dc.html",
+  "B8-Variants.dc.html",
+  "B9a-Approved.dc.html",
+  "B9b-Counter.dc.html",
+  "B9c-Docs.dc.html",
+  "B9d-Decline.dc.html",
+  "B10-Sign.dc.html",
+  "B11-Issued.dc.html",
+  "B12-Loans.dc.html",
+  "B13-Documents.dc.html",
+  "B14-Notifications.dc.html",
+  "B15-Profile.dc.html",
+  "AssistantPanel.dc.html",
+  "B16-States.dc.html",
+  "M-Login.dc.html",
+  "M-Home.dc.html",
+  "M-Need.dc.html",
+  "M-Assistant.dc.html",
+  "M-Offers.dc.html",
+  "M-Step1.dc.html",
+  "M-Step3.dc.html",
+  "M-Sent.dc.html",
+  "M-Status.dc.html",
+  "M-Approved.dc.html",
+  "M-Counter.dc.html",
+  "M-Docs.dc.html",
+  "M-Decline.dc.html",
+  "M-Sign.dc.html",
+  "M-Issued.dc.html",
+  "C1-Queue.dc.html",
+  "C2-Summary.dc.html",
+  "C2-Client.dc.html",
+  "C2-Checks.dc.html",
+  "C2-Risk.dc.html",
+  "C2-Docs.dc.html",
+  "C2-History.dc.html",
+  "DecisionPanel.dc.html",
+  "C3-Panels.dc.html",
+  "C4-Pipeline.dc.html",
+  "C5-Integrations.dc.html",
+  "C6-Audit.dc.html",
+  "C7-Rules.dc.html",
+  "C-States.dc.html",
+  "NavClient.dc.html",
+  "NavBank.dc.html",
+  "HeaderClient.dc.html",
+  "HeaderBank.dc.html",
+  "C2Head.dc.html",
+  "MobileTop.dc.html",
+  "NavMobile.dc.html",
+  "Comp-Data.dc.html",
+  "Comp-Controls.dc.html",
+  "D-States.dc.html"
+ ],
+ "notes": {
+  "start-r0": {
+   "x": 0,
+   "y": -260,
+   "text": "A · Вход и панель проверки",
+   "kind": "title1",
+   "page": "start",
+   "maxW": 4160
+  },
+  "client-r0": {
+   "x": 0,
+   "y": -260,
+   "text": "B1–B2 · Главная и подбор",
+   "kind": "title1",
+   "page": "client",
+   "maxW": 7520
+  },
+  "client-r1": {
+   "x": 0,
+   "y": 1460,
+   "text": "B3–B4 · Рекомендация и каталог",
+   "kind": "title1",
+   "page": "client",
+   "maxW": 4240
+  },
+  "client-r2": {
+   "x": 0,
+   "y": 4280,
+   "text": "B5–B7 · Заявка",
+   "kind": "title1",
+   "page": "client",
+   "maxW": 10320
+  },
+  "client-r3": {
+   "x": 0,
+   "y": 6350,
+   "text": "B8–B9 · Статус и решение",
+   "kind": "title1",
+   "page": "client",
+   "maxW": 10560
+  },
+  "client-r4": {
+   "x": 0,
+   "y": 8320,
+   "text": "B10–B15 · Подписание, кредиты, документы",
+   "kind": "title1",
+   "page": "client",
+   "maxW": 9040
+  },
+  "client-r5": {
+   "x": 0,
+   "y": 10190,
+   "text": "B16 · Панель ассистента",
+   "kind": "title1",
+   "page": "client",
+   "maxW": 2152
+  },
+  "mobile-r0": {
+   "x": 0,
+   "y": -260,
+   "text": "Мобильный · вход, главная, подбор",
+   "kind": "title1",
+   "page": "mobile",
+   "maxW": 2270
+  },
+  "mobile-r1": {
+   "x": 0,
+   "y": 2160,
+   "text": "Мобильный · заявка и статус",
+   "kind": "title1",
+   "page": "mobile",
+   "maxW": 1800
+  },
+  "mobile-r2": {
+   "x": 0,
+   "y": 4130,
+   "text": "Мобильный · решение и выдача",
+   "kind": "title1",
+   "page": "mobile",
+   "maxW": 2740
+  },
+  "bank-r0": {
+   "x": 0,
+   "y": -260,
+   "text": "C1–C2 · Очередь и карточка заявки",
+   "kind": "title1",
+   "page": "bank",
+   "maxW": 10560
+  },
+  "bank-r1": {
+   "x": 0,
+   "y": 1660,
+   "text": "C3 · Панель решения",
+   "kind": "title1",
+   "page": "bank",
+   "maxW": 1784
+  },
+  "bank-r2": {
+   "x": 0,
+   "y": 4130,
+   "text": "C4–C7 · Управление процессом",
+   "kind": "title1",
+   "page": "bank",
+   "maxW": 7280
+  },
+  "components-r0": {
+   "x": 0,
+   "y": -260,
+   "text": "Каркас: навигация и шапки",
+   "kind": "title1",
+   "page": "components",
+   "maxW": 5332
+  },
+  "components-r1": {
+   "x": 0,
+   "y": 1060,
+   "text": "Новые компоненты",
+   "kind": "title1",
+   "page": "components",
+   "maxW": 2960
+  },
+  "states-r0": {
+   "x": 0,
+   "y": -260,
+   "text": "D · Системные состояния",
+   "kind": "title1",
+   "page": "states",
+   "maxW": 1440
+  },
+  "start-guide": {
+   "x": 0,
+   "y": 1300,
+   "w": 640,
+   "maxH": 600,
+   "page": "start",
+   "fill": "orange",
+   "text": "Как прокликать главный сценарий (Игорь) в режиме Play:\n\nВход → карточка Игоря → Войти → Главная → «Подобрать финансирование» → Подбор → чип ассистента → «Показать варианты» → Рекомендация → «Оформить заявку» → шаги 1–4 → «Отправить заявку» → «Следить за заявкой» → Статус.\n\nДальше «Режим проверки» внизу навигации → «Войти как Ольга» → Очередь → строка № 2026-10-0142 → Карточка → «Принять решение» → подтвердить → «Войти как Игорь» → Решение готово → Предложение банка → «Принять предложение» → Подписание → «Подписать» → Деньги зачислены → «Открыть график платежей».\n\nСценарии Анны, Марины и Сергея открываются из «Режима проверки» или карточек на экране входа."
+  }
+ },
+ "designSystems": [
+  {
+   "title": "Кредитный кабинет",
+   "namespace": "cabinet",
+   "artifact": "https://claude.ai/code/artifact/81475040-c6b5-43a2-bcd2-577efdc69061",
+   "version": "1792433336-1199",
+   "copiedAt": "2026-10-19T19:08:19Z"
+  }
+ ]
+}

@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Внешние источники — консоль банка</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}a{color:#d21f16}</style>
+</helmet>
+<div class="kn-app">
+  <div class="kn-app__side"><dc-import name="NavBank" active="integrations" hint-size="100%,900px"></dc-import></div>
+  <main class="kn-app__main">
+    <dc-import name="HeaderBank" hint-size="100%,72px"></dc-import>
+    <div class="kn-page" style="gap: 24px;">
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <h1 class="title-1">Внешние источники</h1>
+        <p class="body" style="color: var(--ink-secondary);">Проверка каждые 30 секунд · 24 октября, 11:20</p>
+      </div>
+
+      <x-import component-from-global-scope="Cabinet.Alert" tone="danger" title="Бюро кредитных историй не отвечает с 11:02">
+        <p>Новые заявки не падают: они уходят на ручную проверку с меткой «Источник недоступен». Сейчас таких заявок — 1.</p>
+        <div style="margin-top: 8px;"><a class="kk-btn kk-btn--secondary kk-btn--sm" href="C1-Queue.dc.html">Открыть в очереди</a></div>
+      </x-import>
+
+      <div class="kn-tablewrap">
+        <table class="kn-table">
+          <thead><tr><th scope="col">Источник</th><th scope="col">Статус</th><th scope="col" class="num">Среднее время ответа</th><th scope="col" class="num">Ошибки за час</th><th scope="col">Последний успешный ответ</th><th scope="col">Правило при сбое</th></tr></thead>
+          <tbody>
+            <sc-for list="{{rows}}" as="r" hint-placeholder-count="5">
+              <tr>
+                <td><span class="body-strong" style="display: block;">{{r.name}}</span><span class="kn-sub">Смоделированная интеграция</span></td>
+                <td><x-import component-from-global-scope="Cabinet.Badge" tone="{{r.tone}}" icon="{{r.icon}}">{{r.status}}</x-import></td>
+                <td class="num">{{r.time}}</td>
+                <td class="num" style="white-space: nowrap; {{r.errStyle}}">{{r.errors}}</td>
+                <td class="nw">{{r.last}}</td>
+                <td style="color: var(--ink-secondary);">{{r.rule}}</td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </div>
+      <p class="body-sm" style="color: var(--ink-secondary);">Тайм-аут запроса — 10 секунд, 3 попытки. Статусы можно переключить в «Режиме проверки».</p>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      rows: [
+        { name: 'ЕГРЮЛ / ЕГРИП', status: 'Работает', tone: 'success', icon: 'check-circle', time: '0,8 с', errors: '0', errStyle: '', last: 'сегодня, 11:20', rule: 'Заявка ждёт до 3 попыток, затем — ручная проверка' },
+        { name: 'ФНС «Прозрачный бизнес»', status: 'Работает', tone: 'success', icon: 'check-circle', time: '1,2 с', errors: '0', errStyle: '', last: 'сегодня, 11:19', rule: 'Ручная проверка налоговой задолженности' },
+        { name: 'Бюро кредитных историй', status: 'Не отвечает', tone: 'danger', icon: 'x-circle', time: '10 с, тайм-аут', errors: '14', errStyle: 'color: var(--danger); font-weight: 600;', last: 'сегодня, 11:02', rule: 'Заявка уходит на ручную проверку' },
+        { name: 'Выписка по счёту', status: 'Работает', tone: 'success', icon: 'check-circle', time: '0,4 с', errors: '0', errStyle: '', last: 'сегодня, 11:20', rule: 'Клиенту предлагают загрузить выписку файлом' },
+        { name: 'Сервис оценки', status: 'Медленно', tone: 'warning', icon: 'clock', time: '2,9 с', errors: '1', errStyle: '', last: 'сегодня, 11:18', rule: 'Правила продукта без балла, ручная проверка' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

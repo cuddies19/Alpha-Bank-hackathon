@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Новые компоненты — данные</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div style="box-sizing: border-box; width: 1440px; min-height: 2200px; padding: 56px 64px; background: var(--bg); color: var(--ink); font-family: var(--font-sans); display: flex; flex-direction: column; gap: 32px;">
+  <div style="display: flex; flex-direction: column; gap: 8px;">
+    <h1 class="title-1">Новые компоненты · данные</h1>
+    <p class="body" style="color: var(--ink-secondary); max-width: 760px;">Компонентов нет в бандле системы — нарисованы на её токенах и в её стиле: белые карточки на сером, графитовый текст, без красного. Классы с префиксом kn- лежат в kk-new.css.</p>
+  </div>
+
+  <section class="kk-card kk-card--lg" style="gap: 16px;">
+    <div class="kn-sechead"><h2 class="title-3">Таблица с сортировкой, фильтрами и пагинацией</h2><span class="body-sm" style="color: var(--ink-secondary);">Мои заявки · Очередь заявок · Журнал аудита</span></div>
+    <div class="kn-toolbar">
+      <button type="button" class="kn-select">Продукт: <span>все</span></button>
+      <button type="button" class="kn-select">Класс риска: <span>A–E</span></button>
+      <x-import component-from-global-scope="Cabinet.Chip" selected="{{yes}}">Мои заявки</x-import>
+      <x-import component-from-global-scope="Cabinet.Chip">Повторная подача</x-import>
+    </div>
+    <div class="kn-tablewrap" style="box-shadow: inset 0 0 0 1px var(--line);">
+      <table class="kn-table">
+        <thead><tr><th scope="col"><button type="button" class="kn-sort">Заявка</button></th><th scope="col">Компания</th><th scope="col" class="num"><button type="button" class="kn-sort is-on">Сумма<x-import component-from-global-scope="Cabinet.Icon" name="arrow-down" size="{{i14}}"></x-import></button></th><th scope="col">Этап</th><th scope="col">SLA</th></tr></thead>
+        <tbody>
+          <tr class="is-new"><td class="nw body-strong">2026-10-0145</td><td>ИП Кузнецов Д. А.</td><td class="num">700 000 ₽</td><td>Новая</td><td><span class="kn-sla"><x-import component-from-global-scope="Cabinet.Icon" name="clock" size="{{i14}}"></x-import>2 ч</span></td></tr>
+          <tr><td class="nw body-strong">2026-10-0142</td><td>ООО «Дом и уют»</td><td class="num">3 000 000 ₽</td><td>Ручное рассмотрение</td><td><span class="kn-sla"><x-import component-from-global-scope="Cabinet.Icon" name="clock" size="{{i14}}"></x-import>1 ч 20 мин</span></td></tr>
+          <tr class="is-muted"><td class="nw body-strong">2026-10-0139</td><td>ИП Белова А. С.</td><td class="num">500 000 ₽</td><td>Решение принято</td><td>—</td></tr>
+        </tbody>
+      </table>
+      <div class="kn-pager"><span>Показаны 1–3 из 30</span><div class="kn-pager__btns"><button type="button" class="kn-pager__btn" disabled aria-label="Назад">‹</button><button type="button" class="kn-pager__btn is-on">1</button><button type="button" class="kn-pager__btn">2</button><button type="button" class="kn-pager__btn" aria-label="Вперёд">›</button></div></div>
+    </div>
+    <p class="body-sm" style="color: var(--ink-secondary);">Строка новой заявки подсвечена info-soft, завершённые — вторичным текстом. На узком экране таблица прокручивается в своей рамке.</p>
+  </section>
+
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; align-items: start;">
+    <section class="kk-card kk-card--lg" style="gap: 16px;">
+      <div class="kn-sechead"><h2 class="title-3">Таблица графика платежей</h2><span class="body-sm" style="color: var(--ink-secondary);">Решение · Мои кредиты</span></div>
+      <table class="kn-table kn-table--dense kn-table--plain">
+        <thead><tr><th scope="col">№</th><th scope="col">Дата</th><th scope="col" class="num">Платёж</th><th scope="col" class="num">Долг</th><th scope="col" class="num">Остаток</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td class="nw">15 ноября 2026</td><td class="num">157 200 ₽</td><td class="num">114 200 ₽</td><td class="num">2 285 800 ₽</td></tr>
+          <tr><td>2</td><td class="nw">15 декабря 2026</td><td class="num">157 200 ₽</td><td class="num">116 246 ₽</td><td class="num">2 169 554 ₽</td></tr>
+          <tr><td>3</td><td class="nw">15 января 2027</td><td class="num">157 200 ₽</td><td class="num">118 329 ₽</td><td class="num">2 051 225 ₽</td></tr>
+        </tbody>
+      </table>
+      <x-import component-from-global-scope="Cabinet.Button" variant="ghost" icon-right="chevron-right" style="align-self: flex-start;">Показать весь график</x-import>
+    </section>
+
+    <section class="kk-card kk-card--lg" style="gap: 16px;">
+      <div class="kn-sechead"><h2 class="title-3">Вкладки</h2><span class="body-sm" style="color: var(--ink-secondary);">Карточка заявки в банке</span></div>
+      <div class="kn-tabs">
+        <button type="button" class="kn-tab is-active">Сводка</button>
+        <button type="button" class="kn-tab">Клиент</button>
+        <button type="button" class="kn-tab">Внешние проверки<span class="kn-tab__dot" aria-label="есть замечания"></span></button>
+        <button type="button" class="kn-tab">Оценка риска</button>
+      </div>
+      <p class="body-sm" style="color: var(--ink-secondary);">Активная вкладка — подчёркивание цветом ink, не красным: красный остаётся за главным действием. Точка warning — во вкладке есть замечание.</p>
+    </section>
+
+    <section class="kk-card kk-card--lg" style="gap: 16px;">
+      <div class="kn-sechead"><h2 class="title-3">Факторы оценки</h2><span class="body-sm" style="color: var(--ink-secondary);">Скоринг в консоли · «Почему такое решение»</span></div>
+      <div class="kn-factors">
+        <div class="kn-factor"><span>Стабильный оборот 12 месяцев</span><span class="kn-factor__bar"><span class="kn-factor__neg"></span><span class="kn-factor__pos"><span style="width: 96%;"></span></span></span><span class="kn-factor__val is-pos">+48</span></div>
+        <div class="kn-factor"><span>Нет просрочек</span><span class="kn-factor__bar"><span class="kn-factor__neg"></span><span class="kn-factor__pos"><span style="width: 70%;"></span></span></span><span class="kn-factor__val is-pos">+35</span></div>
+        <div class="kn-factor"><span>Долговая нагрузка 32% потока</span><span class="kn-factor__bar"><span class="kn-factor__neg"><span style="width: 82%;"></span></span><span class="kn-factor__pos"></span></span><span class="kn-factor__val is-neg">−41</span></div>
+        <div class="kn-factor"><span>Высокая сезонность</span><span class="kn-factor__bar"><span class="kn-factor__neg"><span style="width: 18%;"></span></span><span class="kn-factor__pos"></span></span><span class="kn-factor__val is-neg">−9</span></div>
+        <div class="kn-factors__axis"><span></span><span><span>−50</span><span>0</span><span>+50</span></span><span></span></div>
+      </div>
+      <p class="body-sm" style="color: var(--ink-secondary);">Знак и сторона от нуля дублируют цвет. У клиента — те же факторы словами, без чисел.</p>
+    </section>
+
+    <section class="kk-card kk-card--lg" style="gap: 16px;">
+      <div class="kn-sechead"><h2 class="title-3">Шкала балла 0–1000</h2><span class="body-sm" style="color: var(--ink-secondary);">Скоринг в консоли</span></div>
+      <div style="display: flex; align-items: baseline; gap: 12px;"><span class="amount-lg amt">640</span><x-import component-from-global-scope="Cabinet.Badge" tone="info" icon="{{no}}">Класс B · умеренный</x-import></div>
+      <div class="kn-score" role="img" aria-label="Балл 640 из 1000, класс B">
+        <div class="kn-score__track">
+          <span class="kn-score__seg"></span><span class="kn-score__seg"></span><span class="kn-score__seg"></span><span class="kn-score__seg is-on"></span><span class="kn-score__seg"></span>
+          <span class="kn-score__marker" style="left: 64%;"></span>
+        </div>
+        <div class="kn-score__labels"><span>E</span><span>D</span><span>C</span><span class="is-on">B</span><span>A</span></div>
+      </div>
+      <p class="body-sm" style="color: var(--ink-secondary);">Сегменты классов риска E–A, текущий класс залит ink, маркер — точный балл.</p>
+    </section>
+
+    <section class="kk-card kk-card--lg" style="gap: 12px;">
+      <div class="kn-sechead"><h2 class="title-3">Строка проверки источника</h2><span class="body-sm" style="color: var(--ink-secondary);">Внешние проверки</span></div>
+      <details class="kn-src"><summary><span class="kn-ok"><x-import component-from-global-scope="Cabinet.Icon" name="check-circle" size="{{i24}}"></x-import></span><span class="kn-src__name"><span class="body-strong">ЕГРЮЛ / ЕГРИП</span><span class="body-sm" style="color: var(--ink-secondary);">Компания действует</span></span><span class="kn-src__time">0,8 с</span><x-import component-from-global-scope="Cabinet.Badge" tone="success">Ок</x-import><span class="kn-src__chev"><x-import component-from-global-scope="Cabinet.Icon" name="chevron-right"></x-import></span></summary><div class="kn-src__body"><p class="body">Статус «Действующее», руководитель совпадает с заявкой.</p></div></details>
+      <details class="kn-src is-warn"><summary><span class="kn-warn"><x-import component-from-global-scope="Cabinet.Icon" name="alert" size="{{i24}}"></x-import></span><span class="kn-src__name"><span class="body-strong">Выписка по счёту</span><span class="body-sm" style="color: var(--ink-secondary);">Высокая сезонность</span></span><span class="kn-src__time">0,4 с</span><x-import component-from-global-scope="Cabinet.Badge" tone="warning">Внимание</x-import><span class="kn-src__chev"><x-import component-from-global-scope="Cabinet.Icon" name="chevron-right"></x-import></span></summary><div class="kn-src__body"><p class="body">Пик поступлений в 2,2 раза выше спада.</p></div></details>
+      <details class="kn-src is-fail"><summary><span class="kn-bad"><x-import component-from-global-scope="Cabinet.Icon" name="x-circle" size="{{i24}}"></x-import></span><span class="kn-src__name"><span class="body-strong">Бюро кредитных историй</span><span class="body-sm" style="color: var(--ink-secondary);">Не ответило за 10 с, 3 попытки</span></span><span class="kn-src__time">—</span><x-import component-from-global-scope="Cabinet.Badge" tone="danger">Не ответило</x-import><span class="kn-src__chev"><x-import component-from-global-scope="Cabinet.Icon" name="chevron-right"></x-import></span></summary><div class="kn-src__body"><x-import component-from-global-scope="Cabinet.Button" variant="secondary" size="sm">Запросить повторно</x-import></div></details>
+    </section>
+
+    <section class="kk-card kk-card--lg" style="gap: 16px;">
+      <div class="kn-sechead"><h2 class="title-3">Таймер SLA и прогресс</h2><span class="body-sm" style="color: var(--ink-secondary);">Очередь · карточка заявки · Мои кредиты</span></div>
+      <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+        <span class="kn-sla"><x-import component-from-global-scope="Cabinet.Icon" name="clock" size="{{i14}}"></x-import>осталось 1 ч 20 мин</span>
+        <span class="kn-sla is-warn"><x-import component-from-global-scope="Cabinet.Icon" name="clock" size="{{i14}}"></x-import>осталось 45 мин</span>
+        <span class="kn-sla is-late"><x-import component-from-global-scope="Cabinet.Icon" name="alert" size="{{i14}}"></x-import>просрочено на 12 мин</span>
+      </div>
+      <p class="body-sm" style="color: var(--ink-secondary);">Жёлтый — меньше часа до нарушения, красный — просрочено. Время всегда словами и цифрами.</p>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <span class="label" style="color: var(--ink-secondary);">Погашено 6 из 18 платежей</span>
+        <div class="kn-progress" role="progressbar" aria-valuemin="0" aria-valuemax="18" aria-valuenow="6" aria-label="Погашено 6 из 18"><span style="width: 33%;"></span></div>
+      </div>
+    </section>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2200}}'>
+class Component extends DCLogic {
+  renderVals() { return { yes: true, no: false, i14: 14, i24: 24 }; }
+}
+</script>
+</body>
+</html>

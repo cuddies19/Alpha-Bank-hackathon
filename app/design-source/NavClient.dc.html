@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Навигация клиента</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<nav class="kn-side" aria-label="Разделы кабинета" style="font-family: var(--font-sans); color: var(--ink);">
+  <a class="kn-brand" href="B1-Home.dc.html"><b>Кредитный кабинет</b></a>
+  <div class="kn-nav">
+    <a class="{{homeCls}}" href="B1-Home.dc.html" aria-current="{{homeCur}}">Главная</a>
+    <a class="{{finCls}}" href="B2-Need.dc.html" aria-current="{{finCur}}">Финансирование</a>
+    <a class="{{appsCls}}" href="B7-Applications.dc.html" aria-current="{{appsCur}}">Мои заявки<span class="kn-nav__count">{{appsCount}}</span></a>
+    <a class="{{loansCls}}" href="B12-Loans.dc.html" aria-current="{{loansCur}}">Мои кредиты</a>
+    <a class="{{docsCls}}" href="B13-Documents.dc.html" aria-current="{{docsCur}}">Документы</a>
+  </div>
+  <div class="kn-side__foot">
+    <a class="kn-demo" href="A2-Demo.dc.html">
+      <x-import component-from-global-scope="Cabinet.Icon" name="shield" size="{{i20}}"></x-import>
+      Режим проверки
+    </a>
+  </div>
+</nav>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"active":{"editor":"enum","options":["home","financing","applications","loans","documents","none"],"default":"home"},"appsCount":{"editor":"text","default":"1"},"$preview":{"width":248,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const a = this.props.active ?? 'home';
+    const c = (k) => 'kn-nav__link' + (a === k ? ' is-active' : '');
+    const cur = (k) => (a === k ? 'page' : undefined);
+    return {
+      i20: 20,
+      appsCount: this.props.appsCount ?? '1',
+      homeCls: c('home'), homeCur: cur('home'),
+      finCls: c('financing'), finCur: cur('financing'),
+      appsCls: c('applications'), appsCur: cur('applications'),
+      loansCls: c('loans'), loansCur: cur('loans'),
+      docsCls: c('documents'), docsCur: cur('documents')
+    };
+  }
+}
+</script>
+</body>
+</html>

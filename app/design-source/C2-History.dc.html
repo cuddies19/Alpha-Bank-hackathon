@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Карточка заявки: история — консоль банка</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}a{color:#d21f16}</style>
+</helmet>
+<div class="kn-app">
+  <div class="kn-app__side"><dc-import name="NavBank" active="queue" hint-size="100%,900px"></dc-import></div>
+  <main class="kn-app__main">
+    <dc-import name="HeaderBank" hint-size="100%,72px"></dc-import>
+    <dc-import name="C2Head" tab="history" hint-size="100%,200px"></dc-import>
+    <div class="kn-page" style="padding-top: 24px;">
+      <div class="kn-cols">
+        <div class="kn-cols__main">
+          <section class="kk-card kk-card--md" style="gap: 8px;">
+            <div class="kn-sechead">
+              <h2 class="title-3">История заявки</h2>
+              <a class="kk-btn kk-btn--link" href="C6-Audit.dc.html">Открыть в журнале аудита</a>
+            </div>
+            <ul class="kn-feed">
+              <sc-for list="{{events}}" as="e" hint-placeholder-count="10">
+                <li class="kn-feed__item" style="grid-template-columns: 84px minmax(0, 1fr) auto;">
+                  <time style="padding-top: 2px;">{{e.t}}</time>
+                  <span style="display: flex; flex-direction: column; gap: 2px;"><span class="body">{{e.what}}</span><span class="body-sm" style="color: var(--ink-secondary);">{{e.detail}}</span></span>
+                  <x-import component-from-global-scope="Cabinet.Badge" tone="neutral" icon="{{no}}">{{e.who}}</x-import>
+                </li>
+              </sc-for>
+            </ul>
+          </section>
+        </div>
+        <aside class="kn-cols__side" style="flex: 0 1 384px;">
+          <dc-import name="DecisionPanel" outcome="counter" hint-size="100%,1100px"></dc-import>
+        </aside>
+      </div>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1300}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      no: false,
+      events: [
+        { t: '11:20:12', what: 'Заявка взята в работу', detail: 'Исполнитель: О. Кравцова', who: 'Сотрудник' },
+        { t: '11:05:31', what: 'Передана на ручное рассмотрение', detail: 'Правило «доля платежа не выше 30%» не пройдено: 32%', who: 'Система' },
+        { t: '11:05:30', what: 'Правила продукта', detail: '4 из 5 пройдены, рекомендация — встречное предложение 2 400 000 ₽', who: 'Система' },
+        { t: '11:05:29', what: 'Скоринг', detail: 'scorecard v1.2: 640, класс B', who: 'Система' },
+        { t: '10:58:04', what: 'Ответ бюро кредитных историй', detail: '1,4 с · 1 действующий кредит, просрочек нет', who: 'Система' },
+        { t: '10:58:03', what: 'Ответ ФНС «Прозрачный бизнес»', detail: '1,2 с · задолженности нет', who: 'Система' },
+        { t: '10:58:02', what: 'Ответ ЕГРЮЛ', detail: '0,8 с · компания действует', who: 'Система' },
+        { t: '10:52:40', what: 'Проверка полноты пройдена', detail: 'Обязательные документы и согласия на месте', who: 'Система' },
+        { t: '10:51:14', what: 'Заявка отправлена', detail: 'Черновик → Подана', who: 'Клиент' },
+        { t: '10:50:02', what: 'Подписано согласие на запрос в БКИ', detail: 'Подсказка ассистента на шаге 4', who: 'Клиент' },
+        { t: '10:42:10', what: 'Черновик создан из подбора', detail: 'Поля перенесены из диалога с ассистентом', who: 'Клиент' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

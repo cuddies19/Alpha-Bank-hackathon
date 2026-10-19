@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Мои заявки — Кредитный кабинет</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}a{color:#d21f16}</style>
+</helmet>
+<div class="kn-app">
+  <div class="kn-app__side"><dc-import name="NavClient" active="applications" hint-size="100%,900px"></dc-import></div>
+  <main class="kn-app__main">
+    <dc-import name="HeaderClient" hint-size="100%,72px"></dc-import>
+    <div class="kn-page" style="gap: 24px;">
+      <div class="kn-sechead" style="align-items: flex-end;">
+        <h1 class="title-1">Мои заявки</h1>
+        <a class="kk-btn kk-btn--primary" href="B2-Need.dc.html">Подобрать финансирование</a>
+      </div>
+
+      <div class="kn-tabs" role="group" aria-label="Фильтр заявок">
+        <sc-for list="{{tabs}}" as="t" hint-placeholder-count="3">
+          <button type="button" class="{{t.cls}}" aria-pressed="{{t.pressed}}" onClick="{{t.pick}}">{{t.label}}<span class="kn-nav__count">{{t.count}}</span></button>
+        </sc-for>
+      </div>
+
+      <sc-if value="{{hasRows}}" hint-placeholder-val="{{yes}}">
+        <div class="kn-tablewrap">
+          <table class="kn-table">
+            <thead>
+              <tr><th scope="col">Номер</th><th scope="col">Продукт</th><th scope="col" class="num">Сумма</th><th scope="col">Подана</th><th scope="col">Статус</th><th scope="col">Что от вас нужно</th><th scope="col"><span class="kk-sr">Открыть</span></th></tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{rows}}" as="r" hint-placeholder-count="1">
+                <tr>
+                  <td class="nw"><a class="kn-rowlink" href="{{r.href}}">{{r.num}}</a></td>
+                  <td>{{r.product}}</td>
+                  <td class="num">{{r.amount}}</td>
+                  <td class="nw">{{r.date}}</td>
+                  <td><x-import component-from-global-scope="Cabinet.Badge" tone="{{r.tone}}">{{r.status}}</x-import></td>
+                  <td style="color: var(--ink-secondary);">{{r.todo}}</td>
+                  <td style="width: 44px;"><a class="kn-ibtn" href="{{r.href}}" aria-label="Открыть заявку {{r.num}}"><x-import component-from-global-scope="Cabinet.Icon" name="chevron-right"></x-import></a></td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{noRows}}" hint-placeholder-val="{{no}}">
+        <section class="kk-card kk-card--md">
+          <div class="kn-empty">
+            <span class="kn-empty__ic"><x-import component-from-global-scope="Cabinet.Icon" name="document" size="{{i24}}"></x-import></span>
+            <h2 class="title-3">Завершённых заявок пока нет</h2>
+            <p class="body">Здесь появятся заявки, по которым выданы деньги или работа закончена.</p>
+          </div>
+        </section>
+      </sc-if>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":950}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const f = s.f || 'active';
+    const n = ' ';
+    const data = {
+      active: [{ num: '№' + n + '2026-10-0142', product: 'Кредитная линия', amount: '3' + n + '000' + n + '000' + n + '₽', date: '24 октября', status: 'Рассматривает специалист', tone: 'info', todo: 'Ничего — ждём решение банка', href: 'B8-Status.dc.html' }],
+      drafts: [{ num: '№' + n + '2026-10-0097', product: 'Кредит на любые цели', amount: '1' + n + '000' + n + '000' + n + '₽', date: '—', status: 'Черновик', tone: 'neutral', todo: 'Заполнить шаг 3 и отправить', href: 'B5-Step3.dc.html' }],
+      done: []
+    };
+    const labels = [['active', 'Активные'], ['drafts', 'Черновики'], ['done', 'Завершённые']];
+    const rows = data[f];
+    return {
+      yes: true, no: false, i24: 24,
+      tabs: labels.map(([k, label]) => ({ label, count: String(data[k].length), cls: 'kn-tab' + (f === k ? ' is-active' : ''), pressed: f === k ? 'true' : 'false', pick: () => this.setState({ f: k }) })),
+      rows, hasRows: rows.length > 0, noRows: rows.length === 0
+    };
+  }
+}
+</script>
+</body>
+</html>

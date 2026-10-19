@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Подписание документов — Кредитный кабинет</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}a{color:#d21f16}</style>
+</helmet>
+<div class="kn-app">
+  <div class="kn-app__side"><dc-import name="NavClient" active="applications" hint-size="100%,900px"></dc-import></div>
+  <main class="kn-app__main">
+    <dc-import name="HeaderClient" hint-size="100%,72px"></dc-import>
+    <div class="kn-page kn-page--narrow" style="gap: 24px;">
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <h1 class="title-1">Подписание документов</h1>
+        <p class="body" style="color: var(--ink-secondary);">Кредитная линия · <span class="amt">2 400 000 ₽</span> · 18 мес. · 21,5%</p>
+      </div>
+
+      <section class="kk-card kk-card--md" style="gap: 8px;">
+        <h2 class="title-3">Документы</h2>
+        <ul style="display: flex; flex-direction: column;">
+          <sc-for list="{{docs}}" as="d" hint-placeholder-count="3">
+            <li style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line);">
+              <span class="kk-doc__icon"><x-import component-from-global-scope="Cabinet.Icon" name="document"></x-import></span>
+              <span style="flex: 1; display: flex; flex-direction: column;"><span class="body-strong">{{d.title}}</span><span class="body-sm" style="color: var(--ink-secondary);">{{d.meta}}</span></span>
+              <x-import component-from-global-scope="Cabinet.Button" variant="ghost" size="sm" on-click="{{d.open}}">Открыть</x-import>
+            </li>
+          </sc-for>
+        </ul>
+      </section>
+
+      <section class="kk-card kk-card--md" style="gap: 20px;">
+        <label class="kn-consent__row">
+          <input type="checkbox" class="kn-check" checked="{{agree}}" onChange="{{toggleAgree}}">
+          <span>Ознакомился с условиями кредитного договора и графиком платежей</span>
+        </label>
+
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <span class="label" id="otp-label">Код подтверждения</span>
+          <div class="kn-otp" role="group" aria-labelledby="otp-label">
+            <sc-for list="{{cells}}" as="c" hint-placeholder-count="6">
+              <input inputmode="numeric" maxlength="1" aria-label="{{c.label}}" value="{{c.v}}" onChange="{{c.set}}">
+            </sc-for>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 12px 16px; border-radius: 12px; border: 1.5px dashed var(--line-strong); background: var(--surface);">
+            <x-import component-from-global-scope="Cabinet.Icon" name="shield" size="{{i20}}"></x-import>
+            <span class="body" style="flex: 1;">Демо: код подтверждения <b class="amt">482 913</b>. Код показан здесь вместо SMS: весь путь остаётся в кабинете.</span>
+            <x-import component-from-global-scope="Cabinet.Button" variant="ghost" size="sm" on-click="{{fill}}">Подставить</x-import>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+          <sc-if value="{{ready}}" hint-placeholder-val="{{no}}">
+            <a class="kk-btn kk-btn--primary kk-btn--lg" href="B11-Issued.dc.html">Подписать</a>
+          </sc-if>
+          <sc-if value="{{notReady}}" hint-placeholder-val="{{yes}}">
+            <x-import component-from-global-scope="Cabinet.Button" variant="primary" size="lg" disabled="{{yes}}">Подписать</x-import>
+            <span class="body-sm" style="color: var(--ink-secondary);">{{hint}}</span>
+          </sc-if>
+        </div>
+      </section>
+
+      <p class="body-sm" style="display: flex; gap: 8px; align-items: center; color: var(--ink-secondary);"><x-import component-from-global-scope="Cabinet.Icon" name="info" size="{{i16}}"></x-import>Подписание смоделировано: юридической силы нет.</p>
+    </div>
+  </main>
+
+  <sc-if value="{{drawer}}" hint-placeholder-val="{{no}}">
+    <div class="kn-scrim" onClick="{{close}}" style="z-index: 40;"></div>
+    <aside class="kn-drawer kn-drawer--fixed" role="dialog" aria-modal="true" aria-labelledby="doc-title" style="width: 560px;">
+      <div class="kn-drawer__head">
+        <div style="display: flex; flex-direction: column;"><h2 class="title-3" id="doc-title">{{docTitle}}</h2><span class="body-sm" style="color: var(--ink-secondary);">{{docMeta}}</span></div>
+        <button type="button" class="kn-ibtn" aria-label="Закрыть предпросмотр" onClick="{{close}}"><x-import component-from-global-scope="Cabinet.Icon" name="x"></x-import></button>
+      </div>
+      <div class="kn-drawer__body">
+        <div style="display: flex; flex-direction: column; gap: 12px; padding: 24px; border-radius: 12px; box-shadow: inset 0 0 0 1px var(--line); background: var(--surface-muted);">
+          <p class="body-strong">Кредитный договор № 2026-10-0142-Д</p>
+          <p class="body-sm" style="color: var(--ink-secondary);">г. Москва · 24 октября 2026</p>
+          <p class="body">Банк открывает заёмщику ООО «Дом и уют» кредитную линию с лимитом 2 400 000 ₽ на 18 месяцев под 21,5% годовых.</p>
+          <p class="body">Заёмщик берёт деньги частями в пределах лимита и гасит их ежемесячными платежами по графику — первый платёж 15 ноября 2026.</p>
+          <p class="body">Досрочное погашение — без комиссии, в любой день через кабинет.</p>
+          <p class="body-sm" style="color: var(--ink-secondary);">Страница 1 из 6</p>
+        </div>
+        <dl class="kn-rows">
+          <div><dt>Лимит</dt><dd>2 400 000 ₽</dd></div>
+          <div><dt>Срок</dt><dd>18 мес.</dd></div>
+          <div><dt>Ставка</dt><dd>21,5%</dd></div>
+          <div><dt>Платёж</dt><dd>157 200 ₽</dd></div>
+        </dl>
+      </div>
+      <div class="kn-drawer__foot">
+        <x-import component-from-global-scope="Cabinet.Button" variant="secondary" icon-left="arrow-down">Скачать PDF</x-import>
+        <x-import component-from-global-scope="Cabinet.Button" variant="ghost" on-click="{{close}}">Закрыть</x-import>
+      </div>
+    </aside>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1300}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const code = (s.code || '      ').split('');
+    const agree = !!s.agree;
+    const docs = [
+      { title: 'Кредитный договор', meta: 'PDF · 6 страниц' },
+      { title: 'График платежей', meta: 'PDF · 1 страница · 18 платежей по 157 200 ₽' },
+      { title: 'Заявление на выдачу', meta: 'PDF · 1 страница · зачисление на счёт •• 4821' }
+    ];
+    const full = code.join('').replace(/\s/g, '');
+    const ok = full === '482913';
+    const d = s.doc ?? -1;
+    return {
+      yes: true, no: false, i16: 16, i20: 20, agree,
+      docs: docs.map((x, i) => ({ ...x, open: () => this.setState({ doc: i }) })),
+      drawer: d >= 0, docTitle: d >= 0 ? docs[d].title : '', docMeta: d >= 0 ? docs[d].meta : '',
+      close: () => this.setState({ doc: -1 }),
+      toggleAgree: () => this.setState({ agree: !agree }),
+      cells: code.map((v, i) => ({ v: v.trim(), label: 'Цифра ' + (i + 1) + ' из 6', set: (e) => { const c = code.slice(); c[i] = (String(e.target.value).replace(/\D/g, '').slice(-1)) || ' '; this.setState({ code: c.join('') }); } })),
+      fill: () => this.setState({ code: '482913' }),
+      ready: agree && ok, notReady: !(agree && ok),
+      hint: !agree ? 'Отметьте, что ознакомились с условиями' : 'Введите код из 6 цифр'
+    };
+  }
+}
+</script>
+</body>
+</html>

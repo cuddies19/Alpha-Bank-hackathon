@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Ассистент — мобильная шторка</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div style="box-sizing: border-box; width: 390px; height: 100vh; padding-top: 12px; background: var(--bg); box-shadow: inset 0 0 0 9999px var(--scrim); font-family: var(--font-sans); color: var(--ink); display: flex;">
+  <section role="dialog" aria-modal="true" aria-label="Ассистент" style="flex: 1; min-height: 0; display: flex; flex-direction: column; background: var(--surface); border-radius: 24px 24px 0 0; box-shadow: var(--shadow-lg);">
+    <div style="display: flex; justify-content: center; padding-top: 8px;" aria-hidden="true"><span style="width: 40px; height: 4px; border-radius: 9999px; background: var(--line);"></span></div>
+    <div style="display: flex; align-items: center; gap: 12px; padding: 8px 8px 12px 16px; border-bottom: 1px solid var(--line);">
+      <span class="kn-mark" style="width: 36px; height: 36px;"><x-import component-from-global-scope="Cabinet.Icon" name="sparkle" size="{{i18}}"></x-import></span>
+      <div style="flex: 1; display: flex; flex-direction: column;"><span class="title-3">Ассистент</span><span class="body-sm" style="color: var(--ink-secondary);">Видит экран «Подбор»</span></div>
+      <a class="kn-ibtn" href="M-Need.dc.html" aria-label="Свернуть ассистента"><x-import component-from-global-scope="Cabinet.Icon" name="x"></x-import></a>
+    </div>
+    <div style="flex: 1; min-height: 0; overflow: auto; display: flex; flex-direction: column-reverse; padding: 16px;">
+      <div aria-live="polite" style="display: flex; flex-direction: column; gap: 14px;">
+        <x-import component-from-global-scope="Cabinet.ChatMessage" role="user" time="10:31">Нужно закупить партию к распродаже 11.11, а выплата от маркетплейса только через две недели</x-import>
+        <x-import component-from-global-scope="Cabinet.ChatMessage" role="assistant" time="10:31"><p>Понимаю: нужны деньги на закупку до поступления выручки.</p><p>Сколько планируете потратить на партию?</p></x-import>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; padding-left: 40px;">
+          <x-import component-from-global-scope="Cabinet.Chip">1–2 млн ₽</x-import>
+          <x-import component-from-global-scope="Cabinet.Chip" selected="{{yes}}">2–3 млн ₽</x-import>
+          <x-import component-from-global-scope="Cabinet.Chip">Больше 3 млн ₽</x-import>
+        </div>
+        <x-import component-from-global-scope="Cabinet.ChatMessage" role="user" time="10:32">3 миллиона, деньги нужны до 1 ноября</x-import>
+        <x-import component-from-global-scope="Cabinet.ChatMessage" role="assistant" time="10:33"><p>Посмотрю обороты по счёту.</p><p>Выручка приходит волнами раз в две недели — предлагаю кредитную линию.</p></x-import>
+        <a href="M-Offers.dc.html" aria-label="Открыть варианты: кредитная линия 3 000 000 ₽" style="display: block; padding-left: 40px; color: inherit; text-decoration: none;">
+          <x-import component-from-global-scope="Cabinet.ProductCard" name="Кредитная линия" purpose="Закупки партиями, деньги нужны многократно" amount-label="Лимит" amount="3 000 000 ₽" params="{{params}}">
+            <x-import component-from-global-scope="Cabinet.PaymentLoadMeter" payment="{{pay}}" cash-flow="{{flow}}"></x-import>
+          </x-import>
+        </a>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; padding-left: 40px;">
+          <a class="kk-chip" href="M-Offers.dc.html">Открыть варианты</a>
+          <a class="kk-chip" href="M-Offers.dc.html">Почему такая сумма?</a>
+        </div>
+      </div>
+    </div>
+    <div style="padding: 10px 16px 16px; border-top: 1px solid var(--line);">
+      <x-import component-from-global-scope="Cabinet.ChatComposer" placeholder="Опишите задачу своими словами" hint="Ассистент помогает с выбором. Решение по заявке принимает банк." on-send="{{noop}}" on-attach="{{noop}}"></x-import>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const n = ' ';
+    return {
+      yes: true, i18: 18, pay: 196500, flow: 610000, noop: () => {},
+      params: [{ label: 'Срок', value: '18' + n + 'мес.' }, { label: 'Ставка', value: '21,5%' }, { label: 'Платёж', value: '≈' + n + '196' + n + '500' + n + '₽' }]
+    };
+  }
+}
+</script>
+</body>
+</html>

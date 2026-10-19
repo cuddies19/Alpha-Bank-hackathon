@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Уведомления — Кредитный кабинет</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}a{color:#d21f16}</style>
+</helmet>
+<div class="kn-app">
+  <div class="kn-app__side"><dc-import name="NavClient" active="none" hint-size="100%,900px"></dc-import></div>
+  <main class="kn-app__main">
+    <dc-import name="HeaderClient" unread="{{unread}}" hint-size="100%,72px"></dc-import>
+    <div class="kn-page kn-page--narrow" style="gap: 24px;">
+      <div class="kn-sechead" style="align-items: flex-end;">
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <h1 class="title-1">Уведомления</h1>
+          <p class="body" style="color: var(--ink-secondary);">Все сообщения банка приходят сюда — без писем и SMS.</p>
+        </div>
+        <x-import component-from-global-scope="Cabinet.Button" variant="ghost" icon-left="check" on-click="{{readAll}}">Отметить все прочитанными</x-import>
+      </div>
+
+      <sc-for list="{{groups}}" as="g" hint-placeholder-count="3">
+        <section style="display: flex; flex-direction: column; gap: 8px;">
+          <h2 class="label" style="color: var(--ink-secondary);">{{g.day}}</h2>
+          <div class="kk-card kk-card--sm" style="gap: 4px; padding: 8px;">
+            <sc-for list="{{g.items}}" as="it" hint-placeholder-count="3">
+              <a class="kn-menu__item" href="{{it.href}}" style="border-radius: 12px; {{it.style}}">
+                <span class="kn-dot" style="flex: none; {{it.dot}}"></span>
+                <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+                  <span style="display: flex; justify-content: space-between; gap: 16px;">
+                    <span class="{{it.titleCls}}">{{it.title}}</span>
+                    <time class="body-sm" style="color: var(--ink-secondary); white-space: nowrap;">{{it.time}}</time>
+                  </span>
+                  <span class="body-sm" style="color: var(--ink-secondary);">{{it.text}}</span>
+                </span>
+              </a>
+            </sc-for>
+          </div>
+        </section>
+      </sc-for>
+
+      <a class="kk-btn kk-btn--link" href="B15-Profile.dc.html" style="align-self: flex-start;">Настроить уведомления в профиле</a>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const allRead = !!s.allRead;
+    const mk = (title, text, time, href, unread) => {
+      const u = unread && !allRead;
+      return { title, text, time, href, titleCls: u ? 'body-strong' : 'body', style: u ? 'background: var(--surface-muted);' : '', dot: u ? '' : 'visibility: hidden;' };
+    };
+    const groups = [
+      { day: 'Сегодня, 24 октября', items: [
+        mk('Решение по заявке № 2026-10-0142 готово', 'Банк предлагает 2 400 000 ₽ на 18 месяцев', '11:32', 'B9b-Counter.dc.html', true),
+        mk('Условия действуют до 31 октября', 'Примите предложение или откажитесь до этой даты', '11:32', 'B9b-Counter.dc.html', true),
+        mk('Заявка перешла к специалисту', 'Обычно это занимает до часа', '11:05', 'B8-Status.dc.html', false),
+        mk('Заявка № 2026-10-0142 отправлена', 'Решение придёт сюда, в кабинет', '10:51', 'B8-Status.dc.html', false),
+        mk('Договор поставки нужно заменить', 'Фото обрезано: не видно страницы с подписью', '10:49', 'B13-Documents.dc.html', false)
+      ] },
+      { day: 'Вчера, 23 октября', items: [
+        mk('Ассистент заметил возможный кассовый разрыв', 'Выплата от маркетплейса придёт 6 ноября, а закупка нужна до 1 ноября', '18:20', 'B1-Home.dc.html', false)
+      ] },
+      { day: 'Напоминания', items: [
+        mk('Платёж 15 ноября', 'Появится после выдачи кредита — напомним за 3 дня', '—', 'B12-Loans.dc.html', false)
+      ] }
+    ];
+    return { groups, unread: allRead ? '0' : '2', readAll: () => this.setState({ allRead: true }) };
+  }
+}
+</script>
+</body>
+</html>

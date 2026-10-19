@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Решение: предложение банка — Кредитный кабинет</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}a{color:#d21f16}</style>
+</helmet>
+<div class="kn-app">
+  <div class="kn-app__side"><dc-import name="NavClient" active="applications" hint-size="100%,900px"></dc-import></div>
+  <main class="kn-app__main">
+    <dc-import name="HeaderClient" unread="3" hint-size="100%,72px"></dc-import>
+    <div class="kn-page kn-page--narrow" style="gap: 24px;">
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+          <x-import component-from-global-scope="Cabinet.Badge" tone="warning">Предложение банка</x-import>
+          <span class="body-sm" style="color: var(--ink-secondary);">Заявка № 2026-10-0142 · решение 24 октября, 11:32</span>
+        </div>
+        <h1 class="display">Банк готов выдать <span class="amt">2 400 000 ₽</span></h1>
+        <p class="body-lg" style="color: var(--ink-secondary); max-width: 680px;">Платёж на 3 000 000 ₽ занял бы треть вашего денежного потока. С этой суммой нагрузка комфортная.</p>
+      </div>
+
+      <section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 16px;">
+        <div class="kk-card kk-card--md" style="gap: 16px;">
+          <span class="label" style="color: var(--ink-secondary);">Вы просили</span>
+          <span class="amount-xl amt" style="color: var(--ink-secondary);">3 000 000 ₽</span>
+          <dl class="kn-rows">
+            <div><dt>Срок</dt><dd>18 мес.</dd></div>
+            <div><dt>Платёж</dt><dd>196 500 ₽</dd></div>
+            <div><dt>Доля потока</dt><dd>32%</dd></div>
+          </dl>
+          <x-import component-from-global-scope="Cabinet.PaymentLoadMeter" payment="{{pay3}}" cash-flow="{{flow}}"></x-import>
+        </div>
+        <div class="kk-card kk-card--md" style="gap: 16px; box-shadow: inset 0 0 0 2px var(--ink);">
+          <span class="label">Банк предлагает</span>
+          <span class="amount-xl amt">2 400 000 ₽</span>
+          <dl class="kn-rows">
+            <div><dt>Срок</dt><dd>18 мес.</dd></div>
+            <div><dt>Платёж</dt><dd>157 200 ₽</dd></div>
+            <div><dt>Доля потока</dt><dd>26%</dd></div>
+          </dl>
+          <x-import component-from-global-scope="Cabinet.PaymentLoadMeter" payment="{{pay24}}" cash-flow="{{flow}}"></x-import>
+        </div>
+      </section>
+
+      <section class="kk-card kk-card--md" style="gap: 16px;">
+        <dl class="kn-kv">
+          <div><dt>Продукт</dt><dd>Кредитная линия</dd></div>
+          <div><dt>Ставка</dt><dd>21,5%</dd></div>
+          <div><dt>Первый платёж</dt><dd>15 ноября</dd></div>
+          <div><dt>Залог</dt><dd>Не нужен</dd></div>
+        </dl>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding-top: 16px; border-top: 1px solid var(--line);">
+          <a class="kk-btn kk-btn--primary kk-btn--lg" href="B10-Sign.dc.html">Принять предложение</a>
+          <x-import component-from-global-scope="Cabinet.Button" variant="secondary" size="lg" on-click="{{askDecline}}">Отказаться</x-import>
+          <a class="kk-btn kk-btn--link" href="B2-Dialog.dc.html"><x-import component-from-global-scope="Cabinet.Icon" name="sparkle" size="{{i16}}"></x-import>Обсудить с ассистентом</a>
+        </div>
+        <p class="body-sm" style="color: var(--ink-secondary); display: flex; gap: 6px; align-items: center;"><x-import component-from-global-scope="Cabinet.Icon" name="calendar" size="{{i16}}"></x-import>Условия действуют до 31 октября</p>
+      </section>
+
+      <section class="kk-card kk-card--md">
+        <details class="kn-disc" open>
+          <summary><span class="title-3">Почему такое решение</span><span class="kn-disc__chev"><x-import component-from-global-scope="Cabinet.Icon" name="chevron-right"></x-import></span></summary>
+          <ul style="display: flex; flex-direction: column; gap: 12px; padding-top: 16px;">
+            <li class="body" style="display: flex; gap: 12px;"><span style="color: var(--success);"><x-import component-from-global-scope="Cabinet.Icon" name="check-circle"></x-import></span>Поступления по счёту стабильны все 12 месяцев</li>
+            <li class="body" style="display: flex; gap: 12px;"><span style="color: var(--success);"><x-import component-from-global-scope="Cabinet.Icon" name="check-circle"></x-import></span>По текущему кредиту в другом банке нет просрочек</li>
+            <li class="body" style="display: flex; gap: 12px;"><span style="color: var(--warning);"><x-import component-from-global-scope="Cabinet.Icon" name="alert"></x-import></span>Платёж на 3 000 000 ₽ — 32% потока, это выше комфортных 30%</li>
+          </ul>
+        </details>
+      </section>
+    </div>
+  </main>
+  <sc-if value="{{decline}}" hint-placeholder-val="{{no}}">
+    <div class="kn-scrim">
+      <div class="kn-modal" role="dialog" aria-modal="true" aria-labelledby="dc-title">
+        <h2 class="title-3" id="dc-title">Отказаться от предложения?</h2>
+        <p class="body">Заявка закроется. Новую можно подать в любой момент — данные компании подставим снова.</p>
+        <div class="kn-modal__actions">
+          <x-import component-from-global-scope="Cabinet.Button" variant="secondary" on-click="{{cancel}}">Вернуться</x-import>
+          <a class="kk-btn kk-btn--primary" href="B7-Applications.dc.html">Отказаться</a>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1450}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    return {
+      no: false, i16: 16, pay3: 196500, pay24: 157200, flow: 610000,
+      decline: !!s.decline,
+      askDecline: () => this.setState({ decline: true }),
+      cancel: () => this.setState({ decline: false })
+    };
+  }
+}
+</script>
+</body>
+</html>

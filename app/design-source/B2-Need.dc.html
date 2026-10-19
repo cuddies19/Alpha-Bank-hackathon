@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Подбор финансирования — Кредитный кабинет</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}a{color:#d21f16}</style>
+</helmet>
+<div class="kn-app">
+  <div class="kn-app__side"><dc-import name="NavClient" active="financing" hint-size="100%,900px"></dc-import></div>
+  <main class="kn-app__main">
+    <dc-import name="HeaderClient" hint-size="100%,72px"></dc-import>
+    <div class="kn-page">
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <h1 class="title-1">Для чего нужны деньги?</h1>
+        <p class="body" style="color: var(--ink-secondary);">Расскажите о задаче словами бизнеса — подберём продукт и посчитаем платёж по данным вашего счёта.</p>
+      </div>
+
+      <div class="kn-cols">
+        <div class="kn-cols__main" style="gap: 24px; flex-basis: 400px;">
+          <section class="kk-card kk-card--md" style="gap: 16px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span class="kn-mark"><x-import component-from-global-scope="Cabinet.Icon" name="sparkle" size="{{i16}}"></x-import></span>
+              <h2 class="title-3">Описать своими словами</h2>
+            </div>
+            <label class="kn-field">
+              <span class="kk-sr">Задача бизнеса</span>
+              <textarea class="kn-textarea" rows="3" placeholder="Например: нужно закупить товар к распродаже, а выплата от маркетплейса придёт позже" style="min-height: 104px; font-size: 17px; line-height: 26px;"></textarea>
+            </label>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+              <a class="kk-chip" href="B2-Dialog.dc.html">Закупить товар к сезону</a>
+              <a class="kk-chip" href="B2-Dialog.dc.html">Не хватает на зарплату до поступления выручки</a>
+              <a class="kk-chip" href="B2-Dialog.dc.html">Купить оборудование</a>
+              <a class="kk-chip" href="B2-Dialog.dc.html">Выиграли тендер</a>
+            </div>
+            <a class="kk-btn kk-btn--secondary" href="B2-Dialog.dc.html" style="align-self: flex-start;">
+              <x-import component-from-global-scope="Cabinet.Icon" name="arrow-up" size="{{i20}}"></x-import>
+              Отправить ассистенту
+            </a>
+          </section>
+
+          <div style="display: flex; align-items: center; gap: 16px;" aria-hidden="true">
+            <span class="kn-divider" style="flex: 1;"></span>
+            <span class="label" style="color: var(--ink-secondary);">или</span>
+            <span class="kn-divider" style="flex: 1;"></span>
+          </div>
+
+          <section style="display: flex; flex-direction: column; gap: 16px;">
+            <h2 class="title-3">Выбрать цель</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr)); gap: 16px;">
+              <a class="kn-goal" href="B2-Goal.dc.html">
+                <span class="kn-goal__ic"><x-import component-from-global-scope="Cabinet.Icon" name="calendar" size="{{i24}}"></x-import></span>
+                <span class="body-strong">Кассовый разрыв</span>
+                <span class="body-sm" style="color: var(--ink-secondary);">Деньги нужны до поступления выручки</span>
+              </a>
+              <a class="kn-goal" href="B2-Goal.dc.html">
+                <span class="kn-goal__ic"><x-import component-from-global-scope="Cabinet.Icon" name="trend-up" size="{{i24}}"></x-import></span>
+                <span class="body-strong">Пополнить оборот</span>
+                <span class="body-sm" style="color: var(--ink-secondary);">Закупки партиями, сезонный товар</span>
+              </a>
+              <a class="kn-goal" href="B2-Goal.dc.html">
+                <span class="kn-goal__ic"><x-import component-from-global-scope="Cabinet.Icon" name="wallet" size="{{i24}}"></x-import></span>
+                <span class="body-strong">Развитие и оборудование</span>
+                <span class="body-sm" style="color: var(--ink-secondary);">Кредит на любые цели</span>
+                <x-import component-from-global-scope="Cabinet.Badge" tone="neutral">Лизинг — скоро</x-import>
+              </a>
+              <a class="kn-goal" href="B2-Goal.dc.html">
+                <span class="kn-goal__ic"><x-import component-from-global-scope="Cabinet.Icon" name="document" size="{{i24}}"></x-import></span>
+                <span class="body-strong">Тендер и контракт</span>
+                <span class="body-sm" style="color: var(--ink-secondary);">Исполнение контракта до оплаты</span>
+                <x-import component-from-global-scope="Cabinet.Badge" tone="neutral">Гарантия — скоро</x-import>
+              </a>
+              <a class="kn-goal" href="B2-Goal.dc.html">
+                <span class="kn-goal__ic"><x-import component-from-global-scope="Cabinet.Icon" name="trend-down" size="{{i24}}"></x-import></span>
+                <span class="body-strong">Рефинансировать кредиты</span>
+                <span class="body-sm" style="color: var(--ink-secondary);">Снизить платёж по текущим кредитам</span>
+              </a>
+            </div>
+          </section>
+        </div>
+
+        <aside class="kn-cols__side" aria-label="Что поняли о задаче" style="flex-basis: 260px;">
+          <section class="kk-card kk-card--md" style="gap: 16px;">
+            <h2 class="title-3">Что поняли о задаче</h2>
+            <dl class="kn-rows">
+              <div><dt>Цель</dt><dd style="color: var(--ink-secondary); font-weight: 400;">—</dd></div>
+              <div><dt>Сумма</dt><dd style="color: var(--ink-secondary); font-weight: 400;">—</dd></div>
+              <div><dt>Срок</dt><dd style="color: var(--ink-secondary); font-weight: 400;">—</dd></div>
+              <div><dt>Когда нужны деньги</dt><dd style="color: var(--ink-secondary); font-weight: 400;">—</dd></div>
+            </dl>
+            <x-import component-from-global-scope="Cabinet.Button" variant="primary" disabled="{{yes}}" full-width="{{yes}}">Показать варианты</x-import>
+            <p class="body-sm" style="color: var(--ink-secondary);">Опишите задачу или выберите цель — после этого покажем подходящие продукты.</p>
+          </section>
+        </aside>
+      </div>
+    </div>
+  </main>
+  <aside class="kn-app__assist"><dc-import name="AssistantPanel" mode="start" screen="Подбор финансирования" hint-size="100%,900px"></dc-import></aside>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1150}}'>
+class Component extends DCLogic {
+  renderVals() { return { yes: true, i16: 16, i20: 20, i24: 24 }; }
+}
+</script>
+</body>
+</html>

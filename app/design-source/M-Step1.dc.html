@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Заявка, шаг 1 — мобильная версия</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div class="kn-mobile">
+  <dc-import name="MobileTop" mode="flow" title="Заявка · шаг 1 из 4" sub="№ 2026-10-0142 · черновик" back="M-Offers.dc.html" hint-size="390px,60px"></dc-import>
+  <div class="kn-mobile__body">
+    <section class="kk-card kk-card--sm"><x-import component-from-global-scope="Cabinet.Stepper" steps="{{steps}}" current="{{c0}}"></x-import></section>
+    <section class="kk-card kk-card--sm" style="gap: 16px; padding: 20px 16px;">
+      <div class="kn-sechead"><h2 class="title-3">Параметры</h2><span class="kn-tag kn-tag--ai"><x-import component-from-global-scope="Cabinet.Icon" name="sparkle" size="{{i14}}"></x-import>Из подбора</span></div>
+      <x-import component-from-global-scope="Cabinet.TextField" label="Продукт" default-value="Кредитная линия" prefilled="{{yes}}" read-only="{{yes}}"></x-import>
+      <x-import component-from-global-scope="Cabinet.TextField" label="Сумма" format="money" default-value="3 000 000" prefilled="{{yes}}"></x-import>
+      <x-import component-from-global-scope="Cabinet.TextField" label="Срок" suffix="мес." default-value="18" prefilled="{{yes}}"></x-import>
+      <x-import component-from-global-scope="Cabinet.TextField" label="Цель" default-value="Закупка партии к распродаже 11.11" prefilled="{{yes}}"></x-import>
+      <x-import component-from-global-scope="Cabinet.TextField" label="К какой дате нужны деньги" default-value="1 ноября 2026" prefilled="{{yes}}"></x-import>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div class="kk-field__top"><span class="label">Источник возврата</span><span class="kk-field__tag caption"><x-import component-from-global-scope="Cabinet.Icon" name="sparkle" size="{{i14}}"></x-import>Заполнено ассистентом</span></div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+          <x-import component-from-global-scope="Cabinet.Chip" selected="{{yes}}">Выручка с маркетплейсов</x-import>
+          <x-import component-from-global-scope="Cabinet.Chip">Оплата по контракту</x-import>
+          <x-import component-from-global-scope="Cabinet.Chip">Текущая выручка</x-import>
+        </div>
+      </div>
+    </section>
+    <section class="kk-card kk-card--sm" style="gap: 12px; padding: 20px 16px;">
+      <dl class="kn-rows">
+        <div><dt>Платёж</dt><dd>≈ 196 500 ₽ в месяц</dd></div>
+      </dl>
+      <x-import component-from-global-scope="Cabinet.PaymentLoadMeter" payment="{{pay}}" cash-flow="{{flow}}"></x-import>
+    </section>
+    <p class="body-sm" style="display: flex; gap: 6px; align-items: center; color: var(--ink-secondary);"><span style="color: var(--success);"><x-import component-from-global-scope="Cabinet.Icon" name="check-circle" size="{{i16}}"></x-import></span>Черновик сохранён в 10:42</p>
+    <div style="height: 40px;" aria-hidden="true"></div>
+  </div>
+  <a class="kn-demo kn-demo--m" href="A2-Demo.dc.html" style="bottom: 156px;"><x-import component-from-global-scope="Cabinet.Icon" name="shield" size="{{i16}}"></x-import>Режим проверки</a>
+  <div class="kn-mbar">
+    <a class="kk-btn kk-btn--primary kk-btn--lg kk-btn--full" href="M-Step3.dc.html">Продолжить</a>
+    <a class="kk-btn kk-btn--ghost kk-btn--full" href="M-Offers.dc.html">Назад</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1350}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      yes: true, i14: 14, i16: 16, c0: 0, pay: 196500, flow: 610000,
+      steps: [{ label: 'Параметры', description: 'Заполнено ассистентом' }, { label: 'Компания' }, { label: 'Финансы и документы' }, { label: 'Проверка и отправка' }]
+    };
+  }
+}
+</script>
+</body>
+</html>

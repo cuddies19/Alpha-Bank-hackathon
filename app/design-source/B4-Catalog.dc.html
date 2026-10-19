@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Каталог продуктов — Кредитный кабинет</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}a{color:#d21f16}</style>
+</helmet>
+<div class="kn-app">
+  <div class="kn-app__side"><dc-import name="NavClient" active="financing" hint-size="100%,900px"></dc-import></div>
+  <main class="kn-app__main">
+    <dc-import name="HeaderClient" hint-size="100%,72px"></dc-import>
+    <div class="kn-page">
+      <div class="kn-sechead" style="align-items: flex-end;">
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <h1 class="title-1">Каталог продуктов</h1>
+          <p class="body" style="color: var(--ink-secondary);">Для тех, кто знает, что нужно. Условия — от каталога, точные посчитаем по данным счёта.</p>
+        </div>
+        <a class="kk-btn kk-btn--secondary" href="B2-Need.dc.html">
+          <span class="kn-mark" style="width: 24px; height: 24px;"><x-import component-from-global-scope="Cabinet.Icon" name="sparkle" size="{{i14}}"></x-import></span>
+          Подобрать под задачу
+        </a>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 24px; align-items: stretch;">
+        <x-import component-from-global-scope="Cabinet.ProductCard" name="Овердрафт" purpose="Кассовый разрыв: деньги на счёте, когда поступления задерживаются" amount-label="Лимит до" amount="5 000 000 ₽" params="{{p1}}" preliminary="{{no}}">
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <p class="body-sm" style="display: flex; gap: 8px; color: var(--ink-secondary);"><x-import component-from-global-scope="Cabinet.Icon" name="shield" size="{{i16}}"></x-import>Счёт в банке от 3 месяцев</p>
+            <a class="kk-btn kk-btn--secondary" href="B3-Offers.dc.html" style="align-self: flex-start;">Рассчитать</a>
+          </div>
+        </x-import>
+        <x-import component-from-global-scope="Cabinet.ProductCard" name="Кредитная линия" purpose="Регулярные закупки и оборот: берёте частями, проценты только на выбранное" amount-label="Лимит до" amount="30 000 000 ₽" params="{{p2}}" preliminary="{{no}}">
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <p class="body-sm" style="display: flex; gap: 8px; color: var(--ink-secondary);"><x-import component-from-global-scope="Cabinet.Icon" name="shield" size="{{i16}}"></x-import>Бизнес работает от 12 месяцев</p>
+            <a class="kk-btn kk-btn--secondary" href="B3-Offers.dc.html" style="align-self: flex-start;">Рассчитать</a>
+          </div>
+        </x-import>
+        <x-import component-from-global-scope="Cabinet.ProductCard" name="Кредит на любые цели" purpose="Разовая крупная трата: вся сумма сразу, равные платежи" amount-label="Сумма до" amount="50 000 000 ₽" params="{{p3}}" preliminary="{{no}}">
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <p class="body-sm" style="display: flex; gap: 8px; color: var(--ink-secondary);"><x-import component-from-global-scope="Cabinet.Icon" name="shield" size="{{i16}}"></x-import>Бизнес работает от 12 месяцев</p>
+            <a class="kk-btn kk-btn--secondary" href="B3-Offers.dc.html" style="align-self: flex-start;">Рассчитать</a>
+          </div>
+        </x-import>
+
+        <section class="kn-goal is-soon" aria-label="Банковская гарантия — скоро">
+          <div class="kn-sechead"><h2 class="title-3" style="color: var(--ink);">Банковская гарантия</h2><x-import component-from-global-scope="Cabinet.Badge" tone="neutral" icon="clock">Скоро</x-import></div>
+          <p class="body">Для тендера и контракта: банк гарантирует заказчику исполнение обязательств.</p>
+        </section>
+        <section class="kn-goal is-soon" aria-label="Лизинг — скоро">
+          <div class="kn-sechead"><h2 class="title-3" style="color: var(--ink);">Лизинг</h2><x-import component-from-global-scope="Cabinet.Badge" tone="neutral" icon="clock">Скоро</x-import></div>
+          <p class="body">Для оборудования и транспорта: платите частями, пока пользуетесь.</p>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1200}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const n = ' ';
+    return {
+      no: false, i14: 14, i16: 16,
+      p1: [{ label: 'Срок', value: '12' + n + 'мес.' }, { label: 'Ставка', value: 'от' + n + '23%' }, { label: 'От суммы', value: '100' + n + '000' + n + '₽' }],
+      p2: [{ label: 'Срок', value: 'до' + n + '36' + n + 'мес.' }, { label: 'Ставка', value: 'от' + n + '21,5%' }, { label: 'От суммы', value: '500' + n + '000' + n + '₽' }],
+      p3: [{ label: 'Срок', value: '12–60' + n + 'мес.' }, { label: 'Ставка', value: 'от' + n + '22,9%' }, { label: 'От суммы', value: '300' + n + '000' + n + '₽' }]
+    };
+  }
+}
+</script>
+</body>
+</html>

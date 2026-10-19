@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Шапка клиента</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<header class="kn-top" style="font-family: var(--font-sans); color: var(--ink);">
+  <a class="kn-company" href="B15-Profile.dc.html" aria-label="Компания: {{company}}. Сменить компанию или открыть профиль">
+    <span class="kn-avatar">{{initials}}</span>
+    <span class="kn-company__text">
+      <span class="kn-company__name">{{company}}</span>
+      <span class="kn-company__sub">{{person}}</span>
+    </span>
+    <svg class="kn-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: var(--ink-secondary);"><path d="M6 9.5l6 6 6-6"></path></svg>
+  </a>
+  <span class="kn-top__spacer"></span>
+  <a class="kn-ibtn" href="B14-Notifications.dc.html" aria-label="Уведомления: {{unread}} новых">
+    <svg class="kn-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 10a6 6 0 0 1 12 0c0 4.5 1.5 6.5 2 7H4c.5-.5 2-2.5 2-7z"></path><path d="M10 20.2a2.2 2.2 0 0 0 4 0"></path></svg>
+    <span class="kn-ibtn__count">{{unread}}</span>
+  </a>
+  <a class="kk-btn kk-btn--secondary" href="B2-Dialog.dc.html">
+    <span class="kn-mark" style="width: 24px; height: 24px;"><x-import component-from-global-scope="Cabinet.Icon" name="sparkle" size="{{i14}}"></x-import></span>
+    Ассистент
+  </a>
+</header>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"company":{"editor":"text","default":"ООО «Дом и уют»"},"person":{"editor":"text","default":"Игорь Соколов, генеральный директор"},"initials":{"editor":"text","default":"ДУ"},"unread":{"editor":"text","default":"2"},"$preview":{"width":1192,"height":72}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      i14: 14,
+      company: this.props.company ?? 'ООО «Дом и уют»',
+      person: this.props.person ?? 'Игорь Соколов, генеральный директор',
+      initials: this.props.initials ?? 'ДУ',
+      unread: this.props.unread ?? '2'
+    };
+  }
+}
+</script>
+</body>
+</html>

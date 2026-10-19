@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Рекомендация — состояния</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}a{color:#d21f16}</style>
+</helmet>
+<div style="box-sizing: border-box; width: 1200px; min-height: 620px; padding: 40px; background: var(--bg); color: var(--ink); font-family: var(--font-sans); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; align-items: start;">
+  <div style="display: flex; flex-direction: column; gap: 12px;">
+    <p class="caption" style="color: var(--ink-secondary);">Подходящих продуктов нет</p>
+    <section class="kk-card kk-card--md">
+      <div class="kn-empty" style="padding: 24px 8px;">
+        <span class="kn-empty__ic"><x-import component-from-global-scope="Cabinet.Icon" name="info" size="{{i24}}"></x-import></span>
+        <h2 class="title-3">Под эту задачу продуктов пока нет</h2>
+        <p class="body">Для покупки грузовика подходит лизинг — он появится в кабинете скоро.</p>
+        <div style="box-sizing: border-box; display: flex; flex-direction: column; padding: 16px; border-radius: 12px; background: var(--surface-muted); align-self: stretch; text-align: left; gap: 8px;">
+          <p class="body-strong">Что можно изменить</p>
+          <ul style="display: flex; flex-direction: column; gap: 6px;">
+            <li class="body" style="display: flex; gap: 8px;"><x-import component-from-global-scope="Cabinet.Icon" name="chevron-right"></x-import>Выбрать цель «Развитие и оборудование» — подойдёт кредит на любые цели</li>
+            <li class="body" style="display: flex; gap: 8px;"><x-import component-from-global-scope="Cabinet.Icon" name="chevron-right"></x-import>Указать срок до 60 месяцев, чтобы платёж был ниже</li>
+          </ul>
+        </div>
+        <a class="kk-btn kk-btn--secondary" href="B2-Need.dc.html">Изменить задачу</a>
+      </div>
+    </section>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 12px;">
+    <p class="caption" style="color: var(--ink-secondary);">Сумма выше лимитов продукта</p>
+    <section class="kk-card kk-card--md" style="gap: 20px;">
+      <h2 class="title-3">Калькулятор кредитной линии</h2>
+      <x-import component-from-global-scope="Cabinet.TextField" label="Сумма" format="money" default-value="45 000 000" error="Кредитная линия — до 30 000 000 ₽. Уменьшите сумму или выберите другой продукт"></x-import>
+      <x-import component-from-global-scope="Cabinet.Alert" tone="assistant" title="Такая сумма подойдёт для кредита на любые цели">
+        <p>Его лимит — до 50 000 000 ₽, но деньги выдаются один раз. Закупки партиями удобнее вести из линии на 30 000 000 ₽.</p>
+        <div style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
+          <x-import component-from-global-scope="Cabinet.Button" variant="secondary" size="sm">Уменьшить до 30 000 000 ₽</x-import>
+          <x-import component-from-global-scope="Cabinet.Button" variant="ghost" size="sm">Показать кредит на любые цели</x-import>
+        </div>
+      </x-import>
+    </section>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1200,"height":620}}'>
+class Component extends DCLogic {
+  renderVals() { return { i24: 24 }; }
+}
+</script>
+</body>
+</html>

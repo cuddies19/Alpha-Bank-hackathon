@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Варианты финансирования — мобильная версия</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div class="kn-mobile">
+  <dc-import name="MobileTop" mode="flow" title="Варианты" sub="Закупка к распродаже" back="M-Assistant.dc.html" hint-size="390px,60px"></dc-import>
+  <div class="kn-mobile__body">
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <h1 class="title-1">Варианты под закупку к распродаже</h1>
+      <p class="body-sm" style="color: var(--ink-secondary);">Около 3 000 000 ₽ · до 1 ноября · возврат из выручки маркетплейсов</p>
+    </div>
+
+    <x-import component-from-global-scope="Cabinet.ProductCard" recommended="{{yes}}" name="Кредитная линия" purpose="Закупки партиями, деньги нужны многократно" amount-label="Лимит" amount="{{amountFull}}" params="{{params}}" reasons="{{reasons}}">
+      <x-import component-from-global-scope="Cabinet.PaymentLoadMeter" payment="{{pay}}" cash-flow="{{flow}}"></x-import>
+    </x-import>
+
+    <sc-if value="{{showTip}}" hint-placeholder-val="{{yes}}">
+      <x-import component-from-global-scope="Cabinet.Alert" tone="assistant" title="Можно взять меньше и платить комфортно">
+        <p>При 2 400 000 ₽ платёж будет 157 200 ₽ — 26% потока.</p>
+        <div style="margin-top: 12px;"><x-import component-from-global-scope="Cabinet.Button" variant="secondary" size="sm" on-click="{{recalc}}">Пересчитать на 2 400 000 ₽</x-import></div>
+      </x-import>
+    </sc-if>
+    <sc-if value="{{showBack}}" hint-placeholder-val="{{no}}">
+      <x-import component-from-global-scope="Cabinet.Alert" tone="assistant" title="Сумма пересчитана">
+        <p>Платёж 157 200 ₽ — 26% потока, комфортная нагрузка.</p>
+        <div style="margin-top: 12px;"><x-import component-from-global-scope="Cabinet.Button" variant="ghost" size="sm" on-click="{{reset}}">Вернуть 3 000 000 ₽</x-import></div>
+      </x-import>
+    </sc-if>
+
+    <x-import component-from-global-scope="Cabinet.ProductCard" name="Кредит на любые цели" purpose="Вся сумма сразу, равные платежи" amount-label="Сумма" amount="3 000 000 ₽" params="{{altParams}}">
+      <x-import component-from-global-scope="Cabinet.PaymentLoadMeter" payment="{{payAlt}}" cash-flow="{{flow}}"></x-import>
+    </x-import>
+
+    <section class="kk-card kk-card--sm" style="padding: 16px;">
+      <details class="kn-disc">
+        <summary><span class="body-strong">Почему не другой продукт?</span><span class="kn-disc__chev"><x-import component-from-global-scope="Cabinet.Icon" name="chevron-right"></x-import></span></summary>
+        <ul style="display: flex; flex-direction: column; gap: 8px; padding-top: 12px;">
+          <li class="body"><b>Овердрафт</b> — лимит для вас до 1 200 000 ₽, меньше нужной суммы</li>
+          <li class="body"><b>Кредит на любые цели</b> — разовая выдача, а закупки у вас регулярные</li>
+        </ul>
+      </details>
+    </section>
+    <section class="kk-card kk-card--sm" style="padding: 16px;">
+      <details class="kn-disc">
+        <summary><span class="body-strong">Сравнить продукты</span><span class="kn-disc__chev"><x-import component-from-global-scope="Cabinet.Icon" name="chevron-right"></x-import></span></summary>
+        <div style="display: flex; flex-direction: column; gap: 12px; padding-top: 12px;">
+          <div><p class="label" style="color: var(--ink-secondary);">Кредитная линия</p><dl class="kn-rows"><div><dt>Срок · ставка</dt><dd>18 мес. · 21,5%</dd></div><div><dt>Деньги частями</dt><dd>Да</dd></div></dl></div>
+          <div><p class="label" style="color: var(--ink-secondary);">Кредит на любые цели</p><dl class="kn-rows"><div><dt>Срок · ставка</dt><dd>24 мес. · 22,9%</dd></div><div><dt>Деньги частями</dt><dd>Нет</dd></div></dl></div>
+          <div><p class="label" style="color: var(--ink-secondary);">Овердрафт</p><dl class="kn-rows"><div><dt>Лимит для вас</dt><dd>до 1 200 000 ₽</dd></div><div><dt>Срок · ставка</dt><dd>12 мес. · 23%</dd></div></dl></div>
+        </div>
+      </details>
+    </section>
+    <div style="height: 40px;" aria-hidden="true"></div>
+  </div>
+  <a class="kn-demo kn-demo--m" href="A2-Demo.dc.html" style="bottom: 108px;"><x-import component-from-global-scope="Cabinet.Icon" name="shield" size="{{i16}}"></x-import>Режим проверки</a>
+  <div class="kn-mbar">
+    <a class="kk-btn kk-btn--primary kk-btn--lg kk-btn--full" href="M-Step1.dc.html">Оформить заявку</a>
+    <p class="caption" style="text-align: center; color: var(--ink-secondary); font-weight: 400;">Предварительная оценка. Решение принимает банк</p>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":2000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const n = ' ';
+    const low = !!s.low;
+    const pay = low ? 157200 : 196500;
+    const money = (v) => String(v).replace(/\B(?=(\d{3})+(?!\d))/g, n) + n + '₽';
+    return {
+      yes: true, no: false, i16: 16, flow: 610000, pay, payAlt: 157000,
+      amountFull: money(low ? 2400000 : 3000000),
+      params: [{ label: 'Срок', value: '18' + n + 'мес.' }, { label: 'Ставка', value: '21,5%' }, { label: 'Платёж', value: '≈' + n + money(pay) }],
+      altParams: [{ label: 'Срок', value: '24' + n + 'мес.' }, { label: 'Ставка', value: '22,9%' }, { label: 'Платёж', value: '≈' + n + money(157000) }],
+      reasons: ['Выручка приходит волнами раз в 2 недели', 'За год 5 закупок партиями', 'Берёте только нужную часть лимита'],
+      showTip: !low, showBack: low,
+      recalc: () => this.setState({ low: true }), reset: () => this.setState({ low: false })
+    };
+  }
+}
+</script>
+</body>
+</html>

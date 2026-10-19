@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Вход — Кредитный кабинет</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#d21f16}
+</style>
+</helmet>
+<div style="min-height: 100vh; display: flex; flex-wrap: wrap; align-items: stretch; background: var(--bg); color: var(--ink); font-family: var(--font-sans);">
+  <section style="flex: 1 1 520px; box-sizing: border-box; padding: 64px; display: flex; flex-direction: column; justify-content: center; gap: 16px; min-width: 0;">
+    <h1 class="display" style="max-width: 560px;">Кредитный кабинет</h1>
+    <p class="body-lg" style="max-width: 480px; color: var(--ink-secondary);">Финансирование для малого бизнеса: от задачи своими словами до денег на счёте — в одном кабинете.</p>
+  </section>
+  <section style="flex: 1 1 560px; box-sizing: border-box; padding: 48px 64px; display: flex; align-items: center; justify-content: center; min-width: 0;">
+    <div style="box-sizing: border-box; width: 100%; max-width: 520px; background: var(--surface); border-radius: 24px; padding: 32px; display: flex; flex-direction: column; gap: 24px;">
+      <h2 class="title-2">Вход</h2>
+      <div class="kn-seg" role="group" aria-label="Кто входит">
+        <button type="button" class="{{clientCls}}" aria-pressed="{{clientOn}}" onClick="{{toClient}}">Клиент</button>
+        <button type="button" class="{{bankCls}}" aria-pressed="{{bankOn}}" onClick="{{toBank}}">Сотрудник банка</button>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <p class="label" style="color: var(--ink-secondary);">Тестовые пользователи — нажмите, чтобы подставить логин и пароль</p>
+        <sc-for list="{{people}}" as="p" hint-placeholder-count="4">
+          <button type="button" class="{{p.cls}}" aria-pressed="{{p.pressed}}" onClick="{{p.pick}}">
+            <span class="kn-avatar">{{p.init}}</span>
+            <span class="kn-persona__text">
+              <span class="body-strong">{{p.name}}</span>
+              <span class="body-sm" style="color: var(--ink-secondary);">{{p.org}}</span>
+            </span>
+            <x-import component-from-global-scope="Cabinet.Badge" tone="{{p.tone}}" icon="{{no}}">{{p.outcome}}</x-import>
+          </button>
+        </sc-for>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <x-import component-from-global-scope="Cabinet.TextField" label="Логин" value="{{login}}" on-change="{{noop}}" autocomplete="username"></x-import>
+        <x-import component-from-global-scope="Cabinet.TextField" label="Пароль" type="password" value="{{pass}}" on-change="{{noop}}" autocomplete="current-password"></x-import>
+      </div>
+      <a class="kk-btn kk-btn--primary kk-btn--lg kk-btn--full" href="{{target}}">Войти</a>
+      <p class="body-sm" style="display: flex; gap: 8px; align-items: flex-start; color: var(--ink-secondary);">
+        <x-import component-from-global-scope="Cabinet.Icon" name="info" size="{{i16}}" style="margin-top: 1px;"></x-import>
+        Все данные синтетические. Демонстрационная версия
+      </p>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const role = s.role || 'client';
+    const all = [
+      { id: 'igor', role: 'client', init: 'ИС', name: 'Игорь Соколов', org: 'ООО «Дом и уют»', outcome: 'Встречное предложение', tone: 'warning', login: 'igor.sokolov', to: 'B1-Home.dc.html' },
+      { id: 'anna', role: 'client', init: 'АБ', name: 'Анна Белова', org: 'ИП Белова А. С.', outcome: 'Автоодобрение', tone: 'success', login: 'anna.belova', to: 'B9a-Approved.dc.html' },
+      { id: 'marina', role: 'client', init: 'МО', name: 'Марина Орлова', org: 'ООО «Лён и Дуб»', outcome: 'Запросят документы', tone: 'info', login: 'marina.orlova', to: 'B9c-Docs.dc.html' },
+      { id: 'sergey', role: 'client', init: 'СФ', name: 'Сергей Фомин', org: 'ИП Фомин С. В.', outcome: 'Отказ с альтернативой', tone: 'danger', login: 'sergey.fomin', to: 'B9d-Decline.dc.html' },
+      { id: 'olga', role: 'bank', init: 'ОК', name: 'Ольга Кравцова', org: 'Кредитный аналитик', outcome: 'Консоль банка', tone: 'neutral', login: 'olga.kravtsova', to: 'C1-Queue.dc.html' }
+    ];
+    const list = all.filter((p) => p.role === role);
+    const uid = list.some((p) => p.id === s.user) ? s.user : list[0].id;
+    const cur = all.find((p) => p.id === uid);
+    return {
+      yes: true, no: false, i16: 16,
+      people: list.map((p) => ({ ...p, cls: 'kn-persona' + (p.id === uid ? ' is-on' : ''), pressed: p.id === uid ? 'true' : 'false', pick: () => this.setState({ user: p.id }) })),
+      login: cur.login, pass: 'demo-2026', target: cur.to,
+      clientCls: 'kn-seg__opt' + (role === 'client' ? ' is-on' : ''), clientOn: role === 'client' ? 'true' : 'false',
+      bankCls: 'kn-seg__opt' + (role === 'bank' ? ' is-on' : ''), bankOn: role === 'bank' ? 'true' : 'false',
+      toClient: () => this.setState({ role: 'client', user: 'igor' }),
+      toBank: () => this.setState({ role: 'bank', user: 'olga' }),
+      noop: () => {}
+    };
+  }
+}
+</script>
+</body>
+</html>

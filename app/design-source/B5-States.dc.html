@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Заявка — состояния</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div style="box-sizing: border-box; width: 1200px; min-height: 760px; padding: 40px; background: var(--bg); color: var(--ink); font-family: var(--font-sans); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 24px; align-items: start;">
+  <div style="display: flex; flex-direction: column; gap: 12px;">
+    <p class="caption" style="color: var(--ink-secondary);">Ошибка поля</p>
+    <section class="kk-card kk-card--md" style="gap: 16px;">
+      <x-import component-from-global-scope="Cabinet.TextField" label="ИНН компании" default-value="77012345" error="У ООО в ИНН 10 цифр — здесь 8" input-mode="numeric"></x-import>
+      <x-import component-from-global-scope="Cabinet.TextField" label="Сумма" format="money" default-value="200 000" error="Минимальная сумма кредитной линии — 500 000 ₽"></x-import>
+    </section>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 12px;">
+    <p class="caption" style="color: var(--ink-secondary);">Не все обязательные документы</p>
+    <section class="kk-card kk-card--md" style="gap: 16px;">
+      <x-import component-from-global-scope="Cabinet.Alert" tone="warning" title="Загрузите бухгалтерскую отчётность за 2025 год">Это обязательный документ для ООО: по нему банк видит выручку и долги компании целиком.</x-import>
+      <x-import component-from-global-scope="Cabinet.DocumentUpload" hint="PDF, JPG или PNG до 20 МБ"></x-import>
+      <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: flex-end;">
+        <span class="body-sm" style="color: var(--warning);">Не хватает 1 обязательного документа</span>
+        <x-import component-from-global-scope="Cabinet.Button" variant="primary" disabled="{{yes}}">Продолжить</x-import>
+      </div>
+    </section>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 12px;">
+    <p class="caption" style="color: var(--ink-secondary);">Черновик сохраняется</p>
+    <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 12px; padding: 16px 24px; background: var(--surface); border-radius: 16px;">
+      <span class="kk-spinner" aria-hidden="true" style="width: 16px; height: 16px; color: var(--ink-secondary);"></span>
+      <span class="body-sm" role="status" style="flex: 1; color: var(--ink-secondary);">Сохраняем черновик</span>
+      <x-import component-from-global-scope="Cabinet.Button" variant="secondary">Назад</x-import>
+      <x-import component-from-global-scope="Cabinet.Button" variant="primary">Продолжить</x-import>
+    </div>
+    <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 12px; padding: 16px 24px; background: var(--surface); border-radius: 16px;">
+      <span style="color: var(--warning);"><x-import component-from-global-scope="Cabinet.Icon" name="alert"></x-import></span>
+      <span class="body-sm" style="flex: 1; color: var(--ink-secondary);">Нет связи — черновик сохранится, когда соединение вернётся</span>
+      <x-import component-from-global-scope="Cabinet.Button" variant="secondary">Назад</x-import>
+      <x-import component-from-global-scope="Cabinet.Button" variant="primary">Продолжить</x-import>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 12px;">
+    <p class="caption" style="color: var(--ink-secondary);">Отправка</p>
+    <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 12px; padding: 16px 24px; background: var(--surface); border-radius: 16px;">
+      <span class="body-sm" style="flex: 1; color: var(--ink-secondary);">Не закрывайте страницу — это займёт несколько секунд</span>
+      <x-import component-from-global-scope="Cabinet.Button" variant="secondary" disabled="{{yes}}">Назад</x-import>
+      <x-import component-from-global-scope="Cabinet.Button" variant="primary" loading="{{yes}}">Отправляем</x-import>
+    </div>
+    <x-import component-from-global-scope="Cabinet.Alert" tone="danger" title="Не удалось отправить заявку">Проверьте соединение и отправьте ещё раз — данные сохранены.</x-import>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1200,"height":760}}'>
+class Component extends DCLogic {
+  renderVals() { return { yes: true }; }
+}
+</script>
+</body>
+</html>

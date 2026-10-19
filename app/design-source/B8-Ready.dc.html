@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Решение готово — Кредитный кабинет</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}a{color:#d21f16}</style>
+</helmet>
+<div class="kn-app">
+  <div class="kn-app__side"><dc-import name="NavClient" active="applications" hint-size="100%,900px"></dc-import></div>
+  <main class="kn-app__main" style="position: relative;">
+    <dc-import name="HeaderClient" unread="3" hint-size="100%,72px"></dc-import>
+
+    <div class="kn-toast kn-toast--float" role="status">
+      <span class="kn-toast__ic"><x-import component-from-global-scope="Cabinet.Icon" name="check-circle"></x-import></span>
+      <div class="kn-toast__body"><b>Решение готово</b><span>Заявка № 2026-10-0142 · 11:32</span><a href="B9b-Counter.dc.html">Посмотреть решение</a></div>
+    </div>
+
+    <div class="kn-page" style="gap: 24px;">
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <a class="kk-btn kk-btn--link" href="B7-Applications.dc.html" style="align-self: flex-start; color: var(--ink-secondary);">
+          <svg class="kn-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11.5 5.5L5 12l6.5 6.5"></path></svg>
+          Мои заявки
+        </a>
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+          <h1 class="title-1">Кредитная линия на <span class="amt">3 000 000 ₽</span></h1>
+          <x-import component-from-global-scope="Cabinet.Badge" tone="warning">Предложение банка</x-import>
+        </div>
+        <p class="body" style="color: var(--ink-secondary);">№ 2026-10-0142 · подана 24 октября, 10:51</p>
+      </div>
+
+      <section class="kk-card kk-card--lg" style="gap: 16px; box-shadow: inset 0 0 0 1px var(--line);">
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <span class="label" style="color: var(--ink-secondary);">Решение готово · 24 октября, 11:32</span>
+          <h2 class="title-2">Банк готов выдать <span class="amt">2 400 000 ₽</span> на 18 месяцев</h2>
+        </div>
+        <p class="body" style="color: var(--ink-secondary); max-width: 640px;">С этой суммой платёж займёт 26% денежного потока — комфортная нагрузка. Условия действуют до 31 октября.</p>
+        <a class="kk-btn kk-btn--primary kk-btn--lg" href="B9b-Counter.dc.html" style="align-self: flex-start;">Посмотреть решение</a>
+      </section>
+
+      <div class="kn-cols">
+        <section class="kk-card kk-card--md kn-cols__main" style="gap: 20px;">
+          <h2 class="title-3">Где заявка</h2>
+          <x-import component-from-global-scope="Cabinet.StatusTracker" stages="{{stages}}"></x-import>
+        </section>
+        <aside class="kn-cols__side">
+          <section class="kk-card kk-card--md" style="gap: 8px;">
+            <h2 class="title-3">История событий</h2>
+            <ul class="kn-feed">
+              <li class="kn-feed__item"><span class="kn-feed__ic"><x-import component-from-global-scope="Cabinet.Icon" name="check-circle"></x-import></span><span class="body">Банк принял решение: предложение 2 400 000 ₽</span><time>11:32</time></li>
+              <li class="kn-feed__item"><span class="kn-feed__ic"><x-import component-from-global-scope="Cabinet.Icon" name="clock"></x-import></span><span class="body">Заявка передана специалисту</span><time>11:05</time></li>
+              <li class="kn-feed__item"><span class="kn-feed__ic"><x-import component-from-global-scope="Cabinet.Icon" name="arrow-up"></x-import></span><span class="body">Заявка отправлена</span><time>10:51</time></li>
+            </ul>
+          </section>
+        </aside>
+      </div>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1250}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      stages: [
+        { title: 'Заявка отправлена', status: 'done', time: '10:51' },
+        { title: 'Проверяем данные', status: 'done', time: '10:52' },
+        { title: 'Запрашиваем сведения', status: 'done', time: '10:58' },
+        { title: 'Оцениваем заявку', status: 'done', time: '11:05' },
+        { title: 'Рассматривает специалист', status: 'done', time: '11:32' },
+        { title: 'Решение', status: 'current', time: 'до 31 октября', description: 'Банк предлагает 2 400 000 ₽ на 18 месяцев. Примите предложение или откажитесь.' },
+        { title: 'Подписание', status: 'pending', time: 'в кабинете' },
+        { title: 'Деньги на счёте', status: 'pending' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

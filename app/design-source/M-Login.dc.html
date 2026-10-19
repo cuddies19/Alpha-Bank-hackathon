@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Вход — мобильная версия</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div class="kn-mobile">
+  <div class="kn-mobile__body" style="padding-top: 32px; gap: 20px;">
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <h1 class="title-1">Кредитный кабинет</h1>
+      <p class="body" style="color: var(--ink-secondary);">Финансирование для малого бизнеса: от задачи своими словами до денег на счёте.</p>
+    </div>
+    <section style="box-sizing: border-box; background: var(--surface); border-radius: 24px; padding: 20px 16px; display: flex; flex-direction: column; gap: 16px;">
+      <div class="kn-seg" role="group" aria-label="Кто входит">
+        <button type="button" class="{{clientCls}}" onClick="{{toClient}}">Клиент</button>
+        <button type="button" class="{{bankCls}}" onClick="{{toBank}}">Сотрудник банка</button>
+      </div>
+      <p class="label" style="color: var(--ink-secondary);">Тестовые пользователи</p>
+      <sc-for list="{{people}}" as="p" hint-placeholder-count="4">
+        <button type="button" class="{{p.cls}}" onClick="{{p.pick}}" style="min-height: 56px;">
+          <span class="kn-avatar" style="width: 36px; height: 36px;">{{p.init}}</span>
+          <span class="kn-persona__text"><span class="body-strong">{{p.name}}</span><span class="body-sm" style="color: var(--ink-secondary);">{{p.outcome}}</span></span>
+        </button>
+      </sc-for>
+      <x-import component-from-global-scope="Cabinet.TextField" label="Логин" value="{{login}}" on-change="{{noop}}"></x-import>
+      <x-import component-from-global-scope="Cabinet.TextField" label="Пароль" type="password" value="demo-2026" on-change="{{noop}}"></x-import>
+      <a class="kk-btn kk-btn--primary kk-btn--lg kk-btn--full" href="{{target}}">Войти</a>
+    </section>
+    <p class="body-sm" style="text-align: center; color: var(--ink-secondary);">Все данные синтетические. Демонстрационная версия</p>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":920}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const role = s.role || 'client';
+    const all = [
+      { id: 'igor', role: 'client', init: 'ИС', name: 'Игорь Соколов', outcome: 'ООО «Дом и уют» · встречное предложение', login: 'igor.sokolov', to: 'M-Home.dc.html' },
+      { id: 'anna', role: 'client', init: 'АБ', name: 'Анна Белова', outcome: 'ИП · автоматическое одобрение', login: 'anna.belova', to: 'M-Approved.dc.html' },
+      { id: 'marina', role: 'client', init: 'МО', name: 'Марина Орлова', outcome: 'ООО «Лён и Дуб» · запросят документы', login: 'marina.orlova', to: 'M-Docs.dc.html' },
+      { id: 'sergey', role: 'client', init: 'СФ', name: 'Сергей Фомин', outcome: 'ИП · отказ с альтернативой', login: 'sergey.fomin', to: 'M-Decline.dc.html' },
+      { id: 'olga', role: 'bank', init: 'ОК', name: 'Ольга Кравцова', outcome: 'Кредитный аналитик · консоль только на компьютере', login: 'olga.kravtsova', to: 'C1-Queue.dc.html' }
+    ];
+    const list = all.filter((p) => p.role === role);
+    const uid = list.some((p) => p.id === s.user) ? s.user : list[0].id;
+    const cur = all.find((p) => p.id === uid);
+    return {
+      people: list.map((p) => ({ ...p, cls: 'kn-persona' + (p.id === uid ? ' is-on' : ''), pick: () => this.setState({ user: p.id }) })),
+      login: cur.login, target: cur.to,
+      clientCls: 'kn-seg__opt' + (role === 'client' ? ' is-on' : ''), bankCls: 'kn-seg__opt' + (role === 'bank' ? ' is-on' : ''),
+      toClient: () => this.setState({ role: 'client', user: 'igor' }), toBank: () => this.setState({ role: 'bank', user: 'olga' }),
+      noop: () => {}
+    };
+  }
+}
+</script>
+</body>
+</html>

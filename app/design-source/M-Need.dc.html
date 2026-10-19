@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Подбор финансирования — мобильная версия</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div class="kn-mobile">
+  <dc-import name="MobileTop" mode="root" hint-size="390px,60px"></dc-import>
+  <div class="kn-mobile__body">
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <h1 class="title-1">Для чего нужны деньги?</h1>
+      <p class="body" style="color: var(--ink-secondary);">Расскажите о задаче словами бизнеса — подберём продукт и посчитаем платёж.</p>
+    </div>
+
+    <section class="kk-card kk-card--sm" style="gap: 12px; padding: 20px 16px;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span class="kn-mark"><x-import component-from-global-scope="Cabinet.Icon" name="sparkle" size="{{i16}}"></x-import></span>
+        <h2 class="title-3">Описать своими словами</h2>
+      </div>
+      <label class="kn-field">
+        <span class="kk-sr">Задача бизнеса</span>
+        <textarea class="kn-textarea" rows="3" placeholder="Например: нужно закупить товар к распродаже, а выплата придёт позже"></textarea>
+      </label>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+        <a class="kk-chip" href="M-Assistant.dc.html">Закупить товар к сезону</a>
+        <a class="kk-chip" href="M-Assistant.dc.html">Не хватает на зарплату</a>
+        <a class="kk-chip" href="M-Assistant.dc.html">Купить оборудование</a>
+        <a class="kk-chip" href="M-Assistant.dc.html">Выиграли тендер</a>
+      </div>
+      <a class="kk-btn kk-btn--secondary kk-btn--full" href="M-Assistant.dc.html"><x-import component-from-global-scope="Cabinet.Icon" name="arrow-up"></x-import>Отправить ассистенту</a>
+    </section>
+
+    <div style="display: flex; align-items: center; gap: 12px;" aria-hidden="true"><span class="kn-divider" style="flex: 1;"></span><span class="label" style="color: var(--ink-secondary);">или выберите цель</span><span class="kn-divider" style="flex: 1;"></span></div>
+
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;">
+      <a class="kn-goal" href="M-Assistant.dc.html" style="min-height: 128px; padding: 16px;"><span class="kn-goal__ic"><x-import component-from-global-scope="Cabinet.Icon" name="calendar"></x-import></span><span class="body-strong">Кассовый разрыв</span></a>
+      <a class="kn-goal" href="M-Assistant.dc.html" style="min-height: 128px; padding: 16px;"><span class="kn-goal__ic"><x-import component-from-global-scope="Cabinet.Icon" name="trend-up"></x-import></span><span class="body-strong">Пополнить оборот</span></a>
+      <a class="kn-goal" href="M-Assistant.dc.html" style="min-height: 128px; padding: 16px;"><span class="kn-goal__ic"><x-import component-from-global-scope="Cabinet.Icon" name="wallet"></x-import></span><span class="body-strong">Развитие и оборудование</span><span class="caption" style="color: var(--ink-secondary);">Лизинг — скоро</span></a>
+      <a class="kn-goal" href="M-Assistant.dc.html" style="min-height: 128px; padding: 16px;"><span class="kn-goal__ic"><x-import component-from-global-scope="Cabinet.Icon" name="document"></x-import></span><span class="body-strong">Тендер и контракт</span><span class="caption" style="color: var(--ink-secondary);">Гарантия — скоро</span></a>
+      <a class="kn-goal" href="M-Assistant.dc.html" style="min-height: 128px; padding: 16px; grid-column: span 2;"><span class="kn-goal__ic"><x-import component-from-global-scope="Cabinet.Icon" name="trend-down"></x-import></span><span class="body-strong">Рефинансировать кредиты</span></a>
+    </div>
+    <div style="height: 64px;" aria-hidden="true"></div>
+  </div>
+  <a class="kn-demo kn-demo--m" href="A2-Demo.dc.html"><x-import component-from-global-scope="Cabinet.Icon" name="shield" size="{{i16}}"></x-import>Режим проверки</a>
+  <a class="kn-fab" href="M-Assistant.dc.html" aria-label="Открыть ассистента"><x-import component-from-global-scope="Cabinet.Icon" name="sparkle" size="{{i24}}"></x-import></a>
+  <dc-import name="NavMobile" active="financing" hint-size="390px,72px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1350}}'>
+class Component extends DCLogic {
+  renderVals() { return { i16: 16, i24: 24 }; }
+}
+</script>
+</body>
+</html>

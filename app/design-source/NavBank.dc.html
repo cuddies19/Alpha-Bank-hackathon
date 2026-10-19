@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Навигация консоли банка</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<nav class="kn-side" aria-label="Разделы консоли" style="font-family: var(--font-sans); color: var(--ink);">
+  <a class="kn-brand" href="C1-Queue.dc.html"><b>Кредитный кабинет</b><span>Консоль кредитного аналитика</span></a>
+  <div class="kn-nav">
+    <a class="{{queueCls}}" href="C1-Queue.dc.html" aria-current="{{queueCur}}">Очередь заявок<span class="kn-nav__count">7</span></a>
+    <a class="{{pipeCls}}" href="C4-Pipeline.dc.html" aria-current="{{pipeCur}}">Конвейер</a>
+    <a class="{{intCls}}" href="C5-Integrations.dc.html" aria-current="{{intCur}}">Внешние источники<sc-if value="{{showFail}}" hint-placeholder-val="{{yes}}"><span class="kn-nav__count is-danger"><x-import component-from-global-scope="Cabinet.Icon" name="alert" size="{{i14}}"></x-import>1</span></sc-if></a>
+    <a class="{{auditCls}}" href="C6-Audit.dc.html" aria-current="{{auditCur}}">Журнал аудита</a>
+    <a class="{{rulesCls}}" href="C7-Rules.dc.html" aria-current="{{rulesCur}}">Продукты и правила</a>
+  </div>
+  <div class="kn-side__foot">
+    <a class="kn-demo" href="A2-Demo.dc.html">
+      <x-import component-from-global-scope="Cabinet.Icon" name="shield" size="{{i20}}"></x-import>
+      Режим проверки
+    </a>
+  </div>
+</nav>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"active":{"editor":"enum","options":["queue","pipeline","integrations","audit","rules","none"],"default":"queue"},"sourceDown":{"editor":"boolean","default":true},"$preview":{"width":248,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const a = this.props.active ?? 'queue';
+    const c = (k) => 'kn-nav__link' + (a === k ? ' is-active' : '');
+    const cur = (k) => (a === k ? 'page' : undefined);
+    return {
+      yes: true, i14: 14, i20: 20,
+      showFail: this.props.sourceDown ?? true,
+      queueCls: c('queue'), queueCur: cur('queue'),
+      pipeCls: c('pipeline'), pipeCur: cur('pipeline'),
+      intCls: c('integrations'), intCur: cur('integrations'),
+      auditCls: c('audit'), auditCur: cur('audit'),
+      rulesCls: c('rules'), rulesCur: cur('rules')
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Заявка, шаг 3 — мобильная версия</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div class="kn-mobile">
+  <dc-import name="MobileTop" mode="flow" title="Заявка · шаг 3 из 4" sub="Финансы и документы" back="M-Step1.dc.html" hint-size="390px,60px"></dc-import>
+  <div class="kn-mobile__body">
+    <section class="kk-card kk-card--sm"><x-import component-from-global-scope="Cabinet.Stepper" steps="{{steps}}" current="{{c2}}"></x-import></section>
+
+    <section class="kk-card kk-card--sm" style="gap: 12px; padding: 20px 16px;">
+      <div class="kn-sechead"><h2 class="title-3">Обороты за 12 месяцев</h2></div>
+      <x-import component-from-global-scope="Cabinet.Badge" tone="neutral" icon="document">Из выписки по счёту</x-import>
+      <span class="amount-lg amt">33 210 000 ₽</span>
+      <div role="img" aria-label="Поступления по месяцам: пик в ноябре и декабре, спад летом" style="height: 64px; display: flex; align-items: flex-end; gap: 4px;">
+        <span style="flex: 1; height: 86.7%; background: var(--ink); border-radius: 2px 2px 0 0;"></span><span style="flex: 1; height: 91.1%; background: var(--ink); border-radius: 2px 2px 0 0;"></span><span style="flex: 1; height: 48.9%; background: var(--ink); border-radius: 2px 2px 0 0;"></span><span style="flex: 1; height: 44.4%; background: var(--ink); border-radius: 2px 2px 0 0;"></span><span style="flex: 1; height: 51.1%; background: var(--ink); border-radius: 2px 2px 0 0;"></span><span style="flex: 1; height: 55.6%; background: var(--ink); border-radius: 2px 2px 0 0;"></span><span style="flex: 1; height: 53.3%; background: var(--ink); border-radius: 2px 2px 0 0;"></span><span style="flex: 1; height: 46.7%; background: var(--ink); border-radius: 2px 2px 0 0;"></span><span style="flex: 1; height: 42.2%; background: var(--ink); border-radius: 2px 2px 0 0;"></span><span style="flex: 1; height: 55.6%; background: var(--ink); border-radius: 2px 2px 0 0;"></span><span style="flex: 1; height: 76.7%; background: var(--ink); border-radius: 2px 2px 0 0;"></span><span style="flex: 1; height: 85.8%; background: var(--ink); border-radius: 2px 2px 0 0;"></span>
+      </div>
+    </section>
+
+    <section class="kk-card kk-card--sm" style="gap: 8px; padding: 20px 16px;">
+      <h2 class="title-3">Действующие кредиты</h2>
+      <p class="body">Кредит в другом банке</p>
+      <p class="body-sm" style="color: var(--ink-secondary);">Остаток 450 000 ₽ · 38 000 ₽ в месяц</p>
+    </section>
+
+    <section class="kk-card kk-card--sm" style="gap: 16px; padding: 20px 16px;">
+      <h2 class="title-3">Документы</h2>
+      <ul style="display: flex; flex-direction: column; gap: 12px;">
+        <li style="display: flex; gap: 10px; align-items: flex-start;"><span style="color: var(--success);"><x-import component-from-global-scope="Cabinet.Icon" name="check-circle"></x-import></span><span style="flex: 1; display: flex; flex-direction: column;"><span class="body-strong">Отчётность за 2025 год</span><span class="body-sm" style="color: var(--ink-secondary);">Обязательно для ООО · принят</span></span></li>
+        <li style="display: flex; gap: 10px; align-items: flex-start;"><span style="color: var(--info);"><x-import component-from-global-scope="Cabinet.Icon" name="clock"></x-import></span><span style="flex: 1; display: flex; flex-direction: column;"><span class="body-strong">Выписка из другого банка</span><span class="body-sm" style="color: var(--ink-secondary);">Желательно · проверяем</span></span></li>
+        <li style="display: flex; gap: 10px; align-items: flex-start;"><span style="color: var(--danger);"><x-import component-from-global-scope="Cabinet.Icon" name="alert"></x-import></span><span style="flex: 1; display: flex; flex-direction: column;"><span class="body-strong">Договор поставки</span><span class="body-sm" style="color: var(--ink-secondary);">Желательно · нужно заменить</span></span></li>
+      </ul>
+      <x-import component-from-global-scope="Cabinet.DocumentUpload" label="Выбрать файл или сфотографировать" files="{{files}}"></x-import>
+    </section>
+
+    <x-import component-from-global-scope="Cabinet.Alert" tone="assistant" title="Часть выручки идёт на другой счёт">Выписка из другого банка поможет банку увидеть всю выручку.</x-import>
+    <p class="body-sm" style="display: flex; gap: 6px; align-items: center; color: var(--ink-secondary);"><span style="color: var(--success);"><x-import component-from-global-scope="Cabinet.Icon" name="check-circle" size="{{i16}}"></x-import></span>Черновик сохранён в 10:48</p>
+    <div style="height: 40px;" aria-hidden="true"></div>
+  </div>
+  <a class="kn-demo kn-demo--m" href="A2-Demo.dc.html" style="bottom: 156px;"><x-import component-from-global-scope="Cabinet.Icon" name="shield" size="{{i16}}"></x-import>Режим проверки</a>
+  <div class="kn-mbar">
+    <a class="kk-btn kk-btn--primary kk-btn--lg kk-btn--full" href="M-Sent.dc.html">Проверить и отправить</a>
+    <a class="kk-btn kk-btn--ghost kk-btn--full" href="M-Step1.dc.html">Назад</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1550}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      i16: 16, c2: 2,
+      steps: [{ label: 'Параметры' }, { label: 'Компания' }, { label: 'Финансы и документы', description: 'Из выписки по счёту' }, { label: 'Проверка и отправка' }],
+      files: [
+        { name: 'Отчётность_2025.pdf', size: '1,8 МБ', status: 'ok' },
+        { name: 'Выписка_второй_счёт.pdf', status: 'checking', size: '640 КБ' },
+        { name: 'Договор_поставки.jpg', status: 'error', message: 'Фото обрезано: не видно страницы с подписью. Загрузите разворот целиком.' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

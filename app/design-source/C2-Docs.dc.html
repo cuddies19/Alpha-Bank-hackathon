@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Карточка заявки: документы — консоль банка</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}a{color:#d21f16}</style>
+</helmet>
+<div class="kn-app">
+  <div class="kn-app__side"><dc-import name="NavBank" active="queue" hint-size="100%,900px"></dc-import></div>
+  <main class="kn-app__main">
+    <dc-import name="HeaderBank" hint-size="100%,72px"></dc-import>
+    <dc-import name="C2Head" tab="docs" hint-size="100%,200px"></dc-import>
+    <div class="kn-page" style="padding-top: 24px;">
+      <div class="kn-cols">
+        <div class="kn-cols__main">
+          <x-import component-from-global-scope="Cabinet.Alert" tone="success" title="Комплект полный">Обязательные документы для ООО на кредитную линию загружены и прошли автоматическую проверку.</x-import>
+          <div class="kn-tablewrap">
+            <table class="kn-table">
+              <thead><tr><th scope="col">Документ</th><th scope="col">Статус</th><th scope="col">Загрузил</th><th scope="col"><span class="kk-sr">Предпросмотр</span></th></tr></thead>
+              <tbody>
+                <sc-for list="{{docs}}" as="d" hint-placeholder-count="6">
+                  <tr class="{{d.rowCls}}">
+                    <td><span class="body-strong" style="display: block;">{{d.name}}</span><span class="kn-sub">{{d.meta}}</span></td>
+                    <td><x-import component-from-global-scope="Cabinet.Badge" tone="{{d.tone}}">{{d.status}}</x-import></td>
+                    <td class="nw"><span style="display: block;">{{d.who}}</span><span class="kn-sub">{{d.when}}</span></td>
+                    <td style="text-align: right;"><x-import component-from-global-scope="Cabinet.Button" variant="ghost" size="sm" on-click="{{d.pick}}">Открыть</x-import></td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </div>
+          <section class="kk-card kk-card--md" style="gap: 12px;">
+            <div class="kn-sechead"><h2 class="title-3">{{curName}}</h2><span class="body-sm" style="color: var(--ink-secondary);">{{curMeta}}</span></div>
+            <div role="img" aria-label="Предпросмотр документа" style="box-sizing: border-box; height: 280px; border-radius: 12px; background: var(--surface-muted); box-shadow: inset 0 0 0 1px var(--line); padding: 28px 32px; display: flex; flex-direction: column; gap: 10px;">
+              <span style="width: 45%; height: 12px; border-radius: 4px; background: var(--line);"></span>
+              <span style="width: 30%; height: 10px; border-radius: 4px; background: var(--line);"></span>
+              <span style="width: 100%; height: 8px; margin-top: 16px; border-radius: 4px; background: var(--line);"></span>
+              <span style="width: 92%; height: 8px; border-radius: 4px; background: var(--line);"></span>
+              <span style="width: 96%; height: 8px; border-radius: 4px; background: var(--line);"></span>
+              <span style="width: 60%; height: 8px; border-radius: 4px; background: var(--line);"></span>
+              <span class="body-sm" style="margin-top: auto; color: var(--ink-secondary);">Предпросмотр, страница 1</span>
+            </div>
+          </section>
+        </div>
+        <aside class="kn-cols__side" style="flex: 0 1 384px;">
+          <dc-import name="DecisionPanel" outcome="counter" hint-size="100%,1100px"></dc-import>
+        </aside>
+      </div>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1250}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const cur = s.cur ?? 0;
+    const list = [
+      { name: 'Бухгалтерская отчётность за 2025 год', meta: 'PDF · 12 страниц · обязательный', status: 'Принят', tone: 'success', who: 'И. Соколов', when: '24 окт., 10:47' },
+      { name: 'Выписка из другого банка', meta: 'PDF · апрель–сентябрь 2026', status: 'Принят', tone: 'success', who: 'И. Соколов', when: '24 окт., 10:48' },
+      { name: 'Выписка по счёту •• 4821', meta: 'Автоматически из банка · 12 месяцев', status: 'Принят', tone: 'success', who: 'Система', when: '24 окт., 10:43' },
+      { name: 'Договор поставки', meta: 'JPG · необязательный', status: 'Нужно заменить', tone: 'danger', who: 'И. Соколов', when: '24 окт., 10:49' },
+      { name: 'Согласие на запрос в БКИ', meta: 'Подписано в кабинете', status: 'Подписано', tone: 'success', who: 'И. Соколов', when: '24 окт., 10:50' },
+      { name: 'Согласие на обработку данных и анализ счёта', meta: 'Подписано в кабинете', status: 'Подписано', tone: 'success', who: 'И. Соколов', when: '24 окт., 10:44' }
+    ];
+    return {
+      docs: list.map((d, i) => ({ ...d, rowCls: i === cur ? 'is-new' : '', pick: () => this.setState({ cur: i }) })),
+      curName: list[cur].name, curMeta: list[cur].meta
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Карточка заявки: клиент — консоль банка</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}a{color:#d21f16}</style>
+</helmet>
+<div class="kn-app">
+  <div class="kn-app__side"><dc-import name="NavBank" active="queue" hint-size="100%,900px"></dc-import></div>
+  <main class="kn-app__main">
+    <dc-import name="HeaderBank" hint-size="100%,72px"></dc-import>
+    <dc-import name="C2Head" tab="client" hint-size="100%,200px"></dc-import>
+    <div class="kn-page" style="padding-top: 24px;">
+      <div class="kn-cols">
+        <div class="kn-cols__main">
+          <section class="kk-card kk-card--md" style="gap: 16px;">
+            <h2 class="title-3">Компания</h2>
+            <dl class="kn-kv">
+              <div><dt>Название</dt><dd>ООО «Дом и уют»</dd></div>
+              <div><dt>ИНН / ОГРН</dt><dd>7701234567 / 1247700412345</dd></div>
+              <div><dt>Регистрация</dt><dd>12 июня 2024</dd></div>
+              <div><dt>Возраст бизнеса</dt><dd>2 года 4 месяца</dd></div>
+              <div><dt>ОКВЭД</dt><dd>47.91 — торговля через интернет</dd></div>
+              <div><dt>Сотрудники</dt><dd>6, среднесписочная численность</dd></div>
+              <div><dt>Каналы продаж</dt><dd>2 маркетплейса</dd></div>
+              <div><dt>Счёт в банке</dt><dd>•• 4821, с июля 2024</dd></div>
+            </dl>
+          </section>
+
+          <section class="kk-card kk-card--md" style="gap: 16px;">
+            <h2 class="title-3">Руководитель</h2>
+            <dl class="kn-kv">
+              <div><dt>ФИО</dt><dd>Соколов Игорь Андреевич</dd></div>
+              <div><dt>Должность</dt><dd>Генеральный директор, 100% долей</dd></div>
+              <div><dt>Паспорт</dt><dd class="amt">45 •• ••••12</dd></div>
+              <div><dt>Дата рождения</dt><dd>•• •• 1989</dd></div>
+            </dl>
+            <p class="body-sm" style="display: flex; gap: 8px; color: var(--ink-secondary);"><x-import component-from-global-scope="Cabinet.Icon" name="shield" size="{{i16}}"></x-import>Персональные данные скрыты. Полный просмотр записывается в журнал аудита.</p>
+          </section>
+
+          <section class="kk-card kk-card--md" style="gap: 16px;">
+            <div class="kn-sechead">
+              <h2 class="title-3">Обороты по счёту за 12 месяцев</h2>
+              <div class="kn-legend"><span><i style="background: var(--ink);"></i>Поступления</span><span><i style="background: var(--line-strong);"></i>Списания</span></div>
+            </div>
+            <div role="img" aria-label="Поступления по месяцам с ноября 2025 по октябрь 2026: пики в ноябре и декабре, спад летом, рост к октябрю">
+              <div style="height: 160px; display: flex; align-items: flex-end; gap: 8px; border-bottom: 1px solid var(--line);">
+                <sc-for list="{{months}}" as="mo" hint-placeholder-count="12">
+                  <div style="flex: 1; height: 100%; display: flex; align-items: flex-end; gap: 2px;">
+                    <span style="flex: 1; border-radius: 3px 3px 0 0; background: var(--ink); height: {{mo.inc}};"></span>
+                    <span style="flex: 1; border-radius: 3px 3px 0 0; background: var(--line-strong); height: {{mo.out}};"></span>
+                  </div>
+                </sc-for>
+              </div>
+              <div class="caption" style="display: flex; gap: 8px; padding-top: 6px; color: var(--ink-secondary);">
+                <sc-for list="{{months}}" as="mo" hint-placeholder-count="12"><span style="flex: 1; text-align: center;">{{mo.label}}</span></sc-for>
+              </div>
+            </div>
+            <dl class="kn-kv">
+              <div><dt>Поступления за 12 мес.</dt><dd class="amt">33 210 000 ₽</dd></div>
+              <div><dt>Средний чистый поток</dt><dd class="amt">610 000 ₽ в месяц</dd></div>
+              <div><dt>Сезонность</dt><dd style="color: var(--warning);">Высокая: пик в 2,2 раза выше спада</dd></div>
+            </dl>
+          </section>
+
+          <section class="kk-card kk-card--md" style="gap: 12px;">
+            <h2 class="title-3">Действующие обязательства</h2>
+            <div class="kn-tablewrap" style="border-radius: 0;">
+              <table class="kn-table kn-table--plain">
+                <thead><tr><th scope="col">Кредитор</th><th scope="col">Вид</th><th scope="col" class="num">Остаток</th><th scope="col" class="num">Платёж в месяц</th><th scope="col">До</th><th scope="col">Источник</th></tr></thead>
+                <tbody>
+                  <tr><td>Другой банк</td><td>Кредит на развитие</td><td class="num">450 000 ₽</td><td class="num">38 000 ₽</td><td class="nw">март 2027</td><td>БКИ, выписка</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+        <aside class="kn-cols__side" style="flex: 0 1 384px;">
+          <dc-import name="DecisionPanel" outcome="counter" hint-size="100%,1100px"></dc-import>
+        </aside>
+      </div>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1400}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const inc = [3.9, 4.1, 2.2, 2.0, 2.3, 2.5, 2.4, 2.1, 1.9, 2.5, 3.45, 3.86];
+    const out = [3.2, 3.5, 1.7, 1.5, 1.7, 1.9, 1.75, 1.55, 1.45, 1.85, 2.8, 3.15];
+    const labels = ['ноя', 'дек', 'янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт'];
+    const max = 4.5;
+    return {
+      i16: 16,
+      months: labels.map((label, i) => ({ label, inc: (inc[i] / max * 100).toFixed(1) + '%', out: (out[i] / max * 100).toFixed(1) + '%' }))
+    };
+  }
+}
+</script>
+</body>
+</html>

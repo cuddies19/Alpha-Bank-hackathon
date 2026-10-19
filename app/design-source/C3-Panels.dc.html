@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Панель решения — варианты</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}a{color:#d21f16}</style>
+</helmet>
+<div style="box-sizing: border-box; width: 1320px; min-height: 2050px; padding: 40px 60px; background: var(--bg); color: var(--ink); font-family: var(--font-sans); display: grid; grid-template-columns: repeat(3, 384px); gap: 40px 24px; align-content: start;">
+  <div style="display: flex; flex-direction: column; gap: 12px;">
+    <p class="caption" style="color: var(--ink-secondary);">Одобрить — условия из заявки, только чтение</p>
+    <dc-import name="DecisionPanel" outcome="approve" hint-size="384px,1000px"></dc-import>
+  </div>
+  <div style="display: flex; flex-direction: column; gap: 12px;">
+    <p class="caption" style="color: var(--ink-secondary);">Запросить данные — чек-лист и сообщение клиенту</p>
+    <dc-import name="DecisionPanel" outcome="request" hint-size="384px,1000px"></dc-import>
+  </div>
+  <div style="display: flex; flex-direction: column; gap: 12px;">
+    <p class="caption" style="color: var(--ink-secondary);">Отказать — причина из справочника и объяснение</p>
+    <dc-import name="DecisionPanel" outcome="decline" hint-size="384px,1000px"></dc-import>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 12px;">
+    <p class="caption" style="color: var(--ink-secondary);">После решения — только чтение</p>
+    <dc-import name="DecisionPanel" outcome="counter" decided="{{yes}}" hint-size="384px,560px"></dc-import>
+  </div>
+  <div style="grid-column: span 2; display: flex; flex-direction: column; gap: 12px;">
+    <p class="caption" style="color: var(--ink-secondary);">Подтверждение решения</p>
+    <div style="position: relative; height: 420px; border-radius: 24px; overflow: hidden; background: var(--scrim); display: flex; align-items: center; justify-content: center;">
+      <div class="kn-modal" role="dialog" aria-labelledby="c3-confirm">
+        <h3 class="title-3" id="c3-confirm">Принять решение?</h3>
+        <p class="body">Клиент увидит решение сразу. Отменить нельзя.</p>
+        <dl class="kn-rows">
+          <div><dt>Исход</dt><dd>Встречное предложение</dd></div>
+          <div><dt>Условия</dt><dd>2 400 000 ₽ на 18 мес.</dd></div>
+        </dl>
+        <div class="kn-modal__actions">
+          <x-import component-from-global-scope="Cabinet.Button" variant="secondary">Отмена</x-import>
+          <x-import component-from-global-scope="Cabinet.Button" variant="primary">Принять решение</x-import>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1320,"height":2050}}'>
+class Component extends DCLogic {
+  renderVals() { return { yes: true }; }
+}
+</script>
+</body>
+</html>

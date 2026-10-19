@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Заявка отправлена — мобильная версия</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div class="kn-mobile">
+  <dc-import name="MobileTop" mode="root" hint-size="390px,60px"></dc-import>
+  <div class="kn-mobile__body" style="padding-top: 32px; gap: 20px;">
+    <span style="width: 56px; height: 56px; border-radius: 9999px; background: var(--success-soft); color: var(--success); display: flex; align-items: center; justify-content: center;"><x-import component-from-global-scope="Cabinet.Icon" name="check-circle" size="{{i28}}"></x-import></span>
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <h1 class="title-1">Заявка отправлена</h1>
+      <p class="body" style="color: var(--ink-secondary);">Кредитная линия · 3 000 000 ₽ · № 2026-10-0142</p>
+    </div>
+    <section class="kk-card kk-card--sm" style="gap: 12px; padding: 20px 16px;">
+      <h2 class="title-3">Что будет дальше</h2>
+      <ol style="display: flex; flex-direction: column; gap: 10px;">
+        <li class="body" style="display: flex; gap: 12px; align-items: center;"><span class="kn-avatar" style="width: 28px; height: 28px;">1</span>Проверим данные и документы</li>
+        <li class="body" style="display: flex; gap: 12px; align-items: center;"><span class="kn-avatar" style="width: 28px; height: 28px;">2</span>Запросим сведения в ЕГРЮЛ, ФНС и БКИ</li>
+        <li class="body" style="display: flex; gap: 12px; align-items: center;"><span class="kn-avatar" style="width: 28px; height: 28px;">3</span>Примем решение</li>
+      </ol>
+    </section>
+    <div style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 12px; background: var(--surface);">
+      <span style="color: var(--ink-secondary);"><x-import component-from-global-scope="Cabinet.Icon" name="clock"></x-import></span>
+      <p class="body"><b>Обычно до 2 часов.</b> Сообщим о решении здесь, в кабинете.</p>
+    </div>
+  </div>
+  <div class="kn-mbar">
+    <a class="kk-btn kk-btn--primary kk-btn--lg kk-btn--full" href="M-Status.dc.html">Следить за заявкой</a>
+    <a class="kk-btn kk-btn--ghost kk-btn--full" href="M-Home.dc.html">На главную</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return { i28: 28 }; }
+}
+</script>
+</body>
+</html>

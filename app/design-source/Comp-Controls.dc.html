@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Новые компоненты — ввод и всплывающие элементы</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div style="box-sizing: border-box; width: 1440px; min-height: 2100px; padding: 56px 64px; background: var(--bg); color: var(--ink); font-family: var(--font-sans); display: flex; flex-direction: column; gap: 32px;">
+  <div style="display: flex; flex-direction: column; gap: 8px;">
+    <h1 class="title-1">Новые компоненты · ввод и всплывающие элементы</h1>
+    <p class="body" style="color: var(--ink-secondary);">Слайдер, переключатель и чекбоксы на этой странице работают в режиме Play.</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; align-items: start;">
+    <section class="kk-card kk-card--lg" style="gap: 20px;">
+      <div class="kn-sechead"><h2 class="title-3">Слайдер суммы и срока</h2><span class="body-sm" style="color: var(--ink-secondary);">Подбор · калькулятор</span></div>
+      <div class="kn-slider">
+        <div class="kn-slider__head"><label class="label" for="cc-amount">Сумма</label><span class="amount-md amt">{{amountFull}}</span></div>
+        <div class="kn-slider__track">
+          <div class="kn-slider__fill" style="width: {{pct}};"></div>
+          <input class="kn-slider__input" id="cc-amount" type="range" min="500000" max="5000000" step="100000" value="{{amount}}" onChange="{{onAmount}}" aria-valuetext="{{amountFull}}">
+          <div class="kn-slider__thumb" style="left: {{pct}};"></div>
+        </div>
+        <div class="kn-slider__scale"><span>500 000 ₽</span><span>5 000 000 ₽</span></div>
+      </div>
+      <p class="body-sm" style="color: var(--ink-secondary);">Нативный range поверх нарисованной дорожки: работает с клавиатуры, фокус — кольцо на бегунке. Рядом всегда поле точного ввода.</p>
+    </section>
+
+    <section class="kk-card kk-card--lg" style="gap: 20px;">
+      <div class="kn-sechead"><h2 class="title-3">Сегментированный переключатель</h2><span class="body-sm" style="color: var(--ink-secondary);">Исход решения · вход · режим проверки</span></div>
+      <div class="kn-seg" role="group" aria-label="Пример">
+        <sc-for list="{{segs}}" as="s" hint-placeholder-count="2"><button type="button" class="{{s.cls}}" aria-pressed="{{s.pressed}}" onClick="{{s.pick}}">{{s.label}}</button></sc-for>
+      </div>
+      <div class="kn-seg kn-seg--grid" role="group" aria-label="Исход">
+        <button type="button" class="kn-seg__opt">Одобрить</button>
+        <button type="button" class="kn-seg__opt is-on">Встречное предложение<span class="kn-seg__tag">Рекомендация системы</span></button>
+        <button type="button" class="kn-seg__opt">Запросить данные</button>
+        <button type="button" class="kn-seg__opt">Отказать</button>
+      </div>
+    </section>
+
+    <section class="kk-card kk-card--lg" style="gap: 12px;">
+      <div class="kn-sechead"><h2 class="title-3">Чекбокс согласия с текстом</h2><span class="body-sm" style="color: var(--ink-secondary);">Заявка · профиль</span></div>
+      <div class="kn-consent">
+        <label class="kn-consent__row"><input type="checkbox" class="kn-check" checked="{{c1}}" onChange="{{t1}}"><span>Согласие на обработку персональных данных</span></label>
+        <details><summary>Текст согласия <x-import component-from-global-scope="Cabinet.Icon" name="chevron-right" size="{{i16}}"></x-import></summary><p>Разрешаю банку обрабатывать персональные данные руководителя и контактного лица, чтобы рассмотреть заявку.</p></details>
+      </div>
+      <div class="kn-consent is-missing">
+        <label class="kn-consent__row"><input type="checkbox" class="kn-check" checked="{{c2}}" onChange="{{t2}}"><span>Согласие на запрос в бюро кредитных историй</span></label>
+        <details open><summary>Текст согласия <x-import component-from-global-scope="Cabinet.Icon" name="chevron-right" size="{{i16}}"></x-import></summary><p>Разрешаю банку запросить кредитную историю компании и руководителя. Действует 6 месяцев.</p></details>
+      </div>
+      <p class="body-sm" style="color: var(--ink-secondary);">Не отмеченное обязательное согласие подсвечивается warning, а не красным.</p>
+    </section>
+
+    <section class="kk-card kk-card--lg" style="gap: 16px;">
+      <div class="kn-sechead"><h2 class="title-3">Поле кода подтверждения</h2><span class="body-sm" style="color: var(--ink-secondary);">Подписание</span></div>
+      <div class="kn-otp" role="group" aria-label="Код подтверждения">
+        <input inputmode="numeric" maxlength="1" aria-label="Цифра 1 из 6" value="4" readonly>
+        <input inputmode="numeric" maxlength="1" aria-label="Цифра 2 из 6" value="8" readonly>
+        <input inputmode="numeric" maxlength="1" aria-label="Цифра 3 из 6" value="2" readonly>
+        <input inputmode="numeric" maxlength="1" aria-label="Цифра 4 из 6" value="" readonly style="border-color: var(--ink); box-shadow: var(--focus-ring);">
+        <input inputmode="numeric" maxlength="1" aria-label="Цифра 5 из 6" value="" readonly>
+        <input inputmode="numeric" maxlength="1" aria-label="Цифра 6 из 6" value="" readonly>
+      </div>
+      <div class="kn-otp" role="group" aria-label="Код с ошибкой">
+        <input value="1" readonly aria-label="Цифра 1" style="border-color: var(--danger);"><input value="1" readonly aria-label="Цифра 2" style="border-color: var(--danger);"><input value="1" readonly aria-label="Цифра 3" style="border-color: var(--danger);"><input value="1" readonly aria-label="Цифра 4" style="border-color: var(--danger);"><input value="1" readonly aria-label="Цифра 5" style="border-color: var(--danger);"><input value="1" readonly aria-label="Цифра 6" style="border-color: var(--danger);">
+      </div>
+      <p class="body-sm" style="display: flex; gap: 6px; color: var(--danger);"><x-import component-from-global-scope="Cabinet.Icon" name="alert" size="{{i16}}"></x-import>Код не подошёл. Проверьте цифры в плашке — осталось 2 попытки</p>
+    </section>
+
+    <section class="kk-card kk-card--lg" style="gap: 12px;">
+      <div class="kn-sechead"><h2 class="title-3">Тост</h2><span class="body-sm" style="color: var(--ink-secondary);">Смена статуса в реальном времени</span></div>
+      <div class="kn-toast" role="status"><span class="kn-toast__ic" style="color: #7fb0ff;"><x-import component-from-global-scope="Cabinet.Icon" name="info"></x-import></span><div class="kn-toast__body"><b>Заявка перешла к специалисту</b><span>11:05 · обновилось само</span></div></div>
+      <div class="kn-toast" role="status"><span class="kn-toast__ic"><x-import component-from-global-scope="Cabinet.Icon" name="check-circle"></x-import></span><div class="kn-toast__body"><b>Решение готово</b><span>Заявка № 2026-10-0142</span><a href="B9b-Counter.dc.html">Посмотреть решение</a></div></div>
+      <div class="kn-toast" role="alert"><span class="kn-toast__ic" style="color: #ff6b60;"><x-import component-from-global-scope="Cabinet.Icon" name="x-circle"></x-import></span><div class="kn-toast__body"><b>Нет связи с сервером</b><span>Проверим ещё раз через 10 секунд</span></div></div>
+    </section>
+
+    <section class="kk-card kk-card--lg" style="gap: 12px;">
+      <div class="kn-sechead"><h2 class="title-3">Шапка: колокольчик и список уведомлений</h2><span class="body-sm" style="color: var(--ink-secondary);">Все экраны клиента</span></div>
+      <div style="display: flex; justify-content: flex-end;">
+        <span class="kn-ibtn" style="background: var(--surface-muted);"><svg class="kn-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 10a6 6 0 0 1 12 0c0 4.5 1.5 6.5 2 7H4c.5-.5 2-2.5 2-7z"></path><path d="M10 20.2a2.2 2.2 0 0 0 4 0"></path></svg><span class="kn-ibtn__count">2</span></span>
+      </div>
+      <div class="kn-menu" style="align-self: flex-end; box-shadow: var(--shadow-lg), inset 0 0 0 1px var(--line);">
+        <div class="kn-menu__head"><span class="body-strong">Уведомления</span><a class="kk-btn kk-btn--link" href="B14-Notifications.dc.html">Все</a></div>
+        <a class="kn-menu__item" href="B9b-Counter.dc.html" style="background: var(--surface-muted);"><span class="kn-dot"></span><span style="display: flex; flex-direction: column;"><span class="body-strong">Решение по заявке № 2026-10-0142 готово</span><span class="body-sm" style="color: var(--ink-secondary);">11:32</span></span></a>
+        <a class="kn-menu__item" href="B9b-Counter.dc.html" style="background: var(--surface-muted);"><span class="kn-dot"></span><span style="display: flex; flex-direction: column;"><span class="body-strong">Условия действуют до 31 октября</span><span class="body-sm" style="color: var(--ink-secondary);">11:32</span></span></a>
+        <a class="kn-menu__item" href="B8-Status.dc.html"><span class="kn-dot" style="visibility: hidden;"></span><span style="display: flex; flex-direction: column;"><span class="body">Заявка перешла к специалисту</span><span class="body-sm" style="color: var(--ink-secondary);">11:05</span></span></a>
+        <a class="kn-menu__item" href="B13-Documents.dc.html"><span class="kn-dot" style="visibility: hidden;"></span><span style="display: flex; flex-direction: column;"><span class="body">Договор поставки нужно заменить</span><span class="body-sm" style="color: var(--ink-secondary);">10:49</span></span></a>
+        <a class="kn-menu__item" href="B8-Status.dc.html"><span class="kn-dot" style="visibility: hidden;"></span><span style="display: flex; flex-direction: column;"><span class="body">Заявка отправлена</span><span class="body-sm" style="color: var(--ink-secondary);">10:51</span></span></a>
+      </div>
+    </section>
+
+    <section class="kk-card kk-card--lg" style="gap: 16px;">
+      <div class="kn-sechead"><h2 class="title-3">Скелетон и пустое состояние</h2><span class="body-sm" style="color: var(--ink-secondary);">Все списки</span></div>
+      <div aria-busy="true" style="display: flex; flex-direction: column; gap: 10px; padding: 16px; border-radius: 12px; box-shadow: inset 0 0 0 1px var(--line);">
+        <span class="kn-skel" style="width: 40%; height: 16px;"></span>
+        <span class="kn-skel" style="width: 100%; height: 12px;"></span>
+        <span class="kn-skel" style="width: 85%; height: 12px;"></span>
+      </div>
+      <div class="kn-empty" style="padding: 24px; border-radius: 12px; box-shadow: inset 0 0 0 1px var(--line);">
+        <span class="kn-empty__ic"><x-import component-from-global-scope="Cabinet.Icon" name="document" size="{{i24}}"></x-import></span>
+        <h3 class="title-3">Заявок пока нет</h3>
+        <p class="body">Опишите задачу — подберём продукт и посчитаем платёж.</p>
+        <x-import component-from-global-scope="Cabinet.Button" variant="primary">Подобрать финансирование</x-import>
+      </div>
+    </section>
+
+    <section class="kk-card kk-card--lg" style="gap: 12px;">
+      <div class="kn-sechead"><h2 class="title-3">Кнопка «Режим проверки»</h2><span class="body-sm" style="color: var(--ink-secondary);">Все экраны, левый нижний угол</span></div>
+      <a class="kn-demo" href="A2-Demo.dc.html"><x-import component-from-global-scope="Cabinet.Icon" name="shield"></x-import>Режим проверки</a>
+      <p class="body-sm" style="color: var(--ink-secondary);">Пунктирная рамка отделяет инструмент жюри от продукта. В рабочей версии кнопки нет.</p>
+    </section>
+  </div>
+
+  <section class="kk-card kk-card--lg" style="gap: 16px;">
+    <div class="kn-sechead"><h2 class="title-3">Модальное окно и боковая шторка</h2><span class="body-sm" style="color: var(--ink-secondary);">Подтверждение решения · подписание · предпросмотр документа · режим проверки</span></div>
+    <div style="position: relative; height: 520px; border-radius: 16px; overflow: hidden; background: var(--bg); box-shadow: inset 0 0 0 1px var(--line);">
+      <div class="kn-scrim kn-scrim--abs" style="justify-content: flex-start; padding-left: 64px;">
+        <div class="kn-modal" role="dialog" aria-labelledby="cc-modal">
+          <h3 class="title-3" id="cc-modal">Принять решение?</h3>
+          <p class="body">Клиент увидит решение сразу. Отменить нельзя.</p>
+          <div class="kn-modal__actions">
+            <x-import component-from-global-scope="Cabinet.Button" variant="secondary">Отмена</x-import>
+            <x-import component-from-global-scope="Cabinet.Button" variant="primary">Принять решение</x-import>
+          </div>
+        </div>
+      </div>
+      <aside class="kn-drawer" aria-labelledby="cc-drawer" style="width: 440px;">
+        <div class="kn-drawer__head"><h3 class="title-3" id="cc-drawer">Кредитный договор</h3><button type="button" class="kn-ibtn" aria-label="Закрыть"><x-import component-from-global-scope="Cabinet.Icon" name="x"></x-import></button></div>
+        <div class="kn-drawer__body">
+          <div style="height: 220px; border-radius: 12px; background: var(--surface-muted); box-shadow: inset 0 0 0 1px var(--line); display: flex; align-items: flex-end; padding: 16px;"><span class="body-sm" style="color: var(--ink-secondary);">Предпросмотр, страница 1 из 6</span></div>
+        </div>
+        <div class="kn-drawer__foot"><x-import component-from-global-scope="Cabinet.Button" variant="secondary" icon-left="arrow-down">Скачать PDF</x-import></div>
+      </aside>
+    </div>
+    <p class="body-sm" style="color: var(--ink-secondary);">Модальное окно — по центру, радиус 24, затемнение scrim. Шторка выезжает справа на всю высоту; на телефоне — снизу во весь экран.</p>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2100}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const n = ' ';
+    const amount = s.amount ?? 2400000;
+    const seg = s.seg || 'client';
+    const c1 = s.c1 ?? true, c2 = !!s.c2;
+    return {
+      i16: 16, i24: 24, amount,
+      amountFull: String(amount).replace(/\B(?=(\d{3})+(?!\d))/g, n) + n + '₽',
+      pct: ((amount - 500000) / 4500000 * 100).toFixed(1) + '%',
+      onAmount: (e) => this.setState({ amount: Number(e.target.value) }),
+      segs: [['client', 'Клиент'], ['bank', 'Сотрудник банка']].map(([k, label]) => ({ label, cls: 'kn-seg__opt' + (seg === k ? ' is-on' : ''), pressed: seg === k ? 'true' : 'false', pick: () => this.setState({ seg: k }) })),
+      c1, c2, t1: () => this.setState({ c1: !c1 }), t2: () => this.setState({ c2: !c2 })
+    };
+  }
+}
+</script>
+</body>
+</html>

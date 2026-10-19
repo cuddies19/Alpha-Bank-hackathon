@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Заявка, шаг 4: проверка и отправка — Кредитный кабинет</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}a{color:#d21f16}</style>
+</helmet>
+<div class="kn-app">
+  <div class="kn-app__side"><dc-import name="NavClient" active="applications" hint-size="100%,900px"></dc-import></div>
+  <main class="kn-app__main">
+    <dc-import name="HeaderClient" hint-size="100%,72px"></dc-import>
+    <div class="kn-page" style="gap: 24px;">
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <h1 class="title-1">Заявка на кредитную линию</h1>
+        <p class="body" style="color: var(--ink-secondary);">№ 2026-10-0142 · черновик</p>
+      </div>
+      <section class="kk-card kk-card--md"><x-import component-from-global-scope="Cabinet.Stepper" steps="{{steps}}" current="{{c3}}"></x-import></section>
+
+      <div class="kn-cols">
+        <div class="kn-cols__main">
+          <sc-if value="{{missing}}" hint-placeholder-val="{{yes}}">
+            <x-import component-from-global-scope="Cabinet.Alert" tone="assistant" title="Не хватает одного согласия">Не отмечено согласие на запрос в БКИ — без него банк не сможет оценить заявку. Отметьте его ниже, остальное готово.</x-import>
+          </sc-if>
+          <sc-if value="{{ready}}" hint-placeholder-val="{{no}}">
+            <x-import component-from-global-scope="Cabinet.Alert" tone="success" title="Всё готово к отправке">Банк проверит данные и сообщит о решении здесь, в кабинете.</x-import>
+          </sc-if>
+
+          <section class="kk-card kk-card--md" style="gap: 12px;">
+            <div class="kn-sechead"><h2 class="title-3">Параметры</h2><a class="kk-btn kk-btn--link" href="B5-Step1.dc.html">Изменить</a></div>
+            <dl class="kn-rows">
+              <div><dt>Продукт</dt><dd>Кредитная линия</dd></div>
+              <div><dt>Сумма и срок</dt><dd>3 000 000 ₽ · 18 мес.</dd></div>
+              <div><dt>Цель</dt><dd>Закупка партии к распродаже 11.11</dd></div>
+              <div><dt>Деньги нужны</dt><dd>до 1 ноября</dd></div>
+              <div><dt>Источник возврата</dt><dd>Выручка с маркетплейсов</dd></div>
+            </dl>
+          </section>
+
+          <section class="kk-card kk-card--md" style="gap: 12px;">
+            <div class="kn-sechead"><h2 class="title-3">Компания</h2><a class="kk-btn kk-btn--link" href="B5-Step2.dc.html">Изменить</a></div>
+            <dl class="kn-rows">
+              <div><dt>Название</dt><dd>ООО «Дом и уют»</dd></div>
+              <div><dt>ИНН</dt><dd>7701234567</dd></div>
+              <div><dt>Руководитель</dt><dd>Соколов И. А.</dd></div>
+              <div><dt>Контактное лицо</dt><dd>Игорь Соколов</dd></div>
+            </dl>
+          </section>
+
+          <section class="kk-card kk-card--md" style="gap: 12px;">
+            <div class="kn-sechead"><h2 class="title-3">Финансы и документы</h2><a class="kk-btn kk-btn--link" href="B5-Step3.dc.html">Изменить</a></div>
+            <dl class="kn-rows">
+              <div><dt>Поступления за 12 месяцев</dt><dd>33 210 000 ₽</dd></div>
+              <div><dt>Действующие кредиты</dt><dd>1, платёж 38 000 ₽ в месяц</dd></div>
+              <div><dt>Бухгалтерская отчётность 2025</dt><dd style="color: var(--success);">Принят</dd></div>
+              <div><dt>Выписка второго счёта</dt><dd style="color: var(--info);">Проверяем</dd></div>
+              <div><dt>Договор поставки</dt><dd style="color: var(--ink-secondary); font-weight: 400;">Необязательно, можно позже</dd></div>
+            </dl>
+          </section>
+
+          <section class="kk-card kk-card--md" style="gap: 12px;">
+            <div class="kn-sechead"><h2 class="title-3">Согласия</h2><a class="kk-btn kk-btn--link" href="B5-Step2.dc.html">Изменить</a></div>
+            <div class="{{bkiCls}}">
+              <label class="kn-consent__row">
+                <input type="checkbox" class="kn-check" checked="{{bki}}" onChange="{{toggle}}">
+                <span>Согласие на запрос в бюро кредитных историй</span>
+              </label>
+              <details>
+                <summary>Текст согласия <x-import component-from-global-scope="Cabinet.Icon" name="chevron-right" size="{{i16}}"></x-import></summary>
+                <p>Разрешаю банку запросить мою кредитную историю и кредитную историю компании в бюро кредитных историй для оценки заявки. Согласие действует 6 месяцев.</p>
+              </details>
+            </div>
+            <dl class="kn-rows">
+              <div><dt>Обработка персональных данных</dt><dd style="color: var(--success);">Дано в 10:44</dd></div>
+              <div><dt>Анализ операций по счёту</dt><dd style="color: var(--success);">Дано в 10:44</dd></div>
+            </dl>
+          </section>
+        </div>
+
+        <aside class="kn-cols__side">
+          <section class="kk-card kk-card--md" style="gap: 16px;">
+            <h2 class="title-3">Что будет дальше</h2>
+            <ol style="display: flex; flex-direction: column; gap: 12px;">
+              <li class="body" style="display: flex; gap: 12px;"><span class="kn-avatar" style="width: 28px; height: 28px; font-size: 13px;">1</span>Проверим данные и документы</li>
+              <li class="body" style="display: flex; gap: 12px;"><span class="kn-avatar" style="width: 28px; height: 28px; font-size: 13px;">2</span>Запросим сведения в ЕГРЮЛ, ФНС и бюро кредитных историй</li>
+              <li class="body" style="display: flex; gap: 12px;"><span class="kn-avatar" style="width: 28px; height: 28px; font-size: 13px;">3</span>Примем решение — обычно до 2 часов</li>
+            </ol>
+            <p class="body-sm" style="color: var(--ink-secondary);">Решение принимает банк. Сообщим о нём здесь, в кабинете.</p>
+          </section>
+        </aside>
+      </div>
+
+      <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 12px; padding: 16px 24px; background: var(--surface); border-radius: 16px;">
+        <span style="color: var(--success);"><x-import component-from-global-scope="Cabinet.Icon" name="check-circle"></x-import></span>
+        <span class="body-sm" style="flex: 1; color: var(--ink-secondary);">Черновик сохранён в 10:50</span>
+        <a class="kk-btn kk-btn--secondary" href="B5-Step3.dc.html">Назад</a>
+        <sc-if value="{{ready}}" hint-placeholder-val="{{no}}">
+          <a class="kk-btn kk-btn--primary" href="B6-Sent.dc.html">Отправить заявку</a>
+        </sc-if>
+        <sc-if value="{{missing}}" hint-placeholder-val="{{yes}}">
+          <span class="body-sm" style="color: var(--warning);">Отметьте согласие на запрос в БКИ</span>
+          <x-import component-from-global-scope="Cabinet.Button" variant="primary" disabled="{{yes}}">Отправить заявку</x-import>
+        </sc-if>
+      </div>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1500}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const bki = !!s.bki;
+    return {
+      yes: true, no: false, i16: 16, c3: 3,
+      steps: [{ label: 'Параметры', description: 'Заполнено ассистентом' }, { label: 'Компания', description: 'Из ЕГРЮЛ' }, { label: 'Финансы и документы', description: 'Из выписки по счёту' }, { label: 'Проверка и отправка' }],
+      bki, missing: !bki, ready: bki,
+      bkiCls: 'kn-consent' + (bki ? '' : ' is-missing'),
+      toggle: () => this.setState({ bki: !bki })
+    };
+  }
+}
+</script>
+</body>
+</html>

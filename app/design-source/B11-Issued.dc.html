@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Деньги зачислены — Кредитный кабинет</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}a{color:#d21f16}</style>
+</helmet>
+<div class="kn-app">
+  <div class="kn-app__side"><dc-import name="NavClient" active="loans" apps-count="0" hint-size="100%,900px"></dc-import></div>
+  <main class="kn-app__main">
+    <dc-import name="HeaderClient" hint-size="100%,72px"></dc-import>
+    <div class="kn-page kn-page--narrow" style="padding-top: 64px;">
+      <section class="kk-card kk-card--lg" style="gap: 24px;">
+        <span style="width: 64px; height: 64px; border-radius: 9999px; background: var(--success-soft); color: var(--success); display: flex; align-items: center; justify-content: center;">
+          <x-import component-from-global-scope="Cabinet.Icon" name="check-circle" size="{{i32}}"></x-import>
+        </span>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <p class="body-lg" style="color: var(--ink-secondary);">Деньги зачислены</p>
+          <h1 class="display"><span class="amt">2 400 000 ₽</span> на счёте</h1>
+        </div>
+        <dl class="kn-kv" style="padding: 16px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);">
+          <div><dt>Счёт зачисления</dt><dd class="amount-md">•• 4821</dd></div>
+          <div><dt>Первый платёж</dt><dd class="amount-md">15 ноября</dd></div>
+          <div><dt>Сумма платежа</dt><dd class="amount-md amt">157 200 ₽</dd></div>
+          <div><dt>Договор</dt><dd class="amount-md">№ 2026-10-0142-Д</dd></div>
+        </dl>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+          <a class="kk-btn kk-btn--primary kk-btn--lg" href="B12-Loans.dc.html">Открыть график платежей</a>
+          <a class="kk-btn kk-btn--secondary kk-btn--lg" href="B1-Home.dc.html">На главную</a>
+        </div>
+        <p class="body-sm" style="display: flex; gap: 8px; align-items: center; color: var(--ink-secondary);"><x-import component-from-global-scope="Cabinet.Icon" name="info" size="{{i16}}"></x-import>Выдача смоделирована, реального перевода нет.</p>
+      </section>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":950}}'>
+class Component extends DCLogic {
+  renderVals() { return { i16: 16, i32: 32 }; }
+}
+</script>
+</body>
+</html>

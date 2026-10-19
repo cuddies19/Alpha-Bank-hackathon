@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Ассистент — состояния</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div style="box-sizing: border-box; width: 1672px; height: 100vh; display: grid; grid-template-columns: repeat(4, 400px); gap: 24px; background: var(--bg); font-family: var(--font-sans);">
+  <div style="border-radius: 24px; overflow: hidden; box-shadow: inset 0 0 0 1px var(--line);"><dc-import name="AssistantPanel" mode="start" screen="Главная" hint-size="400px,900px"></dc-import></div>
+  <div style="border-radius: 24px; overflow: hidden; box-shadow: inset 0 0 0 1px var(--line);"><dc-import name="AssistantPanel" mode="typing" screen="Подбор финансирования" hint-size="400px,900px"></dc-import></div>
+  <div style="border-radius: 24px; overflow: hidden; box-shadow: inset 0 0 0 1px var(--line);"><dc-import name="AssistantPanel" mode="simplified" screen="Подбор финансирования" hint-size="400px,900px"></dc-import></div>
+  <div style="border-radius: 24px; overflow: hidden; box-shadow: inset 0 0 0 1px var(--line);"><dc-import name="AssistantPanel" mode="error" screen="Подбор финансирования" hint-size="400px,900px"></dc-import></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1672,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

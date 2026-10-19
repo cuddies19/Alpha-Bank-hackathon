@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Решение: отказ — мобильная версия</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div class="kn-mobile">
+  <dc-import name="MobileTop" mode="flow" title="Решение по заявке" sub="ИП Фомин С. В. · № 2026-10-0140" back="M-Login.dc.html" unread="1" hint-size="390px,60px"></dc-import>
+  <div class="kn-mobile__body">
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <x-import component-from-global-scope="Cabinet.Badge" tone="danger">Отказ</x-import>
+      <h1 class="title-1">Сейчас банк не может выдать кредит</h1>
+    </div>
+    <section class="kk-card kk-card--sm" style="gap: 10px; padding: 20px 16px;">
+      <span class="label" style="color: var(--ink-secondary);">Причина</span>
+      <p class="body-lg">В кредитной истории есть просрочка больше 60 дней за последний год.</p>
+      <details class="kn-disc" style="border-top: 1px solid var(--line); padding-top: 12px;">
+        <summary><span class="body-strong">Почему такое решение</span><span class="kn-disc__chev"><x-import component-from-global-scope="Cabinet.Icon" name="chevron-right"></x-import></span></summary>
+        <ul style="display: flex; flex-direction: column; gap: 10px; padding-top: 12px;">
+          <li class="body" style="display: flex; gap: 10px;"><span style="color: var(--danger);"><x-import component-from-global-scope="Cabinet.Icon" name="x-circle"></x-import></span>Просрочка 74 дня, погашена в марте 2026</li>
+          <li class="body" style="display: flex; gap: 10px;"><span style="color: var(--success);"><x-import component-from-global-scope="Cabinet.Icon" name="check-circle"></x-import></span>Обороты по счёту стабильные</li>
+          <li class="body" style="display: flex; gap: 10px;"><span style="color: var(--success);"><x-import component-from-global-scope="Cabinet.Icon" name="check-circle"></x-import></span>Налоговой задолженности нет</li>
+        </ul>
+      </details>
+    </section>
+    <h2 class="title-2">Что можно сделать</h2>
+    <x-import component-from-global-scope="Cabinet.ProductCard" name="Овердрафт" purpose="Небольшой лимит под регулярные поступления" amount-label="Лимит до" amount="300 000 ₽" params="{{params}}"></x-import>
+    <section class="kk-card kk-card--sm" style="gap: 12px; padding: 20px 16px;">
+      <h3 class="title-3">Что улучшить за 3 месяца</h3>
+      <ol style="display: flex; flex-direction: column; gap: 10px;">
+        <li class="body" style="display: flex; gap: 10px;"><span class="kn-avatar" style="width: 28px; height: 28px; flex: none;">1</span><span>Попросите прежнего кредитора обновить данные в бюро</span></li>
+        <li class="body" style="display: flex; gap: 10px;"><span class="kn-avatar" style="width: 28px; height: 28px; flex: none;">2</span><span>Платите по всем кредитам без опозданий 3 месяца</span></li>
+        <li class="body" style="display: flex; gap: 10px;"><span class="kn-avatar" style="width: 28px; height: 28px; flex: none;">3</span><span>Проводите выручку через счёт в банке</span></li>
+      </ol>
+      <p class="body" style="padding: 12px 14px; border-radius: 12px; background: var(--surface-muted);">Подать заявку снова можно после <b>25 января</b>.</p>
+    </section>
+  </div>
+  <div class="kn-mbar">
+    <a class="kk-btn kk-btn--primary kk-btn--lg kk-btn--full" href="B4-Catalog.dc.html">Посмотреть альтернативу</a>
+    <a class="kk-btn kk-btn--secondary kk-btn--full" href="M-Assistant.dc.html">Поговорить с ассистентом</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1650}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const n = ' ';
+    return { params: [{ label: 'Срок', value: '12' + n + 'мес.' }, { label: 'Ставка', value: 'от' + n + '23%' }] };
+  }
+}
+</script>
+</body>
+</html>

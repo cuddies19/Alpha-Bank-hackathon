@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Главная — мобильная версия</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div class="kn-mobile">
+  <dc-import name="MobileTop" mode="root" hint-size="390px,60px"></dc-import>
+  <div class="kn-mobile__body">
+    <div style="display: flex; flex-direction: column; gap: 4px;">
+      <h1 class="title-1">Добрый день, Игорь</h1>
+      <p class="body-sm" style="color: var(--ink-secondary);">Данные по счёту на 24 октября, 10:42</p>
+    </div>
+
+    <x-import component-from-global-scope="Cabinet.Alert" tone="assistant" title="Через 12 дней возможен кассовый разрыв">
+      <p>Выплата от маркетплейса придёт 6 ноября, а закупка нужна до 1 ноября.</p>
+      <div style="margin-top: 12px;"><a class="kk-btn kk-btn--primary kk-btn--full" href="M-Need.dc.html">Подобрать финансирование</a></div>
+    </x-import>
+
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <x-import component-from-global-scope="Cabinet.MetricTile" label="Остаток на счёте" value="1 240 500 ₽" icon="wallet"></x-import>
+      <x-import component-from-global-scope="Cabinet.MetricTile" label="Поступления за 30 дней" value="3 860 000 ₽" icon="arrow-down" delta="{{incDelta}}"></x-import>
+      <x-import component-from-global-scope="Cabinet.MetricTile" label="Чистый денежный поток" value="610 000 ₽" icon="trend-up" hint="в месяц"></x-import>
+      <x-import component-from-global-scope="Cabinet.MetricTile" label="Платежи по кредитам" value="38 000 ₽" icon="calendar" hint="в месяц"></x-import>
+    </div>
+
+    <section class="kk-card kk-card--sm" style="gap: 12px; padding: 20px 16px;">
+      <div class="kn-sechead">
+        <h2 class="title-3">Поступления и списания</h2>
+      </div>
+      <div class="kn-legend"><span><i style="background: var(--ink);"></i>Поступления</span><span><i style="background: var(--line-strong);"></i>Списания</span></div>
+      <div role="img" aria-label="Поступления растут с 1,9 млн ₽ в июле до 3,86 млн ₽ в октябре" style="display: flex; flex-direction: column; gap: 6px;">
+        <div style="height: 120px; display: flex; align-items: flex-end; justify-content: space-around; border-bottom: 1px solid var(--line);">
+          <div style="height: 100%; display: flex; align-items: flex-end; gap: 3px;"><span style="width: 14px; height: 60%; background: var(--ink); border-radius: 3px 3px 0 0;"></span><span style="width: 14px; height: 43.75%; background: var(--line-strong); border-radius: 3px 3px 0 0;"></span></div>
+          <div style="height: 100%; display: flex; align-items: flex-end; gap: 3px;"><span style="width: 14px; height: 52.5%; background: var(--ink); border-radius: 3px 3px 0 0;"></span><span style="width: 14px; height: 38.75%; background: var(--line-strong); border-radius: 3px 3px 0 0;"></span></div>
+          <div style="height: 100%; display: flex; align-items: flex-end; gap: 3px;"><span style="width: 14px; height: 47.5%; background: var(--ink); border-radius: 3px 3px 0 0;"></span><span style="width: 14px; height: 36.25%; background: var(--line-strong); border-radius: 3px 3px 0 0;"></span></div>
+          <div style="height: 100%; display: flex; align-items: flex-end; gap: 3px;"><span style="width: 14px; height: 62.5%; background: var(--ink); border-radius: 3px 3px 0 0;"></span><span style="width: 14px; height: 46.25%; background: var(--line-strong); border-radius: 3px 3px 0 0;"></span></div>
+          <div style="height: 100%; display: flex; align-items: flex-end; gap: 3px;"><span style="width: 14px; height: 86.25%; background: var(--ink); border-radius: 3px 3px 0 0;"></span><span style="width: 14px; height: 70%; background: var(--line-strong); border-radius: 3px 3px 0 0;"></span></div>
+          <div style="height: 100%; display: flex; align-items: flex-end; gap: 3px;"><span style="width: 14px; height: 96.5%; background: var(--ink); border-radius: 3px 3px 0 0;"></span><span style="width: 14px; height: 78.75%; background: var(--line-strong); border-radius: 3px 3px 0 0;"></span></div>
+        </div>
+        <div class="caption" style="display: flex; justify-content: space-around; color: var(--ink-secondary);"><span>май</span><span>июн</span><span>июл</span><span>авг</span><span>сен</span><span>окт</span></div>
+      </div>
+    </section>
+
+    <section class="kk-card kk-card--sm" style="gap: 10px; padding: 20px 16px;">
+      <h2 class="title-3">Активная заявка</h2>
+      <p class="body" style="color: var(--ink-secondary);">Активных заявок нет. Опишите задачу — подберём продукт и посчитаем платёж.</p>
+      <a class="kk-btn kk-btn--secondary kk-btn--full" href="M-Need.dc.html">Подобрать под задачу</a>
+    </section>
+
+    <section class="kk-card kk-card--sm" style="gap: 4px; padding: 20px 16px;">
+      <h2 class="title-3">Ближайшие события</h2>
+      <ul class="kn-feed">
+        <li class="kn-feed__item"><span class="kn-feed__ic" style="color: var(--accent-text);"><x-import component-from-global-scope="Cabinet.Icon" name="sparkle"></x-import></span><span class="body">Ассистент заметил возможный кассовый разрыв</span><time>10:42</time></li>
+        <li class="kn-feed__item"><span class="kn-feed__ic"><x-import component-from-global-scope="Cabinet.Icon" name="document"></x-import></span><span class="body">Выписка по счёту обновлена</span><time>10:40</time></li>
+        <li class="kn-feed__item"><span class="kn-feed__ic"><x-import component-from-global-scope="Cabinet.Icon" name="calendar"></x-import></span><span class="body">Выплата от маркетплейса 6 ноября</span><time>вчера</time></li>
+      </ul>
+    </section>
+    <div style="height: 64px;" aria-hidden="true"></div>
+  </div>
+  <a class="kn-demo kn-demo--m" href="A2-Demo.dc.html"><x-import component-from-global-scope="Cabinet.Icon" name="shield" size="{{i16}}"></x-import>Режим проверки</a>
+  <a class="kn-fab" href="M-Assistant.dc.html" aria-label="Открыть ассистента"><x-import component-from-global-scope="Cabinet.Icon" name="sparkle" size="{{i24}}"></x-import></a>
+  <dc-import name="NavMobile" active="home" hint-size="390px,72px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1700}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { i16: 16, i24: 24, incDelta: { value: '+12%', direction: 'up', tone: 'success', label: 'к сентябрю' } };
+  }
+}
+</script>
+</body>
+</html>

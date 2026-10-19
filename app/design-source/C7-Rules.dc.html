@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Продукты и правила — консоль банка</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}a{color:#d21f16}</style>
+</helmet>
+<div class="kn-app">
+  <div class="kn-app__side"><dc-import name="NavBank" active="rules" hint-size="100%,900px"></dc-import></div>
+  <main class="kn-app__main">
+    <dc-import name="HeaderBank" hint-size="100%,72px"></dc-import>
+    <div class="kn-page" style="gap: 24px;">
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <h1 class="title-1">Продукты и правила</h1>
+        <p class="body" style="color: var(--ink-secondary);">Только для чтения · версия правил 1.0 от 18 октября</p>
+      </div>
+      <x-import component-from-global-scope="Cabinet.Alert" tone="info" title="Значения — допущения команды">Пороги и условия требуют согласования с кредитным комитетом банка.</x-import>
+
+      <section style="display: flex; flex-direction: column; gap: 12px;">
+        <h2 class="title-3">Каталог продуктов</h2>
+        <div class="kn-tablewrap">
+          <table class="kn-table">
+            <thead><tr><th scope="col">Продукт</th><th scope="col">Задача</th><th scope="col" class="num">Лимит</th><th scope="col">Срок</th><th scope="col" class="num">Ставка от</th><th scope="col">Требования</th><th scope="col">Статус</th></tr></thead>
+            <tbody>
+              <tr><td class="body-strong">Овердрафт</td><td>Кассовый разрыв</td><td class="num">100 000 – 5 000 000 ₽</td><td>12 мес.</td><td class="num">23%</td><td>Счёт в банке от 3 месяцев</td><td><x-import component-from-global-scope="Cabinet.Badge" tone="success">Активен</x-import></td></tr>
+              <tr><td class="body-strong">Кредитная линия</td><td>Регулярные закупки, оборот</td><td class="num">500 000 – 30 000 000 ₽</td><td>до 36 мес.</td><td class="num">21,5%</td><td>Бизнес от 12 месяцев</td><td><x-import component-from-global-scope="Cabinet.Badge" tone="success">Активен</x-import></td></tr>
+              <tr><td class="body-strong">Кредит на любые цели</td><td>Разовая крупная трата</td><td class="num">300 000 – 50 000 000 ₽</td><td>12–60 мес.</td><td class="num">22,9%</td><td>Бизнес от 12 месяцев</td><td><x-import component-from-global-scope="Cabinet.Badge" tone="success">Активен</x-import></td></tr>
+              <tr class="is-muted"><td class="body-strong">Банковская гарантия</td><td>Тендер, контракт</td><td class="num">—</td><td>—</td><td class="num">—</td><td>—</td><td><x-import component-from-global-scope="Cabinet.Badge" tone="neutral" icon="clock">Скоро</x-import></td></tr>
+              <tr class="is-muted"><td class="body-strong">Лизинг</td><td>Оборудование, транспорт</td><td class="num">—</td><td>—</td><td class="num">—</td><td>—</td><td><x-import component-from-global-scope="Cabinet.Badge" tone="neutral" icon="clock">Скоро</x-import></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section style="display: flex; flex-direction: column; gap: 12px;">
+        <h2 class="title-3">Кредитные правила</h2>
+        <div class="kn-tablewrap">
+          <table class="kn-table">
+            <thead><tr><th scope="col">Правило</th><th scope="col">Порог</th><th scope="col">Тип</th><th scope="col">Если не пройдено</th></tr></thead>
+            <tbody>
+              <tr><td>Доля платежа в чистом потоке</td><td class="body-strong">не выше 30%</td><td>Подбор условий</td><td style="color: var(--ink-secondary);">Встречное предложение с меньшей суммой</td></tr>
+              <tr><td>Минимальный класс риска</td><td class="body-strong">C</td><td>Стоп-правило</td><td style="color: var(--ink-secondary);">Отказ</td></tr>
+              <tr><td>Возраст бизнеса</td><td class="body-strong">от 12 месяцев</td><td>Стоп-правило</td><td style="color: var(--ink-secondary);">Отказ, альтернатива — овердрафт</td></tr>
+              <tr><td>Просрочка в кредитной истории</td><td class="body-strong">не больше 60 дней за 12 мес.</td><td>Стоп-правило</td><td style="color: var(--ink-secondary);">Отказ с планом улучшения</td></tr>
+              <tr><td>Налоговая задолженность</td><td class="body-strong">нет</td><td>Стоп-правило</td><td style="color: var(--ink-secondary);">Отказ</td></tr>
+              <tr><td>Комплект документов</td><td class="body-strong">полный для формы бизнеса</td><td>Проверка полноты</td><td style="color: var(--ink-secondary);">Дозапрос у клиента</td></tr>
+              <tr><td>Автоматическое решение</td><td class="body-strong">класс A–B, все правила пройдены, сумма до 1 000 000 ₽</td><td>Маршрутизация</td><td style="color: var(--ink-secondary);">Ручное рассмотрение</td></tr>
+              <tr><td>Источник не ответил</td><td class="body-strong">3 попытки по 10 с</td><td>Отказоустойчивость</td><td style="color: var(--ink-secondary);">Ручное рассмотрение с меткой</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1150}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

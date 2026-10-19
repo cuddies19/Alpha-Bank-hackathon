@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Заявка, шаг 3: финансы и документы — Кредитный кабинет</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}a{color:#d21f16}</style>
+</helmet>
+<div class="kn-app">
+  <div class="kn-app__side"><dc-import name="NavClient" active="applications" hint-size="100%,900px"></dc-import></div>
+  <main class="kn-app__main">
+    <dc-import name="HeaderClient" hint-size="100%,72px"></dc-import>
+    <div class="kn-page" style="gap: 24px;">
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <h1 class="title-1">Заявка на кредитную линию</h1>
+        <p class="body" style="color: var(--ink-secondary);">№ 2026-10-0142 · черновик</p>
+      </div>
+      <section class="kk-card kk-card--md"><x-import component-from-global-scope="Cabinet.Stepper" steps="{{steps}}" current="{{c2}}"></x-import></section>
+
+      <div class="kn-cols">
+        <div class="kn-cols__main">
+          <section class="kk-card kk-card--md" style="gap: 16px;">
+            <div class="kn-sechead">
+              <h2 class="title-3">Обороты за 12 месяцев</h2>
+              <x-import component-from-global-scope="Cabinet.Badge" tone="neutral" icon="document">Из выписки по счёту</x-import>
+            </div>
+            <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap;">
+              <div style="display: flex; flex-direction: column; gap: 4px;">
+                <span class="label" style="color: var(--ink-secondary);">Поступления, ноябрь 2025 — октябрь 2026</span>
+                <span class="amount-lg amt">33 210 000 ₽</span>
+              </div>
+              <div role="img" aria-label="Поступления по месяцам: пик в ноябре и декабре, спад летом, рост к октябрю" style="flex: 1 1 320px; max-width: 460px; display: flex; flex-direction: column; gap: 6px;">
+                <div style="height: 80px; display: flex; align-items: flex-end; gap: 6px;">
+                  <span style="flex: 1; height: 86.7%; background: var(--ink); border-radius: 3px 3px 0 0;"></span>
+                  <span style="flex: 1; height: 91.1%; background: var(--ink); border-radius: 3px 3px 0 0;"></span>
+                  <span style="flex: 1; height: 48.9%; background: var(--ink); border-radius: 3px 3px 0 0;"></span>
+                  <span style="flex: 1; height: 44.4%; background: var(--ink); border-radius: 3px 3px 0 0;"></span>
+                  <span style="flex: 1; height: 51.1%; background: var(--ink); border-radius: 3px 3px 0 0;"></span>
+                  <span style="flex: 1; height: 55.6%; background: var(--ink); border-radius: 3px 3px 0 0;"></span>
+                  <span style="flex: 1; height: 53.3%; background: var(--ink); border-radius: 3px 3px 0 0;"></span>
+                  <span style="flex: 1; height: 46.7%; background: var(--ink); border-radius: 3px 3px 0 0;"></span>
+                  <span style="flex: 1; height: 42.2%; background: var(--ink); border-radius: 3px 3px 0 0;"></span>
+                  <span style="flex: 1; height: 55.6%; background: var(--ink); border-radius: 3px 3px 0 0;"></span>
+                  <span style="flex: 1; height: 76.7%; background: var(--ink); border-radius: 3px 3px 0 0;"></span>
+                  <span style="flex: 1; height: 85.8%; background: var(--ink); border-radius: 3px 3px 0 0;"></span>
+                </div>
+                <div class="caption" style="display: flex; justify-content: space-between; color: var(--ink-secondary);"><span>ноя</span><span>фев</span><span>май</span><span>авг</span><span>окт</span></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="kk-card kk-card--md" style="gap: 12px;">
+            <div class="kn-sechead">
+              <h2 class="title-3">Действующие кредиты</h2>
+              <x-import component-from-global-scope="Cabinet.Badge" tone="neutral" icon="document">Из выписки по счёту</x-import>
+            </div>
+            <dl class="kn-rows">
+              <div><dt>Кредит в другом банке</dt><dd>остаток 450 000 ₽ · 38 000 ₽ в месяц</dd></div>
+            </dl>
+            <p class="body-sm" style="color: var(--ink-secondary);">Банк сверит данные с кредитной историей — вводить вручную не нужно.</p>
+          </section>
+
+          <section class="kk-card kk-card--md" style="gap: 20px;">
+            <h2 class="title-3">Документы</h2>
+            <ul style="display: flex; flex-direction: column; gap: 12px;">
+              <li style="display: flex; gap: 12px; align-items: flex-start;">
+                <span style="color: var(--success);"><x-import component-from-global-scope="Cabinet.Icon" name="check-circle"></x-import></span>
+                <span style="flex: 1; display: flex; flex-direction: column;"><span class="body-strong">Бухгалтерская отчётность за 2025 год</span><span class="body-sm" style="color: var(--ink-secondary);">Обязательно для ООО</span></span>
+                <x-import component-from-global-scope="Cabinet.Badge" tone="success">Принят</x-import>
+              </li>
+              <li style="display: flex; gap: 12px; align-items: flex-start;">
+                <span style="color: var(--info);"><x-import component-from-global-scope="Cabinet.Icon" name="clock"></x-import></span>
+                <span style="flex: 1; display: flex; flex-direction: column;"><span class="body-strong">Выписка из другого банка за 6 месяцев</span><span class="body-sm" style="color: var(--ink-secondary);">Желательно, если есть второй счёт</span></span>
+                <x-import component-from-global-scope="Cabinet.Badge" tone="info">Проверяем</x-import>
+              </li>
+              <li style="display: flex; gap: 12px; align-items: flex-start;">
+                <span style="color: var(--danger);"><x-import component-from-global-scope="Cabinet.Icon" name="alert"></x-import></span>
+                <span style="flex: 1; display: flex; flex-direction: column;"><span class="body-strong">Договор поставки партии</span><span class="body-sm" style="color: var(--ink-secondary);">Желательно: подтверждает цель закупки</span></span>
+                <x-import component-from-global-scope="Cabinet.Badge" tone="danger">Нужно заменить</x-import>
+              </li>
+            </ul>
+            <x-import component-from-global-scope="Cabinet.DocumentUpload" files="{{files}}" hint="PDF, JPG или PNG до 20 МБ. Проверим файл сразу после загрузки"></x-import>
+          </section>
+        </div>
+
+        <aside class="kn-cols__side">
+          <section class="kk-card kk-card--md" style="gap: 16px;">
+            <h2 class="title-3">Ваша заявка</h2>
+            <dl class="kn-rows">
+              <div><dt>Продукт</dt><dd>Кредитная линия</dd></div>
+              <div><dt>Сумма</dt><dd>3 000 000 ₽</dd></div>
+              <div><dt>Документы</dt><dd>1 из 1 обязательных</dd></div>
+            </dl>
+          </section>
+          <x-import component-from-global-scope="Cabinet.Alert" tone="assistant" title="Часть выручки, похоже, идёт на другой счёт">Выписка из другого банка поможет банку увидеть всю выручку — тогда сумма может быть выше.</x-import>
+        </aside>
+      </div>
+
+      <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 12px; padding: 16px 24px; background: var(--surface); border-radius: 16px;">
+        <span style="color: var(--success);"><x-import component-from-global-scope="Cabinet.Icon" name="check-circle"></x-import></span>
+        <span class="body-sm" style="flex: 1; color: var(--ink-secondary);">Черновик сохранён в 10:48</span>
+        <a class="kk-btn kk-btn--secondary" href="B5-Step2.dc.html">Назад</a>
+        <a class="kk-btn kk-btn--primary" href="B5-Step4.dc.html">Продолжить</a>
+      </div>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1650}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      c2: 2,
+      steps: [{ label: 'Параметры', description: 'Заполнено ассистентом' }, { label: 'Компания', description: 'Из ЕГРЮЛ' }, { label: 'Финансы и документы', description: 'Из выписки по счёту' }, { label: 'Проверка и отправка' }],
+      files: [
+        { name: 'Бухгалтерская_отчётность_2025.pdf', size: '1,8 МБ', status: 'ok' },
+        { name: 'Выписка_второй_счёт_апрель-сентябрь.pdf', size: '640 КБ', status: 'checking' },
+        { name: 'Договор_поставки.jpg', status: 'error', message: 'Фото обрезано: не видно страницы с подписью. Загрузите разворот целиком.' },
+        { name: 'Счёт_поставщика.pdf', status: 'uploading', progress: 64 }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

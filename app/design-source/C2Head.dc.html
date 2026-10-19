@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Шапка карточки заявки</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div style="box-sizing: border-box; display: flex; flex-direction: column; gap: 16px; padding: 20px 32px 0; background: var(--surface); border-bottom: 1px solid var(--line); color: var(--ink); font-family: var(--font-sans);">
+  <a class="kk-btn kk-btn--link" href="C1-Queue.dc.html" style="align-self: flex-start; color: var(--ink-secondary);">
+    <svg class="kn-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11.5 5.5L5 12l6.5 6.5"></path></svg>
+    Очередь заявок
+  </a>
+  <div style="display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 16px;">
+    <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0;">
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px;">
+        <h1 class="title-2">ООО «Дом и уют»</h1>
+        <x-import component-from-global-scope="Cabinet.Badge" tone="{{stageTone}}">{{stage}}</x-import>
+      </div>
+      <p class="body" style="color: var(--ink-secondary);">ИНН 7701234567 · заявка № 2026-10-0142 · кредитная линия <span class="amt" style="color: var(--ink); font-weight: 600;">3 000 000 ₽</span> на 18 мес. · подана 24 октября, 10:51</p>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+      <span class="kn-sla" title="Время до нарушения SLA">
+        <x-import component-from-global-scope="Cabinet.Icon" name="clock" size="{{i16}}"></x-import>
+        осталось 1 ч 20 мин
+      </span>
+      <x-import component-from-global-scope="Cabinet.Button" variant="secondary">Взять в работу</x-import>
+    </div>
+  </div>
+  <nav class="kn-tabs" aria-label="Разделы заявки" style="border-bottom: 0;">
+    <a class="{{t1}}" href="C2-Summary.dc.html" aria-current="{{c1}}">Сводка</a>
+    <a class="{{t2}}" href="C2-Client.dc.html" aria-current="{{c2}}">Клиент</a>
+    <a class="{{t3}}" href="C2-Checks.dc.html" aria-current="{{c3}}">Внешние проверки</a>
+    <a class="{{t4}}" href="C2-Risk.dc.html" aria-current="{{c4}}">Оценка риска</a>
+    <a class="{{t5}}" href="C2-Docs.dc.html" aria-current="{{c5}}">Документы</a>
+    <a class="{{t6}}" href="C2-History.dc.html" aria-current="{{c6}}">История</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"tab":{"editor":"enum","options":["summary","client","checks","risk","docs","history"],"default":"summary"},"decided":{"editor":"boolean","default":false},"$preview":{"width":1192,"height":200}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const t = this.props.tab ?? 'summary';
+    const keys = ['summary', 'client', 'checks', 'risk', 'docs', 'history'];
+    const out = { i16: 16 };
+    keys.forEach((k, i) => {
+      out['t' + (i + 1)] = 'kn-tab' + (t === k ? ' is-active' : '');
+      out['c' + (i + 1)] = t === k ? 'page' : undefined;
+    });
+    const decided = this.props.decided ?? false;
+    out.stage = decided ? 'Встречное предложение' : 'Ручное рассмотрение';
+    out.stageTone = decided ? 'warning' : 'info';
+    return out;
+  }
+}
+</script>
+</body>
+</html>

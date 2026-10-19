@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Статус заявки — Кредитный кабинет</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}a{color:#d21f16}</style>
+</helmet>
+<div class="kn-app">
+  <div class="kn-app__side"><dc-import name="NavClient" active="applications" hint-size="100%,900px"></dc-import></div>
+  <main class="kn-app__main" style="position: relative;">
+    <dc-import name="HeaderClient" hint-size="100%,72px"></dc-import>
+
+    <sc-if value="{{toast}}" hint-placeholder-val="{{yes}}">
+      <div class="kn-toast kn-toast--float" role="status">
+        <span class="kn-toast__ic" style="color: #7fb0ff;"><x-import component-from-global-scope="Cabinet.Icon" name="info"></x-import></span>
+        <div class="kn-toast__body"><b>Заявка перешла к специалисту</b><span>11:05 · статус обновился сам, перезагружать не нужно</span></div>
+        <button type="button" class="kn-ibtn" aria-label="Закрыть уведомление" onClick="{{closeToast}}" style="width: 28px; height: 28px; color: #ffffff;"><x-import component-from-global-scope="Cabinet.Icon" name="x" size="{{i16}}"></x-import></button>
+      </div>
+    </sc-if>
+
+    <div class="kn-page" style="gap: 24px;">
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <a class="kk-btn kk-btn--link" href="B7-Applications.dc.html" style="align-self: flex-start; color: var(--ink-secondary);">
+          <svg class="kn-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11.5 5.5L5 12l6.5 6.5"></path></svg>
+          Мои заявки
+        </a>
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+          <h1 class="title-1">Кредитная линия на <span class="amt">3 000 000 ₽</span></h1>
+          <x-import component-from-global-scope="Cabinet.Badge" tone="info">Рассматривает специалист</x-import>
+        </div>
+        <p class="body" style="color: var(--ink-secondary);">№ 2026-10-0142 · подана 24 октября, 10:51</p>
+      </div>
+
+      <div class="kn-cols">
+        <div class="kn-cols__main">
+          <section class="kk-card kk-card--md" style="gap: 20px;">
+            <div class="kn-sechead">
+              <h2 class="title-3">Где заявка</h2>
+              <span class="body-sm" style="color: var(--ink-secondary); display: inline-flex; align-items: center; gap: 6px;"><span class="kn-dot" style="background: var(--success);"></span>Обновляется сама</span>
+            </div>
+            <x-import component-from-global-scope="Cabinet.StatusTracker" stages="{{stages}}"></x-import>
+          </section>
+
+          <section class="kk-card kk-card--md" style="gap: 8px;">
+            <h2 class="title-3">История событий</h2>
+            <ul class="kn-feed">
+              <li class="kn-feed__item"><span class="kn-feed__ic"><x-import component-from-global-scope="Cabinet.Icon" name="clock"></x-import></span><span class="body">Заявка передана специалисту банка</span><time>24 окт., 11:05</time></li>
+              <li class="kn-feed__item"><span class="kn-feed__ic"><x-import component-from-global-scope="Cabinet.Icon" name="check"></x-import></span><span class="body">Оценка завершена</span><time>24 окт., 11:05</time></li>
+              <li class="kn-feed__item"><span class="kn-feed__ic"><x-import component-from-global-scope="Cabinet.Icon" name="check"></x-import></span><span class="body">Получены сведения из ЕГРЮЛ, ФНС и бюро кредитных историй</span><time>24 окт., 10:58</time></li>
+              <li class="kn-feed__item"><span class="kn-feed__ic"><x-import component-from-global-scope="Cabinet.Icon" name="check"></x-import></span><span class="body">Данные и документы проверены</span><time>24 окт., 10:52</time></li>
+              <li class="kn-feed__item"><span class="kn-feed__ic"><x-import component-from-global-scope="Cabinet.Icon" name="arrow-up"></x-import></span><span class="body">Заявка отправлена</span><time>24 окт., 10:51</time></li>
+            </ul>
+          </section>
+        </div>
+
+        <aside class="kn-cols__side">
+          <section class="kk-card kk-card--md" style="gap: 12px;">
+            <h2 class="title-3">Параметры заявки</h2>
+            <dl class="kn-rows">
+              <div><dt>Сумма</dt><dd>3 000 000 ₽</dd></div>
+              <div><dt>Срок</dt><dd>18 мес.</dd></div>
+              <div><dt>Ставка</dt><dd>от 21,5%</dd></div>
+              <div><dt>Платёж</dt><dd>≈ 196 500 ₽</dd></div>
+              <div><dt>Цель</dt><dd>Закупка к распродаже</dd></div>
+            </dl>
+          </section>
+          <section class="kk-card kk-card--md" style="gap: 12px;">
+            <h2 class="title-3">Документы</h2>
+            <ul style="display: flex; flex-direction: column; gap: 10px;">
+              <li style="display: flex; justify-content: space-between; gap: 12px; align-items: center;"><span class="body">Отчётность 2025</span><x-import component-from-global-scope="Cabinet.Badge" tone="success">Принят</x-import></li>
+              <li style="display: flex; justify-content: space-between; gap: 12px; align-items: center;"><span class="body">Выписка второго счёта</span><x-import component-from-global-scope="Cabinet.Badge" tone="success">Принят</x-import></li>
+              <li style="display: flex; justify-content: space-between; gap: 12px; align-items: center;"><span class="body">Согласия</span><x-import component-from-global-scope="Cabinet.Badge" tone="success">Подписано</x-import></li>
+            </ul>
+          </section>
+          <x-import component-from-global-scope="Cabinet.Button" variant="ghost" on-click="{{askWithdraw}}">Отозвать заявку</x-import>
+        </aside>
+      </div>
+    </div>
+
+    <sc-if value="{{withdraw}}" hint-placeholder-val="{{no}}">
+      <div class="kn-scrim">
+        <div class="kn-modal" role="dialog" aria-modal="true" aria-labelledby="wd-title">
+          <h2 class="title-3" id="wd-title">Отозвать заявку?</h2>
+          <p class="body">Банк перестанет её рассматривать. Чтобы получить деньги, понадобится новая заявка — данные компании подставим снова.</p>
+          <div class="kn-modal__actions">
+            <x-import component-from-global-scope="Cabinet.Button" variant="secondary" on-click="{{cancelWithdraw}}">Оставить</x-import>
+            <x-import component-from-global-scope="Cabinet.Button" variant="primary" on-click="{{cancelWithdraw}}">Отозвать</x-import>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1500}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    return {
+      yes: true, no: false, i16: 16,
+      toast: !s.toastClosed, withdraw: !!s.withdraw,
+      closeToast: () => this.setState({ toastClosed: true }),
+      askWithdraw: () => this.setState({ withdraw: true }),
+      cancelWithdraw: () => this.setState({ withdraw: false }),
+      stages: [
+        { title: 'Заявка отправлена', status: 'done', time: '10:51' },
+        { title: 'Проверяем данные', status: 'done', time: '10:52' },
+        { title: 'Запрашиваем сведения', status: 'done', time: '10:58', description: 'ЕГРЮЛ, ФНС «Прозрачный бизнес», кредитная история' },
+        { title: 'Оцениваем заявку', status: 'done', time: '11:05' },
+        { title: 'Рассматривает специалист', status: 'current', time: 'обычно до 1 часа', description: 'Платёж на 3 000 000 ₽ — заметная часть денежного потока, поэтому заявку смотрит специалист. Решение придёт сюда.' },
+        { title: 'Решение', status: 'pending' },
+        { title: 'Подписание', status: 'pending', time: 'в кабинете' },
+        { title: 'Деньги на счёте', status: 'pending' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

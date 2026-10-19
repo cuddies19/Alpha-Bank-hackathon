@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Статус заявки — мобильная версия</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div class="kn-mobile">
+  <dc-import name="MobileTop" mode="flow" title="Заявка № 2026-10-0142" sub="Кредитная линия · 3 000 000 ₽" back="M-Home.dc.html" hint-size="390px,60px"></dc-import>
+  <div class="kn-mobile__body">
+    <div class="kn-toast" role="status" style="width: 100%;">
+      <span class="kn-toast__ic" style="color: #7fb0ff;"><x-import component-from-global-scope="Cabinet.Icon" name="info"></x-import></span>
+      <div class="kn-toast__body"><b>Заявка перешла к специалисту</b><span>11:05 · обновилось само</span></div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <x-import component-from-global-scope="Cabinet.Badge" tone="info">Рассматривает специалист</x-import>
+      <p class="body-sm" style="color: var(--ink-secondary);">Подана 24 октября, 10:51</p>
+    </div>
+    <section class="kk-card kk-card--sm" style="gap: 16px; padding: 20px 16px;">
+      <h2 class="title-3">Где заявка</h2>
+      <x-import component-from-global-scope="Cabinet.StatusTracker" stages="{{stages}}"></x-import>
+    </section>
+    <section class="kk-card kk-card--sm" style="gap: 8px; padding: 20px 16px;">
+      <h2 class="title-3">Параметры</h2>
+      <dl class="kn-rows">
+        <div><dt>Сумма</dt><dd>3 000 000 ₽</dd></div>
+        <div><dt>Срок</dt><dd>18 мес.</dd></div>
+        <div><dt>Платёж</dt><dd>≈ 196 500 ₽</dd></div>
+      </dl>
+    </section>
+    <a class="kn-demo-tag" href="M-Counter.dc.html" style="align-self: flex-start; text-decoration: none;"><x-import component-from-global-scope="Cabinet.Icon" name="shield" size="{{i16}}"></x-import>Режим проверки: показать готовое решение</a>
+    <x-import component-from-global-scope="Cabinet.Button" variant="ghost" full-width="{{yes}}">Отозвать заявку</x-import>
+  </div>
+  <dc-import name="NavMobile" active="applications" hint-size="390px,72px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1450}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      yes: true, i16: 16,
+      stages: [
+        { title: 'Заявка отправлена', status: 'done', time: '10:51' },
+        { title: 'Проверяем данные', status: 'done', time: '10:52' },
+        { title: 'Запрашиваем сведения', status: 'done', time: '10:58' },
+        { title: 'Оцениваем заявку', status: 'done', time: '11:05' },
+        { title: 'Рассматривает специалист', status: 'current', time: 'до 1 часа', description: 'Специалист проверит, комфортен ли платёж для бизнеса.' },
+        { title: 'Решение', status: 'pending' },
+        { title: 'Подписание', status: 'pending' },
+        { title: 'Деньги на счёте', status: 'pending' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

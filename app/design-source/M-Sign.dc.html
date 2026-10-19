@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Подписание — мобильная версия</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div class="kn-mobile">
+  <dc-import name="MobileTop" mode="flow" title="Подписание" sub="Кредитная линия · 2 400 000 ₽" back="M-Counter.dc.html" hint-size="390px,60px"></dc-import>
+  <div class="kn-mobile__body">
+    <section class="kk-card kk-card--sm" style="gap: 4px; padding: 12px 16px;">
+      <ul style="display: flex; flex-direction: column;">
+        <li style="display: flex; align-items: center; gap: 12px; min-height: 56px; border-bottom: 1px solid var(--line);"><span class="kk-doc__icon"><x-import component-from-global-scope="Cabinet.Icon" name="document"></x-import></span><span class="body-strong" style="flex: 1;">Кредитный договор</span><x-import component-from-global-scope="Cabinet.Button" variant="ghost" size="sm">Открыть</x-import></li>
+        <li style="display: flex; align-items: center; gap: 12px; min-height: 56px; border-bottom: 1px solid var(--line);"><span class="kk-doc__icon"><x-import component-from-global-scope="Cabinet.Icon" name="document"></x-import></span><span class="body-strong" style="flex: 1;">График платежей</span><x-import component-from-global-scope="Cabinet.Button" variant="ghost" size="sm">Открыть</x-import></li>
+        <li style="display: flex; align-items: center; gap: 12px; min-height: 56px;"><span class="kk-doc__icon"><x-import component-from-global-scope="Cabinet.Icon" name="document"></x-import></span><span class="body-strong" style="flex: 1;">Заявление на выдачу</span><x-import component-from-global-scope="Cabinet.Button" variant="ghost" size="sm">Открыть</x-import></li>
+      </ul>
+    </section>
+    <section class="kk-card kk-card--sm" style="gap: 16px; padding: 20px 16px;">
+      <label class="kn-consent__row">
+        <input type="checkbox" class="kn-check" checked="{{agree}}" onChange="{{toggleAgree}}">
+        <span>Ознакомился с условиями договора и графиком платежей</span>
+      </label>
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <span class="label" id="m-otp">Код подтверждения</span>
+        <div class="kn-otp" role="group" aria-labelledby="m-otp" style="gap: 6px;">
+          <sc-for list="{{cells}}" as="c" hint-placeholder-count="6">
+            <input inputmode="numeric" maxlength="1" aria-label="{{c.label}}" value="{{c.v}}" onChange="{{c.set}}" style="width: 44px; height: 52px;">
+          </sc-for>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; border-radius: 12px; border: 1.5px dashed var(--line-strong);">
+        <span class="body">Демо: код подтверждения <b class="amt">482 913</b> — вместо SMS.</span>
+        <x-import component-from-global-scope="Cabinet.Button" variant="ghost" size="sm" on-click="{{fill}}" style="align-self: flex-start;">Подставить код</x-import>
+      </div>
+    </section>
+    <p class="body-sm" style="display: flex; gap: 8px; align-items: center; color: var(--ink-secondary);"><x-import component-from-global-scope="Cabinet.Icon" name="info" size="{{i16}}"></x-import>Подписание смоделировано: юридической силы нет.</p>
+  </div>
+  <div class="kn-mbar">
+    <sc-if value="{{ready}}" hint-placeholder-val="{{no}}">
+      <a class="kk-btn kk-btn--primary kk-btn--lg kk-btn--full" href="M-Issued.dc.html">Подписать</a>
+    </sc-if>
+    <sc-if value="{{notReady}}" hint-placeholder-val="{{yes}}">
+      <x-import component-from-global-scope="Cabinet.Button" variant="primary" size="lg" full-width="{{yes}}" disabled="{{yes}}">Подписать</x-import>
+      <p class="caption" style="text-align: center; color: var(--ink-secondary); font-weight: 400;">{{hint}}</p>
+    </sc-if>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1350}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const code = (s.code || '      ').split('');
+    const agree = !!s.agree;
+    const ok = code.join('').replace(/\s/g, '') === '482913';
+    return {
+      yes: true, no: false, i16: 16, agree,
+      toggleAgree: () => this.setState({ agree: !agree }),
+      cells: code.map((v, i) => ({ v: v.trim(), label: 'Цифра ' + (i + 1) + ' из 6', set: (e) => { const c = code.slice(); c[i] = String(e.target.value).replace(/\D/g, '').slice(-1) || ' '; this.setState({ code: c.join('') }); } })),
+      fill: () => this.setState({ code: '482913' }),
+      ready: agree && ok, notReady: !(agree && ok),
+      hint: !agree ? 'Отметьте, что ознакомились с условиями' : 'Введите код из 6 цифр'
+    };
+  }
+}
+</script>
+</body>
+</html>

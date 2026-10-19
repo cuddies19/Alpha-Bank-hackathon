@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Шапка консоли банка</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<header class="kn-top" style="font-family: var(--font-sans); color: var(--ink);">
+  <label class="kn-search">
+    <svg class="kn-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M16.5 16.5L21 21"></path></svg>
+    <span class="kk-sr">Поиск</span>
+    <input type="search" placeholder="Поиск по ИНН или номеру заявки">
+  </label>
+  <span class="kn-top__spacer"></span>
+  <div style="display: flex; align-items: center; gap: 10px;">
+    <span class="kn-avatar">ОК</span>
+    <span class="kn-company__text">
+      <span class="kn-company__name">Ольга Кравцова</span>
+      <span class="kn-company__sub">Кредитный аналитик</span>
+    </span>
+  </div>
+</header>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1192,"height":72}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

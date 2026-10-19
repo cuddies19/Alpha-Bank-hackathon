@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Варианты финансирования — Кредитный кабинет</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}a{color:#d21f16}</style>
+</helmet>
+<div class="kn-app">
+  <div class="kn-app__side"><dc-import name="NavClient" active="financing" hint-size="100%,900px"></dc-import></div>
+  <main class="kn-app__main">
+    <dc-import name="HeaderClient" hint-size="100%,72px"></dc-import>
+    <div class="kn-page">
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <a class="kk-btn kk-btn--link" href="B2-Dialog.dc.html" style="align-self: flex-start; color: var(--ink-secondary);">
+          <svg class="kn-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11.5 5.5L5 12l6.5 6.5"></path></svg>
+          Изменить задачу
+        </a>
+        <h1 class="title-1">Варианты под закупку к распродаже</h1>
+        <p class="body" style="color: var(--ink-secondary);">Закупка партии к 11.11 · около <span class="amt">3 000 000 ₽</span> · деньги нужны до 1 ноября · возврат из выручки маркетплейсов</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(440px, 100%), 1fr)); gap: 24px; align-items: start;">
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <x-import component-from-global-scope="Cabinet.ProductCard" recommended="{{yes}}" name="Кредитная линия" purpose="Закупки партиями, деньги нужны многократно" amount-label="Лимит" amount="{{amountFull}}" params="{{recParams}}" preliminary="{{no}}">
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <x-import component-from-global-scope="Cabinet.PaymentLoadMeter" payment="{{pay}}" cash-flow="{{flow}}"></x-import>
+              <div class="kk-product__reasons">
+                <p class="body-strong">Почему подходит</p>
+                <ul>
+                  <li class="body"><x-import component-from-global-scope="Cabinet.Icon" name="check"></x-import>Выручка приходит волнами раз в 2 недели</li>
+                  <li class="body"><x-import component-from-global-scope="Cabinet.Icon" name="check"></x-import>За год 5 закупок партиями</li>
+                  <li class="body"><x-import component-from-global-scope="Cabinet.Icon" name="check"></x-import>Берёте только нужную часть лимита — проценты только на неё</li>
+                </ul>
+              </div>
+              <p class="kk-product__note body-sm"><x-import component-from-global-scope="Cabinet.Icon" name="info" size="{{i16}}"></x-import>Предварительная оценка по данным вашего счёта. Решение принимает банк.</p>
+              <div class="kk-product__actions">
+                <a class="kk-btn kk-btn--primary" href="B5-Step1.dc.html">Оформить заявку</a>
+                <a class="kk-btn kk-btn--ghost" href="#compare">Сравнить продукты</a>
+              </div>
+            </div>
+          </x-import>
+
+          <sc-if value="{{showTip}}" hint-placeholder-val="{{yes}}">
+            <x-import component-from-global-scope="Cabinet.Alert" tone="assistant" title="Можно взять меньше и платить комфортно">
+              <p>При 2 400 000 ₽ платёж будет 157 200 ₽ — 26% потока, комфортная нагрузка. Разницу можно добрать из лимита позже.</p>
+              <div style="margin-top: 12px;"><x-import component-from-global-scope="Cabinet.Button" variant="secondary" size="sm" on-click="{{recalc}}">Пересчитать на 2 400 000 ₽</x-import></div>
+            </x-import>
+          </sc-if>
+          <sc-if value="{{showBack}}" hint-placeholder-val="{{no}}">
+            <x-import component-from-global-scope="Cabinet.Alert" tone="assistant" title="Сумма пересчитана">
+              <p>Платёж {{payFull}} — {{share}}% потока. Если партия всё же дороже, верните исходную сумму.</p>
+              <div style="margin-top: 12px;"><x-import component-from-global-scope="Cabinet.Button" variant="ghost" size="sm" on-click="{{reset}}">Вернуть 3 000 000 ₽</x-import></div>
+            </x-import>
+          </sc-if>
+        </div>
+
+        <x-import component-from-global-scope="Cabinet.ProductCard" name="Кредит на любые цели" purpose="Вся сумма сразу, равные платежи" amount-label="Сумма" amount="3 000 000 ₽" params="{{altParams}}" preliminary="{{no}}">
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <x-import component-from-global-scope="Cabinet.PaymentLoadMeter" payment="{{payAlt}}" cash-flow="{{flow}}"></x-import>
+            <div class="kk-product__reasons">
+              <p class="body-strong">Когда выбрать</p>
+              <ul>
+                <li class="body"><x-import component-from-global-scope="Cabinet.Icon" name="check"></x-import>Закупка разовая, повторять не планируете</li>
+                <li class="body"><x-import component-from-global-scope="Cabinet.Icon" name="check"></x-import>Платёж ниже за счёт срока 24 месяца</li>
+              </ul>
+            </div>
+            <p class="kk-product__note body-sm"><x-import component-from-global-scope="Cabinet.Icon" name="info" size="{{i16}}"></x-import>Предварительная оценка по данным вашего счёта. Решение принимает банк.</p>
+            <div class="kk-product__actions">
+              <a class="kk-btn kk-btn--ghost" href="B5-Step1.dc.html">Выбрать этот вариант</a>
+            </div>
+          </div>
+        </x-import>
+      </div>
+
+      <section class="kk-card kk-card--md">
+        <details class="kn-disc" open>
+          <summary>
+            <span style="display: flex; flex-direction: column; gap: 2px;">
+              <span class="title-3">Калькулятор кредитной линии</span>
+              <span class="body-sm" style="color: var(--ink-secondary);">Двигайте сумму и срок — платёж и нагрузка пересчитаются сразу</span>
+            </span>
+            <span class="kn-disc__chev"><x-import component-from-global-scope="Cabinet.Icon" name="chevron-right"></x-import></span>
+          </summary>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 32px; padding-top: 24px;">
+            <div style="display: flex; flex-direction: column; gap: 24px;">
+              <div class="kn-slider">
+                <div class="kn-slider__head"><label class="label" for="calc-amount">Сумма</label><span class="amount-md amt">{{amountFull}}</span></div>
+                <div class="kn-slider__track">
+                  <div class="kn-slider__fill" style="width: {{amountPct}};"></div>
+                  <input class="kn-slider__input" id="calc-amount" type="range" min="500000" max="5000000" step="100000" value="{{amount}}" onChange="{{onAmount}}" aria-valuetext="{{amountFull}}">
+                  <div class="kn-slider__thumb" style="left: {{amountPct}};"></div>
+                </div>
+                <div class="kn-slider__scale"><span>500 000 ₽</span><span>5 000 000 ₽</span></div>
+              </div>
+              <div class="kn-slider">
+                <div class="kn-slider__head"><label class="label" for="calc-term">Срок</label><span class="amount-md amt">{{termText}}</span></div>
+                <div class="kn-slider__track">
+                  <div class="kn-slider__fill" style="width: {{termPct}};"></div>
+                  <input class="kn-slider__input" id="calc-term" type="range" min="6" max="36" step="1" value="{{term}}" onChange="{{onTerm}}" aria-valuetext="{{termText}}">
+                  <div class="kn-slider__thumb" style="left: {{termPct}};"></div>
+                </div>
+                <div class="kn-slider__scale"><span>6 мес.</span><span>36 мес.</span></div>
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+              <dl class="kn-kv">
+                <div><dt>Платёж в месяц</dt><dd class="amount-lg amt">{{payFull}}</dd></div>
+                <div><dt>Переплата за срок</dt><dd class="amount-lg amt">{{overFull}}</dd></div>
+                <div><dt>Ставка</dt><dd class="amount-lg amt">21,5%</dd></div>
+              </dl>
+              <x-import component-from-global-scope="Cabinet.PaymentLoadMeter" payment="{{pay}}" cash-flow="{{flow}}"></x-import>
+            </div>
+          </div>
+        </details>
+      </section>
+
+      <section class="kk-card kk-card--md">
+        <details class="kn-disc">
+          <summary>
+            <span class="title-3">Почему не другой продукт?</span>
+            <span class="kn-disc__chev"><x-import component-from-global-scope="Cabinet.Icon" name="chevron-right"></x-import></span>
+          </summary>
+          <dl class="kn-rows" style="padding-top: 12px;">
+            <div><dt>Овердрафт</dt><dd style="font-weight: 400; text-align: right;">Лимит для вас до 1 200 000 ₽ — меньше нужной суммы</dd></div>
+            <div><dt>Кредит на любые цели</dt><dd style="font-weight: 400; text-align: right;">Разовая выдача, а закупки у вас регулярные</dd></div>
+          </dl>
+        </details>
+      </section>
+
+      <section id="compare" style="display: flex; flex-direction: column; gap: 16px;">
+        <h2 class="title-2">Сравнить продукты</h2>
+        <div class="kn-tablewrap">
+          <table class="kn-table kn-table--plain">
+            <thead>
+              <tr><th scope="col"><span class="kk-sr">Параметр</span></th><th scope="col">Кредитная линия</th><th scope="col">Кредит на любые цели</th><th scope="col">Овердрафт</th></tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row" class="body" style="color: var(--ink-secondary); border-bottom: 1px solid var(--line);">Лимит для вас</th><td class="nw">3 000 000 ₽</td><td class="nw">3 000 000 ₽</td><td class="nw">до 1 200 000 ₽</td></tr>
+              <tr><th scope="row" class="body" style="color: var(--ink-secondary); border-bottom: 1px solid var(--line);">Срок</th><td>18 мес.</td><td>24 мес.</td><td>12 мес.</td></tr>
+              <tr><th scope="row" class="body" style="color: var(--ink-secondary); border-bottom: 1px solid var(--line);">Ставка</th><td>21,5%</td><td>22,9%</td><td>23%</td></tr>
+              <tr><th scope="row" class="body" style="color: var(--ink-secondary); border-bottom: 1px solid var(--line);">Платёж</th><td class="nw">≈ 196 500 ₽</td><td class="nw">≈ 157 000 ₽</td><td>гасится из поступлений</td></tr>
+              <tr><th scope="row" class="body" style="color: var(--ink-secondary); border-bottom: 1px solid var(--line);">Деньги частями</th><td>Да, в пределах лимита</td><td>Нет, вся сумма сразу</td><td>Да, в пределах лимита</td></tr>
+              <tr><th scope="row" class="body" style="color: var(--ink-secondary); border-bottom: 1px solid var(--line);">Скорость решения</th><td>обычно до 2 часов</td><td>обычно до 2 часов</td><td>обычно до 30 минут</td></tr>
+              <tr><th scope="row" class="body" style="color: var(--ink-secondary);">Залог</th><td>Не нужен</td><td>Не нужен</td><td>Не нужен</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="body-sm" style="color: var(--ink-secondary);">Условия — предварительная оценка по данным вашего счёта. Решение принимает банк.</p>
+      </section>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2400}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const n = ' ';
+    const money = (v) => String(Math.round(v)).replace(/\B(?=(\d{3})+(?!\d))/g, n);
+    const amount = s.amount ?? 3000000;
+    const term = s.term ?? 18;
+    const r = 21.5 / 1200;
+    const pay = Math.round(amount * r / (1 - Math.pow(1 + r, -term)) / 100) * 100;
+    const over = pay * term - amount;
+    const flow = 610000;
+    const termWord = 'мес.';
+    return {
+      yes: true, no: false, i16: 16,
+      amount, term, flow, pay, payAlt: 157000,
+      amountFull: money(amount) + n + '₽',
+      payFull: money(pay) + n + '₽',
+      overFull: money(over) + n + '₽',
+      termText: term + n + termWord,
+      share: Math.round(pay / flow * 100),
+      amountPct: ((amount - 500000) / 4500000 * 100).toFixed(1) + '%',
+      termPct: ((term - 6) / 30 * 100).toFixed(1) + '%',
+      recParams: [{ label: 'Срок', value: term + n + termWord }, { label: 'Ставка', value: '21,5%' }, { label: 'Платёж', value: '≈' + n + money(pay) + n + '₽' }],
+      altParams: [{ label: 'Срок', value: '24' + n + termWord }, { label: 'Ставка', value: '22,9%' }, { label: 'Платёж', value: '≈' + n + '157' + n + '000' + n + '₽' }],
+      showTip: amount !== 2400000, showBack: amount === 2400000,
+      recalc: () => this.setState({ amount: 2400000 }),
+      reset: () => this.setState({ amount: 3000000 }),
+      onAmount: (e) => this.setState({ amount: Number(e.target.value) }),
+      onTerm: (e) => this.setState({ term: Number(e.target.value) })
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Главная — состояния</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}a{color:#d21f16}</style>
+</helmet>
+<div style="box-sizing: border-box; width: 1440px; min-height: 680px; padding: 40px; background: var(--bg); color: var(--ink); font-family: var(--font-sans); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; align-items: start;">
+
+  <div style="display: flex; flex-direction: column; gap: 12px;">
+    <p class="caption" style="color: var(--ink-secondary);">Загрузка: скелетон</p>
+    <div aria-busy="true" aria-label="Загружаем данные по счёту" style="display: flex; flex-direction: column; gap: 16px;">
+      <span class="kn-skel" style="width: 70%; height: 40px; background: var(--line);"></span>
+      <span class="kn-skel" style="width: 50%; height: 16px; background: var(--line);"></span>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;">
+        <div class="kk-card kk-card--md" style="gap: 12px;"><span class="kn-skel" style="width: 60%; height: 14px;"></span><span class="kn-skel" style="width: 80%; height: 28px;"></span></div>
+        <div class="kk-card kk-card--md" style="gap: 12px;"><span class="kn-skel" style="width: 60%; height: 14px;"></span><span class="kn-skel" style="width: 80%; height: 28px;"></span></div>
+        <div class="kk-card kk-card--md" style="gap: 12px;"><span class="kn-skel" style="width: 60%; height: 14px;"></span><span class="kn-skel" style="width: 80%; height: 28px;"></span></div>
+        <div class="kk-card kk-card--md" style="gap: 12px;"><span class="kn-skel" style="width: 60%; height: 14px;"></span><span class="kn-skel" style="width: 80%; height: 28px;"></span></div>
+      </div>
+      <div class="kk-card kk-card--md" style="gap: 16px;">
+        <span class="kn-skel" style="width: 45%; height: 20px;"></span>
+        <div style="display: flex; align-items: flex-end; justify-content: space-around; height: 140px;">
+          <span class="kn-skel" style="width: 22px; height: 60%;"></span><span class="kn-skel" style="width: 22px; height: 50%;"></span><span class="kn-skel" style="width: 22px; height: 45%;"></span><span class="kn-skel" style="width: 22px; height: 65%;"></span><span class="kn-skel" style="width: 22px; height: 85%;"></span><span class="kn-skel" style="width: 22px; height: 95%;"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 12px;">
+    <p class="caption" style="color: var(--ink-secondary);">Нет данных по счёту</p>
+    <section class="kk-card kk-card--md">
+      <div class="kn-empty" style="padding: 32px 8px;">
+        <span class="kn-empty__ic"><x-import component-from-global-scope="Cabinet.Icon" name="document" size="{{i24}}"></x-import></span>
+        <h2 class="title-3">Нет данных по счёту</h2>
+        <p class="body">Подключите выписку — покажем остаток и поступления и заранее подскажем, если возможен кассовый разрыв.</p>
+        <x-import component-from-global-scope="Cabinet.Button" variant="primary" icon-left="upload">Подключить выписку</x-import>
+        <p class="body-sm">Подбор финансирования работает и без выписки — по данным, которые вы укажете.</p>
+      </div>
+    </section>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 12px;">
+    <p class="caption" style="color: var(--ink-secondary);">Есть активная заявка</p>
+    <section class="kk-card kk-card--md" style="gap: 16px;">
+      <div class="kn-sechead">
+        <h2 class="title-3">Активная заявка</h2>
+        <x-import component-from-global-scope="Cabinet.Badge" tone="info">Рассматривает специалист</x-import>
+      </div>
+      <p class="body" style="color: var(--ink-secondary);">Кредитная линия · <span class="amt" style="color: var(--ink); font-weight: 600;">3 000 000 ₽</span> · № 2026-10-0142</p>
+      <x-import component-from-global-scope="Cabinet.StatusTracker" stages="{{stages}}"></x-import>
+      <a class="kk-btn kk-btn--secondary" href="B8-Status.dc.html" style="align-self: flex-start;">Открыть заявку</a>
+    </section>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":680}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      i24: 24,
+      stages: [
+        { title: 'Оцениваем заявку', status: 'done', time: '11:05' },
+        { title: 'Рассматривает специалист', status: 'current', time: 'обычно до 1 часа', description: 'Специалист проверит, комфортен ли платёж для бизнеса.' },
+        { title: 'Решение', status: 'pending' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

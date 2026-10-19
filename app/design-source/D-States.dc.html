@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Системные состояния</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div style="box-sizing: border-box; width: 1440px; min-height: 1900px; padding: 56px 64px; background: var(--surface-muted); color: var(--ink); font-family: var(--font-sans); display: flex; flex-direction: column; gap: 32px;">
+  <div style="display: flex; flex-direction: column; gap: 8px;">
+    <h1 class="title-1">Системные состояния</h1>
+    <p class="body" style="color: var(--ink-secondary);">Одинаковы для кабинета клиента и консоли банка. Ошибка всегда говорит, что случилось и что делать.</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 24px;">
+
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <p class="caption" style="color: var(--ink-secondary);">Скелетоны загрузки: карточки и таблица</p>
+      <div aria-busy="true" style="box-sizing: border-box; height: 380px; border-radius: 16px; background: var(--bg); box-shadow: inset 0 0 0 1px var(--line); padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+        <span class="kn-skel" style="width: 50%; height: 28px; background: var(--line);"></span>
+        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px;">
+          <div class="kk-card kk-card--sm" style="gap: 10px;"><span class="kn-skel" style="width: 60%; height: 12px;"></span><span class="kn-skel" style="width: 90%; height: 22px;"></span></div>
+          <div class="kk-card kk-card--sm" style="gap: 10px;"><span class="kn-skel" style="width: 60%; height: 12px;"></span><span class="kn-skel" style="width: 90%; height: 22px;"></span></div>
+          <div class="kk-card kk-card--sm" style="gap: 10px;"><span class="kn-skel" style="width: 60%; height: 12px;"></span><span class="kn-skel" style="width: 90%; height: 22px;"></span></div>
+        </div>
+        <div class="kk-card kk-card--sm" style="gap: 14px; flex: 1;">
+          <span class="kn-skel" style="width: 100%; height: 12px;"></span><span class="kn-skel" style="width: 100%; height: 12px;"></span><span class="kn-skel" style="width: 100%; height: 12px;"></span><span class="kn-skel" style="width: 70%; height: 12px;"></span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <p class="caption" style="color: var(--ink-secondary);">Пустое состояние</p>
+      <div style="box-sizing: border-box; height: 380px; border-radius: 16px; background: var(--bg); box-shadow: inset 0 0 0 1px var(--line); padding: 24px; display: flex;">
+        <section class="kk-card kk-card--md" style="flex: 1; justify-content: center;">
+          <div class="kn-empty">
+            <span class="kn-empty__ic"><x-import component-from-global-scope="Cabinet.Icon" name="document" size="{{i24}}"></x-import></span>
+            <h2 class="title-3">Заявок пока нет</h2>
+            <p class="body">Опишите задачу — подберём продукт и посчитаем платёж до подачи заявки.</p>
+            <x-import component-from-global-scope="Cabinet.Button" variant="primary">Подобрать финансирование</x-import>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <p class="caption" style="color: var(--ink-secondary);">Ошибка сети</p>
+      <div style="box-sizing: border-box; height: 380px; border-radius: 16px; background: var(--bg); box-shadow: inset 0 0 0 1px var(--line); padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+        <x-import component-from-global-scope="Cabinet.Alert" tone="danger" title="Нет связи с сервером">
+          <p>Проверим ещё раз через 10 секунд. Данные, которые вы ввели, сохранены.</p>
+          <div style="margin-top: 8px;"><x-import component-from-global-scope="Cabinet.Button" variant="secondary" size="sm">Повторить</x-import></div>
+        </x-import>
+        <div class="kk-card kk-card--md" style="gap: 12px; flex: 1; opacity: .55;" aria-hidden="true">
+          <span class="kn-skel" style="width: 40%; height: 18px; animation: none;"></span>
+          <span class="kn-skel" style="width: 100%; height: 12px; animation: none;"></span>
+          <span class="kn-skel" style="width: 80%; height: 12px; animation: none;"></span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <p class="caption" style="color: var(--ink-secondary);">Сессия истекла</p>
+      <div style="box-sizing: border-box; position: relative; height: 380px; border-radius: 16px; overflow: hidden; background: var(--bg); box-shadow: inset 0 0 0 1px var(--line);">
+        <div class="kn-scrim kn-scrim--abs">
+          <div class="kn-modal" role="dialog" aria-labelledby="ds-session" style="width: 420px;">
+            <h2 class="title-3" id="ds-session">Сессия истекла</h2>
+            <p class="body">Войдите снова — черновик заявки сохранён, продолжите с того же шага.</p>
+            <div class="kn-modal__actions"><a class="kk-btn kk-btn--primary" href="Main.dc.html">Войти</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <p class="caption" style="color: var(--ink-secondary);">Страница не найдена · 404</p>
+      <div style="box-sizing: border-box; height: 380px; border-radius: 16px; background: var(--bg); box-shadow: inset 0 0 0 1px var(--line); display: flex; align-items: center; justify-content: center;">
+        <div class="kn-empty">
+          <span class="amount-xl amt" style="color: var(--ink-secondary);">404</span>
+          <h2 class="title-3">Такой страницы нет</h2>
+          <p class="body">Возможно, ссылка устарела. Заявки и документы — в разделах кабинета.</p>
+          <a class="kk-btn kk-btn--secondary" href="B1-Home.dc.html">На главную</a>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <p class="caption" style="color: var(--ink-secondary);">Нет прав: клиент открыл ссылку консоли</p>
+      <div style="box-sizing: border-box; height: 380px; border-radius: 16px; background: var(--bg); box-shadow: inset 0 0 0 1px var(--line); display: flex; align-items: center; justify-content: center;">
+        <div class="kn-empty">
+          <span class="kn-empty__ic"><x-import component-from-global-scope="Cabinet.Icon" name="shield" size="{{i24}}"></x-import></span>
+          <h2 class="title-3">Этот раздел — для сотрудников банка</h2>
+          <p class="body">Вы вошли как клиент ООО «Дом и уют». Ваши заявки и решения — в кабинете.</p>
+          <a class="kk-btn kk-btn--secondary" href="B7-Applications.dc.html">Вернуться в кабинет</a>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <p class="caption" style="color: var(--ink-secondary);">Тост смены статуса</p>
+      <div style="box-sizing: border-box; position: relative; height: 300px; border-radius: 16px; background: var(--bg); box-shadow: inset 0 0 0 1px var(--line); padding: 24px; display: flex; flex-direction: column; align-items: flex-end; gap: 12px;">
+        <div class="kn-toast" role="status"><span class="kn-toast__ic"><x-import component-from-global-scope="Cabinet.Icon" name="check-circle"></x-import></span><div class="kn-toast__body"><b>Решение готово</b><span>Заявка № 2026-10-0142 · 11:32</span><a href="B9b-Counter.dc.html">Посмотреть решение</a></div></div>
+        <div class="kn-toast" role="status"><span class="kn-toast__ic" style="color: #f2b544;"><x-import component-from-global-scope="Cabinet.Icon" name="alert"></x-import></span><div class="kn-toast__body"><b>Банк запросил документы</b><span>Ответьте до 30 октября</span><a href="B9c-Docs.dc.html">Загрузить</a></div></div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <p class="caption" style="color: var(--ink-secondary);">Модальное подтверждение</p>
+      <div style="box-sizing: border-box; position: relative; height: 300px; border-radius: 16px; overflow: hidden; background: var(--bg); box-shadow: inset 0 0 0 1px var(--line);">
+        <div class="kn-scrim kn-scrim--abs">
+          <div class="kn-modal" role="dialog" aria-labelledby="ds-confirm" style="width: 440px;">
+            <h2 class="title-3" id="ds-confirm">Отозвать заявку?</h2>
+            <p class="body">Банк перестанет её рассматривать. Данные компании подставим снова в новой заявке.</p>
+            <div class="kn-modal__actions">
+              <x-import component-from-global-scope="Cabinet.Button" variant="secondary">Оставить</x-import>
+              <x-import component-from-global-scope="Cabinet.Button" variant="primary">Отозвать</x-import>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1900}}'>
+class Component extends DCLogic {
+  renderVals() { return { i24: 24 }; }
+}
+</script>
+</body>
+</html>

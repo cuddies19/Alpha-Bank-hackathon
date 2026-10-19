@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Журнал аудита — консоль банка</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}a{color:#d21f16}</style>
+</helmet>
+<div class="kn-app">
+  <div class="kn-app__side"><dc-import name="NavBank" active="audit" hint-size="100%,900px"></dc-import></div>
+  <main class="kn-app__main">
+    <dc-import name="HeaderBank" hint-size="100%,72px"></dc-import>
+    <div class="kn-page" style="gap: 24px;">
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <h1 class="title-1">Журнал аудита</h1>
+        <p class="body" style="color: var(--ink-secondary);">Каждое действие системы, сотрудника и клиента. Персональные данные скрыты.</p>
+      </div>
+
+      <div class="kn-toolbar">
+        <button type="button" class="kn-select">Заявка: <span>все</span></button>
+        <button type="button" class="kn-select">Тип события: <span>все</span></button>
+        <span style="width: 8px;"></span>
+        <span class="label" style="color: var(--ink-secondary);">Участник</span>
+        <sc-for list="{{actors}}" as="a" hint-placeholder-count="4">
+          <x-import component-from-global-scope="Cabinet.Chip" selected="{{a.sel}}" on-click="{{a.pick}}">{{a.label}}</x-import>
+        </sc-for>
+        <span style="flex: 1;"></span>
+        <x-import component-from-global-scope="Cabinet.Button" variant="secondary" size="sm" icon-left="arrow-down">Выгрузить CSV</x-import>
+      </div>
+
+      <div class="kn-tablewrap">
+        <table class="kn-table kn-table--dense">
+          <thead><tr><th scope="col">Время</th><th scope="col">Кто</th><th scope="col">Заявка</th><th scope="col">Действие</th><th scope="col">Было → стало</th></tr></thead>
+          <tbody>
+            <sc-for list="{{rows}}" as="r" hint-placeholder-count="12">
+              <tr>
+                <td class="nw" style="font-variant-numeric: tabular-nums;">{{r.t}}</td>
+                <td class="nw"><span style="display: block;">{{r.who}}</span><span class="kn-sub">{{r.role}}</span></td>
+                <td class="nw">{{r.app}}</td>
+                <td>{{r.action}}</td>
+                <td style="color: var(--ink-secondary);">{{r.change}}</td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+        <div class="kn-pager">
+          <span>{{count}} событий за 24 октября</span>
+          <div class="kn-pager__btns">
+            <button type="button" class="kn-pager__btn" disabled aria-label="Предыдущая страница">‹</button>
+            <button type="button" class="kn-pager__btn is-on" aria-current="page">1</button>
+            <button type="button" class="kn-pager__btn">2</button>
+            <button type="button" class="kn-pager__btn" aria-label="Следующая страница">›</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1200}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const f = s.f || 'all';
+    const all = [
+      { t: '11:32:08', who: 'О. Кравцова', role: 'Сотрудник', k: 'staff', app: '2026-10-0142', action: 'Решение принято', change: 'Ручное рассмотрение → Встречное предложение' },
+      { t: '11:31:40', who: 'О. Кравцова', role: 'Сотрудник', k: 'staff', app: '2026-10-0142', action: 'Изменены условия', change: '3 000 000 ₽ → 2 400 000 ₽, 18 мес.' },
+      { t: '11:24:51', who: 'О. Кравцова', role: 'Сотрудник', k: 'staff', app: '2026-10-0142', action: 'Просмотр паспортных данных', change: '45 •• ••••12 · причина: проверка руководителя' },
+      { t: '11:20:12', who: 'О. Кравцова', role: 'Сотрудник', k: 'staff', app: '2026-10-0142', action: 'Взята в работу', change: '— → О. Кравцова' },
+      { t: '11:18:55', who: 'Система', role: 'Конвейер', k: 'system', app: '2026-10-0144', action: 'Источник не ответил', change: 'БКИ: 3 попытки по 10 с → ручная проверка' },
+      { t: '11:05:31', who: 'Система', role: 'Конвейер', k: 'system', app: '2026-10-0142', action: 'Передана на ручное рассмотрение', change: 'Оценка → Ручное рассмотрение' },
+      { t: '11:05:29', who: 'Система', role: 'Скоринг', k: 'system', app: '2026-10-0142', action: 'Расчёт балла', change: '— → 640, класс B' },
+      { t: '11:02:17', who: 'Система', role: 'Мониторинг', k: 'system', app: '—', action: 'Сбой источника', change: 'БКИ: работает → не отвечает' },
+      { t: '10:58:04', who: 'Система', role: 'Интеграции', k: 'system', app: '2026-10-0142', action: 'Запрос в БКИ', change: 'Ответ за 1,4 с' },
+      { t: '10:51:14', who: 'И. Соколов', role: 'Клиент', k: 'client', app: '2026-10-0142', action: 'Заявка отправлена', change: 'Черновик → Подана' },
+      { t: '10:50:02', who: 'И. Соколов', role: 'Клиент', k: 'client', app: '2026-10-0142', action: 'Дано согласие на запрос в БКИ', change: '— → действует до 24 апреля 2027' },
+      { t: '10:31:22', who: 'Система', role: 'Конвейер', k: 'system', app: '2026-10-0139', action: 'Авторешение', change: 'Оценка → Одобрено' },
+      { t: '10:12:45', who: 'Система', role: 'Правила', k: 'system', app: '2026-10-0140', action: 'Стоп-правило', change: 'Оценка → Отказ: просрочка больше 60 дней' }
+    ];
+    const rows = all.filter((r) => f === 'all' || r.k === f);
+    const opts = [['all', 'Все'], ['system', 'Система'], ['staff', 'Сотрудник'], ['client', 'Клиент']];
+    return {
+      rows, count: String(rows.length),
+      actors: opts.map(([k, label]) => ({ label, sel: f === k, pick: () => this.setState({ f: k }) }))
+    };
+  }
+}
+</script>
+</body>
+</html>

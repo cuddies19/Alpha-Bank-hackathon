@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Деньги зачислены — мобильная версия</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div class="kn-mobile">
+  <dc-import name="MobileTop" mode="root" hint-size="390px,60px"></dc-import>
+  <div class="kn-mobile__body" style="padding-top: 32px; gap: 20px;">
+    <span style="width: 56px; height: 56px; border-radius: 9999px; background: var(--success-soft); color: var(--success); display: flex; align-items: center; justify-content: center;"><x-import component-from-global-scope="Cabinet.Icon" name="check-circle" size="{{i28}}"></x-import></span>
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <p class="body" style="color: var(--ink-secondary);">Деньги зачислены</p>
+      <h1 class="title-1"><span class="amt">2 400 000 ₽</span> на счёте</h1>
+    </div>
+    <section class="kk-card kk-card--sm" style="padding: 8px 16px;">
+      <dl class="kn-rows">
+        <div><dt>Счёт зачисления</dt><dd>•• 4821</dd></div>
+        <div><dt>Первый платёж</dt><dd>15 ноября</dd></div>
+        <div><dt>Сумма платежа</dt><dd>157 200 ₽</dd></div>
+      </dl>
+    </section>
+    <p class="body-sm" style="display: flex; gap: 8px; align-items: center; color: var(--ink-secondary);"><x-import component-from-global-scope="Cabinet.Icon" name="info" size="{{i16}}"></x-import>Выдача смоделирована, реального перевода нет.</p>
+  </div>
+  <div class="kn-mbar">
+    <a class="kk-btn kk-btn--primary kk-btn--lg kk-btn--full" href="B12-Loans.dc.html">Открыть график платежей</a>
+    <a class="kk-btn kk-btn--ghost kk-btn--full" href="M-Home.dc.html">На главную</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return { i16: 16, i28: 28 }; }
+}
+</script>
+</body>
+</html>

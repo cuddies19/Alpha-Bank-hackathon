@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Заявка отправлена — Кредитный кабинет</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}a{color:#d21f16}</style>
+</helmet>
+<div class="kn-app">
+  <div class="kn-app__side"><dc-import name="NavClient" active="applications" hint-size="100%,900px"></dc-import></div>
+  <main class="kn-app__main">
+    <dc-import name="HeaderClient" hint-size="100%,72px"></dc-import>
+    <div class="kn-page kn-page--narrow" style="padding-top: 64px;">
+      <section class="kk-card kk-card--lg" style="gap: 24px;">
+        <span style="width: 64px; height: 64px; border-radius: 9999px; background: var(--success-soft); color: var(--success); display: flex; align-items: center; justify-content: center;">
+          <x-import component-from-global-scope="Cabinet.Icon" name="check-circle" size="{{i32}}"></x-import>
+        </span>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <h1 class="title-1">Заявка отправлена</h1>
+          <p class="body-lg" style="color: var(--ink-secondary);">Кредитная линия · <span class="amt">3 000 000 ₽</span> · № 2026-10-0142</p>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <h2 class="title-3">Что будет дальше</h2>
+          <ol style="display: flex; flex-direction: column; gap: 12px;">
+            <li class="body" style="display: flex; gap: 12px; align-items: center;"><span class="kn-avatar" style="width: 32px; height: 32px;">1</span>Проверим данные и документы</li>
+            <li class="body" style="display: flex; gap: 12px; align-items: center;"><span class="kn-avatar" style="width: 32px; height: 32px;">2</span>Запросим сведения в ЕГРЮЛ, ФНС и бюро кредитных историй</li>
+            <li class="body" style="display: flex; gap: 12px; align-items: center;"><span class="kn-avatar" style="width: 32px; height: 32px;">3</span>Примем решение</li>
+          </ol>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px; padding: 16px; border-radius: 12px; background: var(--surface-muted);">
+          <span style="color: var(--ink-secondary);"><x-import component-from-global-scope="Cabinet.Icon" name="clock"></x-import></span>
+          <p class="body"><b>Обычно до 2 часов.</b> Сообщим о решении здесь, в кабинете.</p>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+          <a class="kk-btn kk-btn--primary kk-btn--lg" href="B8-Status.dc.html">Следить за заявкой</a>
+          <a class="kk-btn kk-btn--ghost kk-btn--lg" href="B1-Home.dc.html">На главную</a>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":950}}'>
+class Component extends DCLogic {
+  renderVals() { return { i32: 32 }; }
+}
+</script>
+</body>
+</html>

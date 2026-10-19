@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Панель решения</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<section aria-label="Решение по заявке" style="box-sizing: border-box; width: 100%; background: var(--surface); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 20px; color: var(--ink); font-family: var(--font-sans);">
+  <div style="display: flex; flex-direction: column; gap: 4px;">
+    <h2 class="title-3">Решение по заявке</h2>
+    <p class="body-sm" style="color: var(--ink-secondary);">№ 2026-10-0142 · ООО «Дом и уют»</p>
+  </div>
+
+  <sc-if value="{{open}}" hint-placeholder-val="{{yes}}">
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <span class="label" id="dp-outcome">Исход</span>
+      <div class="kn-seg kn-seg--grid" role="group" aria-labelledby="dp-outcome">
+        <sc-for list="{{opts}}" as="o" hint-placeholder-count="4">
+          <button type="button" class="{{o.cls}}" aria-pressed="{{o.pressed}}" onClick="{{o.pick}}">
+            {{o.label}}
+            <sc-if value="{{o.rec}}" hint-placeholder-val="{{no}}"><span class="kn-seg__tag">Рекомендация системы</span></sc-if>
+          </button>
+        </sc-for>
+      </div>
+    </div>
+
+    <sc-if value="{{isApprove}}" hint-placeholder-val="{{no}}">
+      <x-import component-from-global-scope="Cabinet.Alert" tone="warning" title="Не проходит правило доли платежа">Платёж займёт 32% потока при пороге 30%. Система рекомендует встречное предложение.</x-import>
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <span class="label" style="color: var(--ink-secondary);">Условия из заявки, только для чтения</span>
+        <dl class="kn-rows">
+          <div><dt>Сумма</dt><dd>3 000 000 ₽</dd></div>
+          <div><dt>Срок</dt><dd>18 мес.</dd></div>
+          <div><dt>Ставка</dt><dd>21,5%</dd></div>
+          <div><dt>Платёж</dt><dd>196 500 ₽</dd></div>
+        </dl>
+      </div>
+      <x-import component-from-global-scope="Cabinet.PaymentLoadMeter" title="Доля платежа в потоке" payment="{{pay3}}" cash-flow="{{flow}}"></x-import>
+    </sc-if>
+
+    <sc-if value="{{isCounter}}" hint-placeholder-val="{{yes}}">
+      <p class="body-sm" style="color: var(--ink-secondary);">Подобрана сумма, при которой платёж 26% потока. Поля можно изменить — платёж пересчитается.</p>
+      <x-import component-from-global-scope="Cabinet.TextField" label="Сумма" format="money" value="{{amountText}}" on-change="{{onAmount}}"></x-import>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;">
+        <x-import component-from-global-scope="Cabinet.TextField" label="Срок" suffix="мес." value="{{termText}}" on-change="{{onTerm}}" input-mode="numeric"></x-import>
+        <x-import component-from-global-scope="Cabinet.TextField" label="Ставка" suffix="%" value="{{rateText}}" on-change="{{onRate}}" input-mode="decimal"></x-import>
+      </div>
+      <dl class="kn-rows">
+        <div><dt>Платёж в месяц</dt><dd>{{payText}}</dd></div>
+      </dl>
+      <x-import component-from-global-scope="Cabinet.PaymentLoadMeter" title="Доля платежа в потоке" payment="{{pay}}" cash-flow="{{flow}}"></x-import>
+    </sc-if>
+
+    <sc-if value="{{isRequest}}" hint-placeholder-val="{{no}}">
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <span class="label">Что запросить у клиента</span>
+        <sc-for list="{{docs}}" as="d" hint-placeholder-count="4">
+          <label class="kn-consent__row" style="padding: 6px 0;">
+            <input type="checkbox" class="kn-check" checked="{{d.on}}" onChange="{{d.toggle}}">
+            <span>{{d.label}}</span>
+          </label>
+        </sc-for>
+      </div>
+      <label class="kn-field">
+        <span class="label">Сообщение клиенту</span>
+        <textarea class="kn-textarea" rows="4">Пришлите бухгалтерскую отчётность за 2025 год и выписку из другого банка за 6 месяцев — так банк увидит всю выручку компании.</textarea>
+      </label>
+    </sc-if>
+
+    <sc-if value="{{isDecline}}" hint-placeholder-val="{{no}}">
+      <label class="kn-field">
+        <span class="label">Причина из справочника</span>
+        <select class="kn-nselect">
+          <option>Просрочка больше 60 дней за 12 месяцев</option>
+          <option>Налоговая задолженность</option>
+          <option>Возраст бизнеса меньше 12 месяцев</option>
+          <option>Класс риска ниже C</option>
+          <option>Другое</option>
+        </select>
+      </label>
+      <label class="kn-field">
+        <span class="label">Объяснение для клиента</span>
+        <textarea class="kn-textarea" rows="5">Сейчас банк не может выдать кредит: в кредитной истории есть просрочка больше 60 дней за последний год. Подать заявку снова можно через 3 месяца.</textarea>
+        <span class="body-sm" style="color: var(--ink-secondary);">Шаблон простыми словами — можно поправить</span>
+      </label>
+    </sc-if>
+
+    <label class="kn-field">
+      <span class="label">Внутренний комментарий</span>
+      <textarea class="kn-textarea" rows="3" placeholder="Например: сезонность учтена, платёж проверен по выписке"></textarea>
+      <span class="body-sm" style="color: var(--ink-secondary);">Клиент его не видит</span>
+    </label>
+
+    <x-import component-from-global-scope="Cabinet.Button" variant="primary" full-width="{{yes}}" on-click="{{ask}}">Принять решение</x-import>
+  </sc-if>
+
+  <sc-if value="{{decided}}" hint-placeholder-val="{{no}}">
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <x-import component-from-global-scope="Cabinet.Badge" tone="success">Решение принято</x-import>
+      <p class="body">24 октября, 11:32 · О. Кравцова</p>
+      <dl class="kn-rows">
+        <div><dt>Исход</dt><dd>{{outcomeWord}}</dd></div>
+        <div><dt>Условия</dt><dd>{{outcomeTerms}}</dd></div>
+      </dl>
+      <x-import component-from-global-scope="Cabinet.Alert" tone="info" title="Клиент уже видит решение">Уведомление пришло в кабинет клиента. Панель доступна только для чтения.</x-import>
+      <a class="kn-demo-tag" href="B8-Ready.dc.html" style="align-self: flex-start; text-decoration: none;">
+        <x-import component-from-global-scope="Cabinet.Icon" name="shield" size="{{i16}}"></x-import>
+        Режим проверки: войти как Игорь
+      </a>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{modal}}" hint-placeholder-val="{{no}}">
+    <div class="kn-scrim">
+      <div class="kn-modal" role="dialog" aria-modal="true" aria-labelledby="dp-confirm">
+        <h3 class="title-3" id="dp-confirm">Принять решение?</h3>
+        <p class="body">Клиент увидит решение сразу. Отменить нельзя.</p>
+        <dl class="kn-rows">
+          <div><dt>Исход</dt><dd>{{outcomeWord}}</dd></div>
+          <div><dt>Условия</dt><dd>{{outcomeTerms}}</dd></div>
+        </dl>
+        <div class="kn-modal__actions">
+          <x-import component-from-global-scope="Cabinet.Button" variant="secondary" on-click="{{cancel}}">Отмена</x-import>
+          <x-import component-from-global-scope="Cabinet.Button" variant="primary" on-click="{{decide}}">Принять решение</x-import>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"outcome":{"editor":"enum","options":["approve","counter","request","decline"],"default":"counter"},"decided":{"editor":"boolean","default":false},"$preview":{"width":384,"height":1150}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const n = ' ';
+    const money = (v) => String(Math.round(v)).replace(/\B(?=(\d{3})+(?!\d))/g, n);
+    const outcome = s.outcome || this.props.outcome || 'counter';
+    const decided = s.decided ?? (this.props.decided ?? false);
+    const amount = s.amount ?? 2400000;
+    const term = s.term ?? 18;
+    const rate = s.rate ?? 21.5;
+    const r = rate / 1200;
+    const pay = term > 0 && amount > 0 ? Math.round((r > 0 ? amount * r / (1 - Math.pow(1 + r, -term)) : amount / term) / 100) * 100 : 0;
+    const docState = s.docs || { bs: true, stmt: true, supply: false, other: false };
+    const docList = [
+      { k: 'bs', label: 'Бухгалтерская отчётность за 2025 год' },
+      { k: 'stmt', label: 'Выписка из другого банка за 6 месяцев' },
+      { k: 'supply', label: 'Договор поставки' },
+      { k: 'other', label: 'Другое' }
+    ];
+    const reqCount = docList.filter((d) => docState[d.k]).length;
+    const labels = { approve: 'Одобрить', counter: 'Встречное предложение', request: 'Запросить данные', decline: 'Отказать' };
+    const words = { approve: 'Одобрено', counter: 'Встречное предложение', request: 'Запрошены данные', decline: 'Отказ' };
+    const terms = {
+      approve: '3' + n + '000' + n + '000' + n + '₽ на 18' + n + 'мес.',
+      counter: money(amount) + n + '₽ на ' + term + n + 'мес.',
+      request: reqCount + ' док. до 30 октября',
+      decline: 'Просрочка больше 60 дней'
+    };
+    return {
+      yes: true, no: false, i16: 16,
+      open: !decided, decided: decided, modal: !!s.modal,
+      isApprove: outcome === 'approve', isCounter: outcome === 'counter', isRequest: outcome === 'request', isDecline: outcome === 'decline',
+      opts: ['approve', 'counter', 'request', 'decline'].map((k) => ({
+        label: labels[k], rec: k === 'counter',
+        cls: 'kn-seg__opt' + (outcome === k ? ' is-on' : ''), pressed: outcome === k ? 'true' : 'false',
+        pick: () => this.setState({ outcome: k })
+      })),
+      docs: docList.map((d) => ({ ...d, on: !!docState[d.k], toggle: () => this.setState({ docs: { ...docState, [d.k]: !docState[d.k] } }) })),
+      amountText: money(amount), termText: String(term), rateText: String(rate).replace('.', ','),
+      onAmount: (e) => this.setState({ amount: Number(String(e.target.value).replace(/\D/g, '')) || 0 }),
+      onTerm: (e) => this.setState({ term: Number(String(e.target.value).replace(/\D/g, '')) || 0 }),
+      onRate: (e) => this.setState({ rate: Number(String(e.target.value).replace(',', '.').replace(/[^\d.]/g, '')) || 0 }),
+      pay: pay, payText: money(pay) + n + '₽', pay3: 196500, flow: 610000,
+      outcomeWord: words[outcome], outcomeTerms: terms[outcome],
+      ask: () => this.setState({ modal: true }),
+      cancel: () => this.setState({ modal: false }),
+      decide: () => this.setState({ modal: false, decided: true })
+    };
+  }
+}
+</script>
+</body>
+</html>

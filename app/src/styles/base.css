@@ -1,0 +1,20 @@
+/* Базовые стили приложения (в макете они жили в <helmet> каждого артборда) */
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-sans); }
+a { color: var(--accent-text); }
+
+/* Мобильные экраны макета нарисованы на 390 px — по центру на широком экране */
+.app-mobile-frame { min-height: 100vh; display: flex; justify-content: center; background: var(--surface-muted); }
+.app-mobile-frame > * { box-shadow: 0 0 0 1px var(--line); }
+@media (max-width: 430px) {
+  .app-mobile-frame { display: block; }
+  .app-mobile-frame .kn-mobile { width: 100%; }
+}
+
+/* Карта экранов */
+.app-map { box-sizing: border-box; max-width: 1184px; margin: 0 auto; padding: 48px 32px 64px; display: flex; flex-direction: column; gap: 40px; }
+.app-map__group { display: flex; flex-direction: column; gap: 12px; }
+.app-map__list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr)); gap: 8px; }
+.app-map__item { display: flex; flex-direction: column; gap: 2px; padding: 14px 16px; border-radius: var(--radius-md); background: var(--surface); color: var(--ink); text-decoration: none; box-shadow: inset 0 0 0 1px var(--line); }
+.app-map__item:hover { box-shadow: inset 0 0 0 1px var(--line-strong); }
+.app-map__item:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.app-map__path { color: var(--ink-secondary); }

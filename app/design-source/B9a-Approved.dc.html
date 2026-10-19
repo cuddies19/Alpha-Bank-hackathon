@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Решение: одобрено — Кредитный кабинет</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}a{color:#d21f16}</style>
+</helmet>
+<div class="kn-app">
+  <div class="kn-app__side"><dc-import name="NavClient" active="applications" hint-size="100%,900px"></dc-import></div>
+  <main class="kn-app__main">
+    <dc-import name="HeaderClient" company="ИП Белова А. С." person="Анна Белова" initials="АБ" unread="1" hint-size="100%,72px"></dc-import>
+    <div class="kn-page kn-page--narrow" style="gap: 24px;">
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+          <x-import component-from-global-scope="Cabinet.Badge" tone="success">Одобрено</x-import>
+          <span class="body-sm" style="color: var(--ink-secondary);">Заявка № 2026-10-0139 · решение принято автоматически 24 октября, 10:31</span>
+        </div>
+        <h1 class="display">Банк одобрил овердрафт</h1>
+      </div>
+
+      <section class="kk-card kk-card--lg" style="gap: 24px;">
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <span class="label" style="color: var(--ink-secondary);">Лимит</span>
+          <span class="amount-xl amt">500 000 ₽</span>
+        </div>
+        <dl class="kn-kv" style="padding: 16px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);">
+          <div><dt>Срок</dt><dd class="amount-md">12 мес.</dd></div>
+          <div><dt>Ставка</dt><dd class="amount-md">23%</dd></div>
+          <div><dt>Платёж</dt><dd class="amount-md amt">≈ 47 000 ₽</dd></div>
+          <div><dt>Первый платёж</dt><dd class="amount-md">15 ноября</dd></div>
+        </dl>
+        <x-import component-from-global-scope="Cabinet.PaymentLoadMeter" payment="{{pay}}" cash-flow="{{flow}}"></x-import>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px;">
+          <a class="kk-btn kk-btn--primary kk-btn--lg" href="B10-Sign.dc.html">Принять условия</a>
+          <span class="body-sm" style="color: var(--ink-secondary); display: inline-flex; gap: 6px; align-items: center;"><x-import component-from-global-scope="Cabinet.Icon" name="calendar" size="{{i16}}"></x-import>Условия действуют до 31 октября</span>
+        </div>
+      </section>
+
+      <section class="kk-card kk-card--md" style="gap: 16px;">
+        <h2 class="title-3">График платежей</h2>
+        <div class="kn-tablewrap" style="border-radius: 0;">
+          <table class="kn-table kn-table--dense">
+            <thead><tr><th scope="col">№</th><th scope="col">Дата</th><th scope="col" class="num">Платёж</th><th scope="col" class="num">Основной долг</th><th scope="col" class="num">Проценты</th><th scope="col" class="num">Остаток</th></tr></thead>
+            <tbody>
+              <sc-for list="{{rows}}" as="r" hint-placeholder-count="3">
+                <tr><td>{{r.i}}</td><td class="nw">{{r.date}}</td><td class="num">{{r.pay}}</td><td class="num">{{r.principal}}</td><td class="num">{{r.interest}}</td><td class="num">{{r.rest}}</td></tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+        <x-import component-from-global-scope="Cabinet.Button" variant="ghost" icon-right="chevron-right" on-click="{{toggle}}" style="align-self: flex-start;">{{toggleText}}</x-import>
+      </section>
+
+      <section class="kk-card kk-card--md">
+        <details class="kn-disc">
+          <summary><span class="title-3">Почему такое решение</span><span class="kn-disc__chev"><x-import component-from-global-scope="Cabinet.Icon" name="chevron-right"></x-import></span></summary>
+          <ul style="display: flex; flex-direction: column; gap: 12px; padding-top: 16px;">
+            <li class="body" style="display: flex; gap: 12px;"><span style="color: var(--success);"><x-import component-from-global-scope="Cabinet.Icon" name="check-circle"></x-import></span>Поступления по счёту стабильны 4 года, обе кофейни приносят выручку каждый день</li>
+            <li class="body" style="display: flex; gap: 12px;"><span style="color: var(--success);"><x-import component-from-global-scope="Cabinet.Icon" name="check-circle"></x-import></span>В кредитной истории нет просрочек</li>
+            <li class="body" style="display: flex; gap: 12px;"><span style="color: var(--success);"><x-import component-from-global-scope="Cabinet.Icon" name="check-circle"></x-import></span>Платёж займёт 11% денежного потока — это комфортная нагрузка</li>
+          </ul>
+        </details>
+      </section>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1550}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const n = ' ';
+    const money = (v) => String(Math.round(v)).replace(/\B(?=(\d{3})+(?!\d))/g, n) + n + '₽';
+    const months = ['15 ноября 2026', '15 декабря 2026', '15 января 2027', '15 февраля 2027', '15 марта 2027', '15 апреля 2027', '15 мая 2027', '15 июня 2027', '15 июля 2027', '15 августа 2027', '15 сентября 2027', '15 октября 2027'];
+    const P = 500000, r = 23 / 1200, N = 12;
+    const pay = P * r / (1 - Math.pow(1 + r, -N));
+    let rest = P;
+    const all = months.map((d, i) => {
+      const interest = rest * r;
+      const principal = i === N - 1 ? rest : pay - interest;
+      rest = Math.max(0, rest - principal);
+      return { i: String(i + 1), date: d, pay: money(principal + interest), principal: money(principal), interest: money(interest), rest: money(rest) };
+    });
+    const full = !!s.full;
+    return {
+      i16: 16, pay: 47000, flow: 420000,
+      rows: full ? all : all.slice(0, 3),
+      toggleText: full ? 'Свернуть график' : 'Показать весь график, 12 платежей',
+      toggle: () => this.setState({ full: !full })
+    };
+  }
+}
+</script>
+</body>
+</html>

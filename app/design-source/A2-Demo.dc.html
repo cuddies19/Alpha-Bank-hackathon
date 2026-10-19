@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Режим проверки — Кредитный кабинет</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}a{color:#d21f16}</style>
+</helmet>
+<div style="position: relative; height: 100vh; overflow: hidden; background: var(--bg); color: var(--ink); font-family: var(--font-sans);">
+  <div aria-hidden="true"><dc-import name="B1-Home" hint-size="100%,1300px"></dc-import></div>
+  <div class="kn-scrim kn-scrim--abs" style="z-index: 40;"></div>
+  <aside class="kn-drawer" role="dialog" aria-modal="true" aria-labelledby="demo-title" style="width: 460px;">
+    <div class="kn-drawer__head">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <x-import component-from-global-scope="Cabinet.Icon" name="shield" size="{{i24}}"></x-import>
+        <h2 class="title-3" id="demo-title">Режим проверки</h2>
+      </div>
+      <a class="kn-ibtn" href="B1-Home.dc.html" aria-label="Закрыть режим проверки"><x-import component-from-global-scope="Cabinet.Icon" name="x"></x-import></a>
+    </div>
+    <div class="kn-drawer__body">
+      <div class="kn-demo-tag" style="align-self: stretch; padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 18px;">Инструмент проверки. В рабочем продукте его нет</div>
+
+      <section style="display: flex; flex-direction: column; gap: 8px;">
+        <h3 class="label" style="color: var(--ink-secondary);">Войти как</h3>
+        <sc-for list="{{people}}" as="p" hint-placeholder-count="6">
+          <a href="{{p.to}}" style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; box-shadow: inset 0 0 0 1px var(--line); text-decoration: none; color: var(--ink);">
+            <span class="kn-avatar" style="width: 36px; height: 36px;">{{p.init}}</span>
+            <span style="flex: 1; display: flex; flex-direction: column;"><span class="body-strong">{{p.name}}</span><span class="body-sm" style="color: var(--ink-secondary);">{{p.note}}</span></span>
+            <x-import component-from-global-scope="Cabinet.Icon" name="chevron-right"></x-import>
+          </a>
+        </sc-for>
+      </section>
+
+      <section style="display: flex; flex-direction: column; gap: 8px;">
+        <h3 class="label" style="color: var(--ink-secondary);">Скорость конвейера</h3>
+        <div class="kn-seg" role="group" aria-label="Скорость конвейера">
+          <button type="button" class="{{speedNormal}}" onClick="{{setNormal}}">Обычная</button>
+          <button type="button" class="{{speedFast}}" onClick="{{setFast}}">Быстрая · этапы по 3 с</button>
+        </div>
+      </section>
+
+      <section style="display: flex; flex-direction: column; gap: 10px;">
+        <h3 class="label" style="color: var(--ink-secondary);">Внешние источники</h3>
+        <sc-for list="{{sources}}" as="s" hint-placeholder-count="4">
+          <div style="display: grid; grid-template-columns: minmax(0, 1fr) 210px; gap: 12px; align-items: center;">
+            <span class="body">{{s.name}}</span>
+            <div class="kn-seg" role="group" aria-label="{{s.name}}">
+              <button type="button" class="{{s.okCls}}" onClick="{{s.setOk}}">Работает</button>
+              <button type="button" class="{{s.downCls}}" onClick="{{s.setDown}}">Не отвечает</button>
+            </div>
+          </div>
+        </sc-for>
+        <sc-if value="{{anyDown}}" hint-placeholder-val="{{no}}">
+          <x-import component-from-global-scope="Cabinet.Alert" tone="info" title="Сценарий 5: сбой источника">
+            <p>Новая заявка не упадёт: её передадут специалисту с меткой «Источник недоступен».</p>
+            <div style="margin-top: 8px;"><a class="kk-btn kk-btn--secondary kk-btn--sm" href="C5-Integrations.dc.html">Открыть внешние источники</a></div>
+          </x-import>
+        </sc-if>
+      </section>
+
+      <section style="display: flex; flex-direction: column; gap: 8px;">
+        <h3 class="label" style="color: var(--ink-secondary);">Ассистент</h3>
+        <div class="kn-seg" role="group" aria-label="Режим ассистента">
+          <button type="button" class="{{aiModel}}" onClick="{{setModel}}">Языковая модель</button>
+          <button type="button" class="{{aiRules}}" onClick="{{setRules}}">Упрощённый, на правилах</button>
+        </div>
+      </section>
+
+      <section style="display: flex; flex-direction: column; gap: 8px;">
+        <h3 class="label" style="color: var(--ink-secondary);">Демо-данные</h3>
+        <sc-if value="{{notConfirm}}" hint-placeholder-val="{{yes}}">
+          <x-import component-from-global-scope="Cabinet.Button" variant="secondary" on-click="{{askReset}}" style="align-self: flex-start;">Сбросить демо-данные</x-import>
+        </sc-if>
+        <sc-if value="{{confirm}}" hint-placeholder-val="{{no}}">
+          <x-import component-from-global-scope="Cabinet.Alert" tone="warning" title="Сбросить все заявки и решения?">
+            <p>Сценарии начнутся заново. Тестовые учётки останутся.</p>
+            <div style="margin-top: 8px; display: flex; gap: 8px;">
+              <x-import component-from-global-scope="Cabinet.Button" variant="secondary" size="sm" on-click="{{cancelReset}}">Отмена</x-import>
+              <a class="kk-btn kk-btn--primary kk-btn--sm" href="Main.dc.html">Сбросить</a>
+            </div>
+          </x-import>
+        </sc-if>
+      </section>
+
+      <section style="display: flex; flex-direction: column; gap: 8px; padding-top: 16px; border-top: 1px solid var(--line);">
+        <h3 class="label" style="color: var(--ink-secondary);">Для разработчиков</h3>
+        <div style="display: flex; flex-wrap: wrap; gap: 16px;">
+          <a class="kk-btn kk-btn--link" href="#">Swagger API</a>
+          <a class="kk-btn kk-btn--link" href="#">README</a>
+          <a class="kk-btn kk-btn--link" href="#">Диаграмма состояний</a>
+        </div>
+      </section>
+    </div>
+  </aside>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const down = s.down || {};
+    const seg = (on) => 'kn-seg__opt' + (on ? ' is-on' : '');
+    const speed = s.speed || 'normal';
+    const ai = s.ai || 'model';
+    const names = [['egrul', 'ЕГРЮЛ / ЕГРИП'], ['fns', 'ФНС «Прозрачный бизнес»'], ['bki', 'Бюро кредитных историй'], ['acc', 'Выписка по счёту']];
+    return {
+      yes: true, no: false, i24: 24,
+      people: [
+        { init: 'ИС', name: 'Игорь Соколов', note: 'Начало сценария 1: встречное предложение', to: 'B1-Home.dc.html' },
+        { init: 'ИС', name: 'Игорь — после решения банка', note: 'Тост «Решение готово»', to: 'B8-Ready.dc.html' },
+        { init: 'АБ', name: 'Анна Белова', note: 'Автоматическое одобрение', to: 'B9a-Approved.dc.html' },
+        { init: 'МО', name: 'Марина Орлова', note: 'Банк запросил документы', to: 'B9c-Docs.dc.html' },
+        { init: 'СФ', name: 'Сергей Фомин', note: 'Отказ с альтернативой', to: 'B9d-Decline.dc.html' },
+        { init: 'ОК', name: 'Ольга Кравцова', note: 'Кредитный аналитик', to: 'C1-Queue.dc.html' }
+      ],
+      speedNormal: seg(speed === 'normal'), speedFast: seg(speed === 'fast'),
+      setNormal: () => this.setState({ speed: 'normal' }), setFast: () => this.setState({ speed: 'fast' }),
+      sources: names.map(([k, name]) => ({ name, okCls: seg(!down[k]), downCls: seg(!!down[k]), setOk: () => this.setState({ down: { ...down, [k]: false } }), setDown: () => this.setState({ down: { ...down, [k]: true } }) })),
+      anyDown: names.some(([k]) => down[k]),
+      aiModel: seg(ai === 'model'), aiRules: seg(ai === 'rules'),
+      setModel: () => this.setState({ ai: 'model' }), setRules: () => this.setState({ ai: 'rules' }),
+      confirm: !!s.confirm, notConfirm: !s.confirm,
+      askReset: () => this.setState({ confirm: true }), cancelReset: () => this.setState({ confirm: false })
+    };
+  }
+}
+</script>
+</body>
+</html>

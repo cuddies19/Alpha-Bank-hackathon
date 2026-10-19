@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Главная — Кредитный кабинет</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="kk-tokens.css">
+<link rel="stylesheet" href="ds/cabinet/components/bundle.css">
+<link rel="stylesheet" href="kk-new.css">
+<script src="ds/cabinet/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap" rel="stylesheet">
+<style>body{margin:0}a{color:#d21f16}</style>
+</helmet>
+<div class="kn-app">
+  <div class="kn-app__side"><dc-import name="NavClient" active="home" hint-size="100%,900px"></dc-import></div>
+  <main class="kn-app__main">
+    <dc-import name="HeaderClient" hint-size="100%,72px"></dc-import>
+    <div class="kn-page">
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <h1 class="display">Добрый день, Игорь</h1>
+        <p class="body" style="color: var(--ink-secondary);">ООО «Дом и уют» · данные по счёту на 24 октября, 10:42</p>
+      </div>
+
+      <x-import component-from-global-scope="Cabinet.Alert" tone="assistant" title="Через 12 дней возможен кассовый разрыв">
+        <p>Выплата от маркетплейса придёт 6 ноября, а закупка нужна до 1 ноября.</p>
+        <div style="margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px;">
+          <a class="kk-btn kk-btn--primary" href="B2-Need.dc.html">Подобрать финансирование</a>
+          <a class="kk-btn kk-btn--ghost" href="B2-Dialog.dc.html">Спросить ассистента</a>
+        </div>
+      </x-import>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 16px;">
+        <x-import component-from-global-scope="Cabinet.MetricTile" label="Остаток на счёте" value="1 240 500 ₽" icon="wallet" hint="Счёт •• 4821"></x-import>
+        <x-import component-from-global-scope="Cabinet.MetricTile" label="Поступления за 30 дней" value="3 860 000 ₽" icon="arrow-down" delta="{{incDelta}}"></x-import>
+        <x-import component-from-global-scope="Cabinet.MetricTile" label="Чистый денежный поток" value="610 000 ₽" icon="trend-up" hint="в месяц, в среднем за 6 месяцев"></x-import>
+        <x-import component-from-global-scope="Cabinet.MetricTile" label="Платежи по кредитам" value="38 000 ₽" icon="calendar" hint="в месяц, 1 кредит в другом банке"></x-import>
+      </div>
+
+      <div class="kn-cols">
+        <section class="kk-card kk-card--md kn-cols__main" style="gap: 20px;">
+          <div class="kn-sechead">
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <h2 class="title-3">Поступления и списания</h2>
+              <p class="body-sm" style="color: var(--ink-secondary);">Май — октябрь 2026, по счёту •• 4821</p>
+            </div>
+            <div class="kn-legend"><span><i style="background: var(--ink);"></i>Поступления</span><span><i style="background: var(--line-strong);"></i>Списания</span></div>
+          </div>
+          <div role="img" aria-label="Столбики по месяцам: поступления растут с 1,9 млн ₽ в июле до 3,86 млн ₽ в октябре, списания — с 1,45 до 3,15 млн ₽">
+            <div class="kn-chart">
+              <div class="kn-chart__grid" style="top: 0%;"><span>4 млн</span></div>
+              <div class="kn-chart__grid" style="top: 25%;"><span>3 млн</span></div>
+              <div class="kn-chart__grid" style="top: 50%;"><span>2 млн</span></div>
+              <div class="kn-chart__grid" style="top: 75%;"><span>1 млн</span></div>
+              <div class="kn-chart__grid" style="top: 100%;"><span>0</span></div>
+              <div class="kn-chart__bars">
+                <div class="kn-chart__group"><div class="kn-chart__bar" style="height: 60%; background: var(--ink);"></div><div class="kn-chart__bar" style="height: 43.75%; background: var(--line-strong);"></div></div>
+                <div class="kn-chart__group"><div class="kn-chart__bar" style="height: 52.5%; background: var(--ink);"></div><div class="kn-chart__bar" style="height: 38.75%; background: var(--line-strong);"></div></div>
+                <div class="kn-chart__group"><div class="kn-chart__bar" style="height: 47.5%; background: var(--ink);"></div><div class="kn-chart__bar" style="height: 36.25%; background: var(--line-strong);"></div></div>
+                <div class="kn-chart__group"><div class="kn-chart__bar" style="height: 62.5%; background: var(--ink);"></div><div class="kn-chart__bar" style="height: 46.25%; background: var(--line-strong);"></div></div>
+                <div class="kn-chart__group"><div class="kn-chart__bar" style="height: 86.25%; background: var(--ink);"></div><div class="kn-chart__bar" style="height: 70%; background: var(--line-strong);"></div></div>
+                <div class="kn-chart__group"><div class="kn-chart__bar" style="height: 96.5%; background: var(--ink);"></div><div class="kn-chart__bar" style="height: 78.75%; background: var(--line-strong);"></div></div>
+              </div>
+            </div>
+            <div class="kn-chart__x"><span>май</span><span>июнь</span><span>июль</span><span>август</span><span>сентябрь</span><span>октябрь</span></div>
+          </div>
+          <p class="body-sm" style="color: var(--ink-secondary);">Выручка растёт к сезону распродаж: в октябре поступления выше июльских в 2 раза.</p>
+        </section>
+
+        <div class="kn-cols__side">
+          <section class="kk-card kk-card--md" style="gap: 12px;">
+            <h2 class="title-3">Активная заявка</h2>
+            <p class="body" style="color: var(--ink-secondary);">Активных заявок нет. Опишите задачу — подберём продукт и посчитаем платёж до подачи заявки.</p>
+            <a class="kk-btn kk-btn--secondary" href="B2-Need.dc.html" style="align-self: flex-start;">Подобрать под задачу</a>
+          </section>
+          <section class="kk-card kk-card--md" style="gap: 8px;">
+            <div class="kn-sechead">
+              <h2 class="title-3">Ближайшие события</h2>
+              <a class="kk-btn kk-btn--link" href="B14-Notifications.dc.html">Все</a>
+            </div>
+            <ul class="kn-feed">
+              <li class="kn-feed__item">
+                <span class="kn-feed__ic" style="color: var(--accent-text);"><x-import component-from-global-scope="Cabinet.Icon" name="sparkle" size="{{i20}}"></x-import></span>
+                <span class="body">Ассистент заметил возможный кассовый разрыв</span>
+                <time>10:42</time>
+              </li>
+              <li class="kn-feed__item">
+                <span class="kn-feed__ic"><x-import component-from-global-scope="Cabinet.Icon" name="document" size="{{i20}}"></x-import></span>
+                <span class="body">Выписка по счёту обновлена</span>
+                <time>10:40</time>
+              </li>
+              <li class="kn-feed__item">
+                <span class="kn-feed__ic"><x-import component-from-global-scope="Cabinet.Icon" name="calendar" size="{{i20}}"></x-import></span>
+                <span class="body">Выплата от маркетплейса ожидается 6 ноября</span>
+                <time>вчера</time>
+              </li>
+            </ul>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1300}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      i20: 20,
+      incDelta: { value: '+12%', direction: 'up', tone: 'success', label: 'к сентябрю' }
+    };
+  }
+}
+</script>
+</body>
+</html>
