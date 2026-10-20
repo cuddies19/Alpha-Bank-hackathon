@@ -5,8 +5,47 @@ on:
   pull_request:
 
 jobs:
-  lint-and-test:
-    name: lint and test (${{ matrix.service }})
+  lint:
+    name: lint (${{ matrix.service }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        service: [mocks, backend]
+    defaults:
+      run:
+        working-directory: ${{ matrix.service }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: ${{ matrix.service }}/uv.lock
+          python-version: "3.12"
+
+      - name: Sync dependencies
+        run: uv sync --locked
+
+      - name: Ruff check
+        run: uv run ruff check .
+
+      - name: Ruff format
+        run: uv run ruff format --check .
+
+  build:
+    name: docker build
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build images
+        run: docker compose build
+
+  test:
+    name: test (${{ matrix.service }})
+    needs: build
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -43,19 +82,5 @@ jobs:
       - name: Sync dependencies
         run: uv sync --locked
 
-      - name: Lint
-        run: |
-          uv run ruff check .
-          uv run ruff format --check .
-
-      - name: Test
+      - name: Run tests
         run: uv run pytest -q
-
-  docker:
-    name: docker build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Build images
-        run: docker compose build
