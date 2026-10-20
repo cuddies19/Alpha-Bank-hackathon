@@ -1,28 +1,99 @@
 {
   "unavailable_messages": [
-    {"source": "bki", "attempts": 3, "timeout": 3, "text": "БКИ не ответило, 3 попытки по 3 с"},
-    {"source": "fns", "attempts": 1, "timeout": 2.5, "text": "ФНС не ответила, 1 попытка по 2.5 с"},
-    {"source": "egrul", "attempts": 5, "timeout": 3, "text": "ЕГРЮЛ не ответил, 5 попыток по 3 с"},
-    {"source": "statement", "attempts": 11, "timeout": 3, "text": "Выписка не ответила, 11 попыток по 3 с"}
+    {
+      "source": "bki",
+      "attempts": 3,
+      "timeout": 3,
+      "text": "БКИ не ответило, 3 попытки по 3 с"
+    },
+    {
+      "source": "fns",
+      "attempts": 1,
+      "timeout": 2.5,
+      "text": "ФНС не ответила, 1 попытка по 2.5 с"
+    },
+    {
+      "source": "egrul",
+      "attempts": 5,
+      "timeout": 3,
+      "text": "ЕГРЮЛ не ответил, 5 попыток по 3 с"
+    },
+    {
+      "source": "statement",
+      "attempts": 11,
+      "timeout": 3,
+      "text": "Выписка не ответила, 11 попыток по 3 с"
+    }
   ],
-  "complete_rows": ["igor", "any_purpose_large"],
+  "complete_rows": [
+    "igor",
+    "any_purpose_large"
+  ],
   "incomplete_rows": [
-    {"row": "empty_inn", "missing": ["inn", "consent_bki", "consent_id"]},
-    {"row": "no_consent", "missing": ["consent_bki", "consent_id"]}
+    {
+      "row": "empty_inn",
+      "missing": [
+        "inn",
+        "consent_bki",
+        "consent_id"
+      ]
+    },
+    {
+      "row": "no_consent",
+      "missing": [
+        "consent_bki",
+        "consent_id"
+      ]
+    }
   ],
   "failed_sources": [
-    {"statuses": {}, "label": null},
-    {"statuses": {"bki": "error"}, "label": "Ошибка источника"},
-    {"statuses": {"bki": "unavailable", "fns": "error"}, "label": "Источник недоступен"}
+    {
+      "statuses": {},
+      "label": null
+    },
+    {
+      "statuses": {
+        "bki": "error"
+      },
+      "label": "Ошибка источника"
+    },
+    {
+      "statuses": {
+        "bki": "unavailable",
+        "fns": "error"
+      },
+      "label": "Источник недоступен"
+    }
   ],
-  "missing_passport": ["document:passport"],
-  "sources": ["egrul", "fns", "bki", "statement"],
-  "bki_request": {"inn": "7701234567", "consent_id": "cns-1"},
+  "missing_passport": [
+    "document:passport"
+  ],
+  "sources": [
+    "egrul",
+    "fns",
+    "bki",
+    "statement"
+  ],
+  "bki_request": {
+    "inn": "7701234567",
+    "consent_id": "cns-1"
+  },
   "bki_unavailable_message": "БКИ не ответило, 3 попытки по 3 с",
   "bad_request_message": "ФНС: некорректный запрос (HTTP 422)",
   "unexpected_message": "Ошибка при запросе к источнику",
-  "recommendation": {"score": 640, "class": "B"},
-  "needs_info": {"label": "Нужны данные", "meta": {"missing": ["consent_bki", "consent_id"]}},
+  "recommendation": {
+    "score": 640,
+    "class": "B"
+  },
+  "needs_info": {
+    "label": "Нужны данные",
+    "meta": {
+      "missing": [
+        "consent_bki",
+        "consent_id"
+      ]
+    }
+  },
   "draft_label": "Черновик",
   "labels": {
     "bki_unavailable": "Источник недоступен",
@@ -31,22 +102,86 @@
     "interrupted": "Обработка прервана"
   },
   "source_error_reason": "Источник вернул ошибку",
-  "history_happy": ["submitted", "completeness_check", "enrichment", "scoring", "rules", "manual_review"],
-  "history_bki_down": ["submitted", "completeness_check", "enrichment", "manual_review"],
+  "history_happy": [
+    "submitted",
+    "completeness_check",
+    "enrichment",
+    "scoring",
+    "rules",
+    "manual_review"
+  ],
+  "history_bki_down": [
+    "submitted",
+    "completeness_check",
+    "enrichment",
+    "manual_review"
+  ],
   "transitions": {
-    "draft": ["submitted"],
-    "submitted": ["completeness_check"],
-    "completeness_check": ["needs_info", "enrichment", "manual_review"],
-    "needs_info": ["submitted"],
-    "enrichment": ["scoring", "manual_review"],
-    "scoring": ["rules", "manual_review"],
-    "rules": ["approved", "rejected", "manual_review", "counter_offer"],
-    "manual_review": ["approved", "rejected", "counter_offer", "needs_info"],
-    "counter_offer": ["approved", "rejected"],
-    "approved": ["issued"],
+    "draft": [
+      "submitted"
+    ],
+    "submitted": [
+      "completeness_check"
+    ],
+    "completeness_check": [
+      "needs_info",
+      "enrichment",
+      "manual_review"
+    ],
+    "needs_info": [
+      "submitted"
+    ],
+    "enrichment": [
+      "scoring",
+      "manual_review"
+    ],
+    "scoring": [
+      "rules",
+      "manual_review"
+    ],
+    "rules": [
+      "approved",
+      "rejected",
+      "manual_review",
+      "counter_offer"
+    ],
+    "manual_review": [
+      "approved",
+      "rejected",
+      "counter_offer",
+      "needs_info"
+    ],
+    "counter_offer": [
+      "approved",
+      "rejected"
+    ],
+    "approved": [
+      "issued"
+    ],
     "rejected": [],
     "issued": []
   },
-  "speed": {"normal": 5, "fast": 1},
-  "defaults": {"source_timeout_s": 3, "source_attempts": 3, "safety_poll_s": 30}
+  "speed": {
+    "normal": 5,
+    "fast": 1
+  },
+  "defaults": {
+    "source_timeout_s": 3,
+    "source_attempts": 3,
+    "safety_poll_s": 30
+  },
+  "igor_explanation": "Встречное предложение: 2 400 000 ₽ на 18 мес. — доля платежа 32% выше порога 30%",
+  "igor_recommendation": {
+    "score": 640,
+    "class": "B",
+    "kind": "counter_offer",
+    "amount": 2400000,
+    "term_months": 18,
+    "documents": [],
+    "explanation": "Встречное предложение: 2 400 000 ₽ на 18 мес. — доля платежа 32% выше порога 30%",
+    "payment_rub": 196460,
+    "share": 0.3221
+  },
+  "rejected_reason": "Компания находится в процессе ликвидации или уже ликвидирована.",
+  "scoring_down_label": "Скоринг недоступен"
 }

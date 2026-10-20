@@ -3,6 +3,7 @@
 import asyncio
 import logging
 from collections.abc import Awaitable, Callable
+from datetime import date
 from typing import Any
 
 from sqlalchemy.orm import Session, sessionmaker
@@ -12,16 +13,19 @@ from app.db.models import Application
 from app.db.statuses import (
     L_FAILURE,
     L_INTERRUPTED,
+    L_SCORING_DOWN,
     L_SOURCE_ERROR,
     L_UNAVAILABLE,
     R_COMPLETE,
     R_INCOMPLETE,
-    R_NO_RULES,
     R_SCORED,
     R_SOURCE_ERROR,
     R_SOURCE_SILENT,
     R_SOURCES_CHECKED,
 )
+from app.pipeline.scoring import get_score
+from app.pipeline.settings import pipeline_settings
+from app.rules.engine import evaluate, load_rules
 
 log = logging.getLogger(__name__)
 
@@ -32,7 +36,22 @@ REQUIRED_FIELDS = ("inn", "product", "amount_rub", "term_months")
 REQUIRED_DOCUMENTS: dict[str, tuple[str, ...]] = {}
 
 Enrich = Callable[[str, str], Awaitable[dict[str, dict[str, Any]]]]
+Score = Callable[[str, dict[str, dict[str, Any]]], Awaitable[dict[str, Any]]]
 Sleep = Callable[[float], Awaitable[None]]
+
+RULES = load_rules()
+
+
+async def default_score(inn: str, results: dict[str, dict[str, Any]]) -> dict[str, Any]:
+    cfg = pipeline_settings
+    return await get_score(
+        inn,
+        results=results,
+        scoring_url=cfg.scoring_url,
+        timeout_s=cfg.source_timeout_s,
+        attempts=cfg.source_attempts,
+        pause_s=cfg.retry_pause_s,
+    )
 
 
 def _document_names(documents: list[Any] | None) -> set[str]:
@@ -72,13 +91,15 @@ async def process_application(
     enrich: Enrich,
     pause_s: float,
     sleep: Sleep = asyncio.sleep,
+    score: Score = default_score,
+    today: Callable[[], date] = date.today,
 ) -> None:
     """Drive an application that is already in completeness_check to its next stop.
 
     Every status change gets its own short transaction; none is held across pauses or HTTP calls.
     """
     try:
-        await _run(factory, app_id, enrich, pause_s, sleep)
+        await _run(factory, app_id, enrich, pause_s, sleep, score, today)
     except Exception:
         log.exception("application %s failed", app_id)
         try:
@@ -89,7 +110,13 @@ async def process_application(
 
 
 async def _run(
-    factory: sessionmaker[Session], app_id: int, enrich: Enrich, pause_s: float, sleep: Sleep
+    factory: sessionmaker[Session],
+    app_id: int,
+    enrich: Enrich,
+    pause_s: float,
+    sleep: Sleep,
+    score: Score,
+    today: Callable[[], date],
 ) -> None:
     await sleep(pause_s)
     with factory.begin() as s:
@@ -99,6 +126,12 @@ async def _run(
             store.change_status(s, app_id, "needs_info", R_INCOMPLETE, {"missing": missing})
             return
         inn, consent_id = app.inn, app.consent_id
+        application = {
+            "product": app.product,
+            "amount_rub": app.amount_rub,
+            "term_months": app.term_months,
+            "documents": [{"type": n} for n in sorted(_document_names(app.documents))],
+        }
         store.change_status(s, app_id, "enrichment", R_COMPLETE)
 
     await sleep(pause_s)
@@ -124,12 +157,26 @@ async def _run(
         store.change_status(s, app_id, "scoring", R_SOURCES_CHECKED)
 
     await sleep(pause_s)
+    answer = await score(inn, results)
     with factory.begin() as s:
-        # Stub: fixed score until the real model exists.
-        store.save_recommendation(s, app_id, {"score": 640, "class": "B"})
-        store.change_status(s, app_id, "rules", R_SCORED, {"score": 640, "class": "B"})
+        if answer["status"] != "ok":
+            store.change_status(s, app_id, "manual_review", answer["message"], label=L_SCORING_DOWN)
+            return
+        scored = {"score": answer["score"], "class": answer["risk_class"]}
+        store.change_status(s, app_id, "rules", R_SCORED, scored)
 
     await sleep(pause_s)
+    decision = evaluate(application, results, {"risk_class": answer["risk_class"]}, RULES, today())
+    recommendation = {
+        **scored,
+        **decision.recommendation,
+        "explanation": decision.explanation,
+        "payment_rub": decision.payment_rub,
+        "share": decision.share,
+    }
     with factory.begin() as s:
-        # Stub: rules always send the application to a person.
-        store.change_status(s, app_id, "manual_review", R_NO_RULES)
+        store.save_rule_results(s, app_id, decision.results)
+        store.save_recommendation(s, app_id, recommendation)
+        reason = decision.client_reason or decision.explanation
+        meta = {"failed": decision.failed}
+        store.change_status(s, app_id, decision.outcome, reason, meta, decision.client_reason)

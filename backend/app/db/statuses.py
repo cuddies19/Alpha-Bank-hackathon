@@ -33,6 +33,7 @@ L_UNAVAILABLE = "Источник недоступен"
 L_SOURCE_ERROR = "Ошибка источника"
 L_FAILURE = "Ошибка обработки"
 L_INTERRUPTED = "Обработка прервана"
+L_SCORING_DOWN = "Скоринг недоступен"
 
 R_CLAIMED = "Взята в работу"
 R_INCOMPLETE = "Заявка заполнена не полностью"
@@ -41,7 +42,6 @@ R_SOURCE_SILENT = "Источник не ответил"
 R_SOURCE_ERROR = "Источник вернул ошибку"
 R_SOURCES_CHECKED = "Источники проверены"
 R_SCORED = "Оценка получена"
-R_NO_RULES = "Правила пока не подключены"
 
 # From status -> statuses it may move to. Empty means final.
 TRANSITIONS: dict[str, set[str]] = {

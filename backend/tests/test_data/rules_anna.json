@@ -1,0 +1,125 @@
+{
+  "application": {
+    "inn": "770212345678",
+    "product": "overdraft",
+    "amount_rub": 500000,
+    "term_months": 12,
+    "documents": []
+  },
+  "score": {
+    "risk_class": "A"
+  },
+  "sources": {
+    "egrul": {
+      "source": "egrul",
+      "status": "ok",
+      "payload": {
+        "inn": "770212345678",
+        "ogrnip": "322774600654321",
+        "entity_type": "ip",
+        "full_name": "ИП Белова А. С.",
+        "status": "active",
+        "registration_date": "2022-09-14",
+        "okved": "56.30",
+        "address": "г. Москва, ул. Арбат, д. 25",
+        "head_name": "Белова А. С."
+      }
+    },
+    "fns": {
+      "source": "fns",
+      "status": "ok",
+      "payload": {
+        "tax_debt_rub": 0,
+        "address_unreliable": false,
+        "income_last_year_rub": 18600000,
+        "expenses_last_year_rub": 15900000,
+        "avg_headcount": 7,
+        "tax_regime": "usn_income",
+        "mass_director": false
+      }
+    },
+    "bki": {
+      "source": "bki",
+      "status": "ok",
+      "payload": {
+        "loans": [],
+        "max_overdue_days_12m": 0,
+        "max_overdue_days_24m": 0,
+        "inquiries_30d": 0
+      }
+    },
+    "statement": {
+      "source": "statement",
+      "status": "ok",
+      "payload": {
+        "months": [
+          {
+            "month": "2025-11",
+            "inflow_rub": 1500000,
+            "outflow_rub": 1100000
+          },
+          {
+            "month": "2025-12",
+            "inflow_rub": 1560000,
+            "outflow_rub": 1150000
+          },
+          {
+            "month": "2026-01",
+            "inflow_rub": 1480000,
+            "outflow_rub": 1050000
+          },
+          {
+            "month": "2026-02",
+            "inflow_rub": 1520000,
+            "outflow_rub": 1100000
+          },
+          {
+            "month": "2026-03",
+            "inflow_rub": 1540000,
+            "outflow_rub": 1125000
+          },
+          {
+            "month": "2026-04",
+            "inflow_rub": 1510000,
+            "outflow_rub": 1085000
+          },
+          {
+            "month": "2026-05",
+            "inflow_rub": 1600000,
+            "outflow_rub": 1195000
+          },
+          {
+            "month": "2026-06",
+            "inflow_rub": 1490000,
+            "outflow_rub": 1050000
+          },
+          {
+            "month": "2026-07",
+            "inflow_rub": 1530000,
+            "outflow_rub": 1110000
+          },
+          {
+            "month": "2026-08",
+            "inflow_rub": 1550000,
+            "outflow_rub": 1140000
+          },
+          {
+            "month": "2026-09",
+            "inflow_rub": 1570000,
+            "outflow_rub": 1140000
+          },
+          {
+            "month": "2026-10",
+            "inflow_rub": 1560000,
+            "outflow_rub": 1125000
+          }
+        ],
+        "balance_rub": 780000,
+        "avg_net_flow_rub": 420000,
+        "marketplace_share": 0.0,
+        "revenue_to_other_bank": false,
+        "inflow_30d_rub": 1560000
+      }
+    }
+  }
+}

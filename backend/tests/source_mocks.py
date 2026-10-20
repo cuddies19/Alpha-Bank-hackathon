@@ -1,4 +1,4 @@
-"""Mocks of the four external sources, driven by datasets in tests/test_data.
+"""Mocks of the four external sources and DS scoring, driven by datasets in tests/test_data.
 
 mock.set_dataset("igor") loads tests/test_data/<prefix>_igor.json. A dataset is one of:
   {"status_code": 200, "body": {...}}   an answer
@@ -51,6 +51,7 @@ class Sources:
     def __init__(self) -> None:
         self.mocks = {p: SourceMock(p) for p in PREFIXES}
         self.egrul, self.fns, self.bki, self.statement = (self.mocks[p] for p in PREFIXES)
+        self.score = SourceMock("score")  # DS scoring; not part of set_all
         self.transport = httpx.MockTransport(self._route)
 
     def set_all(self, name: str) -> None:
@@ -58,4 +59,5 @@ class Sources:
             mock.set_dataset(name)
 
     def _route(self, request: httpx.Request) -> httpx.Response:
-        return self.mocks[request.url.path.strip("/").split("/")[0]].respond(request)
+        name = request.url.path.strip("/").split("/")[0]
+        return (self.score if name == "score" else self.mocks[name]).respond(request)

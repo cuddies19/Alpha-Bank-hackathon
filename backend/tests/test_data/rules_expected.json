@@ -1,0 +1,33 @@
+{
+  "seeds": {
+    "igor": {"outcome": "manual_review", "kind": "counter_offer", "amount": 2400000, "term_months": 18, "share": 0.3221},
+    "anna": {"outcome": "approved", "kind": "none", "amount": null, "term_months": null, "share": 0.1111},
+    "marina": {"outcome": "manual_review", "kind": "request_data", "amount": null, "term_months": null, "share": 0.1484},
+    "sergey": {"outcome": "rejected", "kind": "none", "amount": null, "term_months": null, "share": 0.8605}
+  },
+  "cases": [
+    {"case": "anna", "patch": "liquidating", "outcome": "rejected", "kind": "none", "failed": "egrul_status"},
+    {"case": "anna", "patch": "class_e", "outcome": "rejected", "kind": "none", "failed": "risk_class"},
+    {"case": "marina", "patch": "young_business", "outcome": "rejected", "kind": "none", "failed": "business_age"},
+    {"case": "marina", "patch": "no_registration_date", "outcome": "manual_review", "kind": "request_data", "failed": "business_age", "explanation_part": "Нет данных для проверки: Возраст бизнеса"},
+    {"case": "marina", "patch": "bad_registration_date", "outcome": "manual_review", "kind": "request_data", "failed": "business_age", "explanation_part": "Нет данных для проверки"},
+    {"case": "anna", "patch": "no_risk_class", "outcome": "manual_review", "kind": "none", "failed": "risk_class", "explanation_part": "Нет данных для проверки"},
+    {"case": "sergey", "patch": "overdue_limit_70", "outcome": "rejected", "kind": "none", "failed": "bki_overdue", "explanation_part": "просрочка больше 70 дней"},
+    {"case": "igor", "patch": "share_30_4", "outcome": "manual_review", "kind": "counter_offer", "failed": "payment_share", "explanation_part": "доля платежа 30,4% выше порога 30%"},
+    {"case": "anna", "patch": "amount_too_low", "outcome": "rejected", "kind": "none", "failed": "amount_min"},
+    {"case": "anna", "patch": "amount_too_high", "outcome": "rejected", "kind": "none", "failed": "amount_max"},
+    {"case": "marina", "patch": "term_too_short", "outcome": "rejected", "kind": "none", "failed": "term_min"},
+    {"case": "marina", "patch": "term_too_long", "outcome": "rejected", "kind": "none", "failed": "term_max"},
+    {"case": "anna", "patch": "class_c", "outcome": "manual_review", "kind": "none", "failed": null, "explanation_part": "класс риска C не входит в A, B"},
+    {"case": "igor", "patch": "class_d", "outcome": "manual_review", "kind": "reduce_amount", "failed": "payment_share"},
+    {"case": "sergey", "patch": "overdue_limit_90", "outcome": "manual_review", "kind": "reduce_amount", "failed": "payment_share_max"},
+    {"case": "anna", "patch": "no_statement", "outcome": "manual_review", "kind": "request_data", "failed": "payment_share", "documents": ["Выписка по счёту за последние 12 месяцев"]},
+    {"case": "marina", "patch": "no_statement", "outcome": "manual_review", "kind": "request_data", "failed": "payment_share", "documents": ["Выписка по счёту за последние 12 месяцев", "Бухгалтерская отчётность за последний год"]},
+    {"case": "marina", "patch": "tiny_safe_amount", "outcome": "manual_review", "kind": "reduce_amount", "failed": "payment_share"},
+    {"case": "anna", "patch": "amount_max_manual", "outcome": "manual_review", "kind": "none", "failed": "amount_max"},
+    {"case": "marina", "patch": "has_all_documents", "outcome": "manual_review", "kind": "none", "failed": null, "explanation_part": "сумма 4 500 000 ₽ больше лимита автоодобрения 1 000 000 ₽"},
+    {"case": "anna", "patch": "source_down", "outcome": "manual_review", "kind": "none", "failed": null, "explanation_part": "нет ответа от источников: ФНС"},
+    {"case": "igor", "patch": "share_rule_narrowed", "outcome": "manual_review", "kind": "reduce_amount", "failed": "payment_share_max"},
+    {"case": "marina", "patch": "statements_rule_overdraft_only", "outcome": "manual_review", "kind": "request_data", "failed": "other_bank_revenue"}
+  ]
+}

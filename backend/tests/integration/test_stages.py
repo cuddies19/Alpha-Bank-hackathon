@@ -43,7 +43,7 @@ def test_happy_path_ends_in_manual_review(factory, new_application, process, exp
     app_id = new_application(submit=True)
     app = process(app_id)
     assert app.status == "manual_review"
-    assert app.recommendation == expected["recommendation"]
+    assert app.recommendation == expected["igor_recommendation"]
     with factory() as s:
         checks = s.scalars(select(SourceCheck).where(SourceCheck.application_id == app_id)).all()
     assert len(checks) == 4

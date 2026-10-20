@@ -22,7 +22,7 @@ def test_missing_fields_and_consents_are_listed(row, case) -> None:
 @pytest.mark.negative
 def test_required_documents_per_product(monkeypatch, row, expected) -> None:
     monkeypatch.setitem(stages.REQUIRED_DOCUMENTS, "overdraft", ("passport",))
-    assert missing_items(row("igor")) == expected["missing_passport"]
+    assert missing_items(row("with_document")) == expected["missing_passport"]
     assert missing_items(row("with_passport")) == []
 
 

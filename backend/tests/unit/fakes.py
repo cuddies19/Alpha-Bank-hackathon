@@ -81,6 +81,7 @@ class FakeStore:
     changes: list[StatusChange] = field(default_factory=list)
     checks: list[tuple] = field(default_factory=list)
     recommendations: list[tuple[int, dict]] = field(default_factory=list)
+    rule_results: list[tuple[int, list[dict]]] = field(default_factory=list)
     fail_on: set[str] = field(default_factory=set)
 
     def get_application(self, session: Any, app_id: int) -> Any:
@@ -96,6 +97,9 @@ class FakeStore:
 
     def save_source_check(self, session, *args) -> None:
         self.checks.append(args)
+
+    def save_rule_results(self, session, app_id, results) -> None:
+        self.rule_results.append((app_id, results))
 
     def save_recommendation(self, session, app_id, data) -> None:
         self.recommendations.append((app_id, data))

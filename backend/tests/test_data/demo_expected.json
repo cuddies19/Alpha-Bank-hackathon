@@ -1,0 +1,17 @@
+{
+  "anna": {"status": "approved", "kind": "none", "failed": []},
+  "sergey": {"status": "rejected", "kind": "none", "failed": ["bki_overdue", "payment_share", "payment_share_max"]},
+  "igor": {"status": "manual_review", "kind": "counter_offer", "amount": 2400000, "term_months": 18, "failed": ["payment_share"]},
+  "marina": {
+    "status": "manual_review",
+    "kind": "request_data",
+    "documents": [
+      "Бухгалтерская отчётность за последний год",
+      "Выписка по счёту в другом банке за 12 месяцев"
+    ],
+    "failed": ["financial_statements", "other_bank_revenue"]
+  },
+  "sergey_reason_part": "просрочка",
+  "igor_share_row": ["0.3221", "0.3", false],
+  "history_tail": ["scoring", "rules"]
+}

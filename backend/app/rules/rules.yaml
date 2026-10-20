@@ -1,0 +1,114 @@
+# Кредитные правила. Код только читает этот файл: пороги меняются без правки кода.
+# on_fail: rejected - отказ, manual_review - ручная проверка, request_data - запросить документы.
+# У правил доли платежа (payment_share, payment_share_max) on_fail нет: встречное предложение
+# или "уменьшить сумму" выбирает код по порогам и counter_classes.
+# В client_text {threshold} заменяется на порог правила.
+
+products:
+  overdraft:
+    description: Овердрафт
+    min_amount: 300000
+    max_amount: 20000000
+    min_term: 12
+    max_term: 12
+    annual_rate: 0.215
+  credit_line:
+    description: Кредитная линия
+    max_amount: 30000000
+    max_term: 18
+    annual_rate: 0.215
+  any_purpose:
+    description: Кредит на любые цели
+    min_amount: 300000
+    max_amount: 150000000
+    min_term: 12
+    max_term: 120
+    min_age_months: 12
+    annual_rate: 0.215
+
+# Автоодобрение: небольшая сумма, хороший класс риска, все правила и источники в порядке
+auto_approve:
+  description: Автоодобрение небольших сумм клиентам с хорошим классом риска
+  max_amount: 1000000
+  classes: [A, B]
+
+rules:
+  # 1. Стоп-правила
+  - code: egrul_status
+    description: Компания не ликвидируется и не ликвидирована (ЕГРЮЛ)
+    threshold: [liquidating, liquidated]
+    products: all
+    on_fail: rejected
+    client_text: Компания находится в процессе ликвидации или уже ликвидирована.
+  - code: bki_overdue
+    description: Максимальная просрочка за 12 месяцев, дней
+    threshold: 60
+    products: all
+    on_fail: rejected
+    client_text: В кредитной истории за последний год есть просрочка больше {threshold} дней.
+  - code: risk_class
+    description: Класс риска не в списке отказа
+    reject_classes: [E]
+    products: all
+    on_fail: rejected
+    client_text: По итогам оценки рисков мы не можем одобрить заявку.
+
+  # 2. Требования продукта (порог берётся из products по ключу limit)
+  - code: business_age
+    description: Возраст бизнеса, месяцев
+    limit: min_age_months
+    products: all
+    on_fail: rejected
+    client_text: Для этого продукта бизнесу должно быть не меньше {threshold} месяцев.
+  - code: amount_min
+    description: Минимальная сумма продукта
+    limit: min_amount
+    products: all
+    on_fail: rejected
+    client_text: Запрошенная сумма меньше минимальной для этого продукта.
+  - code: amount_max
+    description: Максимальная сумма продукта
+    limit: max_amount
+    products: all
+    on_fail: rejected
+    client_text: Запрошенная сумма больше максимальной для этого продукта.
+  - code: term_min
+    description: Минимальный срок продукта, месяцев
+    limit: min_term
+    products: all
+    on_fail: rejected
+    client_text: Запрошенный срок меньше минимального для этого продукта.
+  - code: term_max
+    description: Максимальный срок продукта, месяцев
+    limit: max_term
+    products: all
+    on_fail: rejected
+    client_text: Запрошенный срок больше максимального для этого продукта.
+
+  # 3. Доля платежа в среднем чистом потоке по счёту
+  - code: payment_share
+    description: Доля платежа в среднем чистом потоке; выше порога - встречное предложение
+    threshold: 0.30
+    products: all
+    counter_classes: [A, B, C]
+    target_share: 0.26
+    step: 100000
+    no_data_documents: ["Выписка по счёту за последние 12 месяцев"]
+  - code: payment_share_max
+    description: Доля платежа выше этого порога - только уменьшить сумму
+    threshold: 0.50
+    products: all
+
+  # 4. Запрос данных
+  - code: financial_statements
+    description: Для суммы выше порога нужна бухгалтерская отчётность
+    threshold: 3000000
+    products: all
+    on_fail: request_data
+    documents: ["Бухгалтерская отчётность за последний год"]
+  - code: other_bank_revenue
+    description: Выручка проходит через другой банк
+    threshold: false
+    products: all
+    on_fail: request_data
+    documents: ["Выписка по счёту в другом банке за 12 месяцев"]

@@ -1,0 +1,14 @@
+{
+  "status_code": 200,
+  "body": {
+    "inn": "7703345678",
+    "ogrn": "1187746123456",
+    "entity_type": "ul",
+    "full_name": "ООО «Лён и Дуб»",
+    "status": "active",
+    "registration_date": "2018-03-05",
+    "okved": "31.09",
+    "address": "г. Москва, ул. Лесная, д. 3",
+    "head_name": "Орлова М. Н."
+  }
+}

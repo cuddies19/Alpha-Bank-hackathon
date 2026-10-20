@@ -17,7 +17,7 @@ from typing import Any
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.db.models import Application, SourceCheck, StatusHistory
+from app.db.models import Application, RuleResult, SourceCheck, StatusHistory
 from app.db.statuses import STATUS_LABELS, check_transition
 
 
@@ -108,6 +108,21 @@ def save_source_check(
             message=message,
         )
     )
+    session.flush()
+
+
+def save_rule_results(session: Session, app_id: int, results: list[dict]) -> None:
+    """One row per rule result; value and threshold are stored as text."""
+    for r in results:
+        session.add(
+            RuleResult(
+                application_id=app_id,
+                code=r["code"],
+                value=None if r["value"] is None else str(r["value"]),
+                threshold=None if r["threshold"] is None else str(r["threshold"]),
+                passed=r["passed"],
+            )
+        )
     session.flush()
 
 

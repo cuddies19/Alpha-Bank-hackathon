@@ -7,12 +7,14 @@ from typing import Any
 
 import httpx
 
+from app.pipeline.texts import attempts_text
+
 log = logging.getLogger(__name__)
 
 SOURCES = ("egrul", "fns", "bki", "statement")
 
 _UNEXPECTED = "Ошибка при запросе к источнику"
-_TITLES = {"egrul": "ЕГРЮЛ", "fns": "ФНС", "bki": "БКИ", "statement": "Выписка"}
+TITLES = {"egrul": "ЕГРЮЛ", "fns": "ФНС", "bki": "БКИ", "statement": "Выписка"}
 
 # Subject and verb form for the "did not answer" message.
 _NAMES = {
@@ -23,17 +25,9 @@ _NAMES = {
 }
 
 
-def _attempts_word(n: int) -> str:
-    if n % 10 == 1 and n % 100 != 11:
-        return "попытка"
-    if 2 <= n % 10 <= 4 and not 12 <= n % 100 <= 14:
-        return "попытки"
-    return "попыток"
-
-
 def unavailable_message(source: str, attempts: int, timeout_s: float) -> str:
     """Text for screen C2, e.g. «БКИ не ответило, 3 попытки по 3 с»."""
-    return f"{_NAMES[source]}, {attempts} {_attempts_word(attempts)} по {timeout_s:g} с"
+    return f"{_NAMES[source]}, {attempts_text(attempts, timeout_s)}"
 
 
 def _request(source: str, inn: str, consent_id: str) -> tuple[str, str, dict | None]:
@@ -69,7 +63,7 @@ async def _fetch(
             break
         if response is not None and response.status_code < 500:
             # Bad request (e.g. 422): retrying will not help.
-            message = f"{_TITLES[source]}: некорректный запрос (HTTP {response.status_code})"
+            message = f"{TITLES[source]}: некорректный запрос (HTTP {response.status_code})"
             result.update(status="error", message=message)
             break
         if made < attempts:

@@ -1,0 +1,14 @@
+{
+  "status_code": 200,
+  "body": {
+    "inn": "770212345678",
+    "ogrnip": "322774600654321",
+    "entity_type": "ip",
+    "full_name": "ИП Белова А. С.",
+    "status": "active",
+    "registration_date": "2022-09-14",
+    "okved": "56.30",
+    "address": "г. Москва, ул. Арбат, д. 25",
+    "head_name": "Белова А. С."
+  }
+}

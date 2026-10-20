@@ -1,0 +1,131 @@
+{
+  "application": {
+    "inn": "7701234567",
+    "product": "credit_line",
+    "amount_rub": 3000000,
+    "term_months": 18,
+    "documents": []
+  },
+  "score": {
+    "risk_class": "C"
+  },
+  "sources": {
+    "egrul": {
+      "source": "egrul",
+      "status": "ok",
+      "payload": {
+        "inn": "7701234567",
+        "ogrn": "1247700123456",
+        "entity_type": "ul",
+        "full_name": "ООО «Дом и уют»",
+        "status": "active",
+        "registration_date": "2024-06-12",
+        "okved": "47.91",
+        "address": "г. Москва, ул. Тверская, д. 10",
+        "head_name": "Соколов И. А."
+      }
+    },
+    "fns": {
+      "source": "fns",
+      "status": "ok",
+      "payload": {
+        "tax_debt_rub": 0,
+        "address_unreliable": false,
+        "income_last_year_rub": 44800000,
+        "expenses_last_year_rub": 41900000,
+        "avg_headcount": 6,
+        "tax_regime": "usn_income",
+        "mass_director": false
+      }
+    },
+    "bki": {
+      "source": "bki",
+      "status": "ok",
+      "payload": {
+        "loans": [
+          {
+            "bank": "Банк Пример",
+            "balance_rub": 450000,
+            "monthly_payment_rub": 38000
+          }
+        ],
+        "max_overdue_days_12m": 0,
+        "max_overdue_days_24m": 0,
+        "inquiries_30d": 2
+      }
+    },
+    "statement": {
+      "source": "statement",
+      "status": "ok",
+      "payload": {
+        "months": [
+          {
+            "month": "2025-11",
+            "inflow_rub": 4400000,
+            "outflow_rub": 3250000
+          },
+          {
+            "month": "2025-12",
+            "inflow_rub": 4900000,
+            "outflow_rub": 3500000
+          },
+          {
+            "month": "2026-01",
+            "inflow_rub": 3300000,
+            "outflow_rub": 2680000
+          },
+          {
+            "month": "2026-02",
+            "inflow_rub": 3000000,
+            "outflow_rub": 2520000
+          },
+          {
+            "month": "2026-03",
+            "inflow_rub": 3100000,
+            "outflow_rub": 2580000
+          },
+          {
+            "month": "2026-04",
+            "inflow_rub": 3200000,
+            "outflow_rub": 2640000
+          },
+          {
+            "month": "2026-05",
+            "inflow_rub": 3150000,
+            "outflow_rub": 2610000
+          },
+          {
+            "month": "2026-06",
+            "inflow_rub": 2600000,
+            "outflow_rub": 2300000
+          },
+          {
+            "month": "2026-07",
+            "inflow_rub": 2400000,
+            "outflow_rub": 2220000
+          },
+          {
+            "month": "2026-08",
+            "inflow_rub": 2700000,
+            "outflow_rub": 2410000
+          },
+          {
+            "month": "2026-09",
+            "inflow_rub": 3900000,
+            "outflow_rub": 3290000
+          },
+          {
+            "month": "2026-10",
+            "inflow_rub": 3950000,
+            "outflow_rub": 3280000
+          }
+        ],
+        "balance_rub": 1240500,
+        "avg_net_flow_rub": 610000,
+        "marketplace_share": 0.85,
+        "revenue_to_other_bank": false,
+        "inflow_30d_rub": 3860000
+      }
+    }
+  }
+}

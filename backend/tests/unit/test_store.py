@@ -147,3 +147,13 @@ def test_take_submitted_returns_a_list(session, draft) -> None:
     assert result == [draft]
     assert isinstance(result, list)
     assert isinstance(result[0], Application)
+
+
+@pytest.mark.positive
+def test_save_rule_results_stores_values_as_text(unit) -> None:
+    s = FakeSession()
+    store.save_rule_results(s, 7, unit["rule_results"])
+    assert [(r.application_id, r.code, r.value, r.threshold, r.passed) for r in s.added] == [
+        tuple(row) for row in unit["rule_rows"]
+    ]
+    assert s.flushes == 1
