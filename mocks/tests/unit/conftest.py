@@ -72,3 +72,12 @@ def fixed_jitter(monkeypatch: pytest.MonkeyPatch, app_data) -> int:
     monkeypatch.setattr(settings, "jitter_max_ms", app_data["jitter_ms"])
     monkeypatch.setattr(settings, "down_hang_s", app_data["down_hang_s"])
     return app_data["jitter_ms"]
+
+
+@pytest.fixture
+def no_seeds(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Path:
+    """Point the app at an empty seeds folder, like an image built without seeds."""
+    from app.settings import settings
+
+    monkeypatch.setattr(settings, "seeds_dir", tmp_path)
+    return tmp_path

@@ -12,6 +12,13 @@ def test_health(client, app_data) -> None:
     assert response.json() == app_data["health"]
 
 
+@pytest.mark.negative
+def test_health_reports_missing_seeds(client, app_data, no_seeds, caplog) -> None:
+    response = client.get("/health")
+    assert response.json() == app_data["health_no_seeds"]
+    assert "no seed files" in caplog.text
+
+
 @pytest.mark.positive
 def test_source_endpoints_return_data_and_latency_header(client, app_data, igor_seed, sleeps) -> None:
     inn = app_data["seeded_inn"]

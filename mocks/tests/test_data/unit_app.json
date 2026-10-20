@@ -16,7 +16,8 @@
     "down": {"mode": "down", "sleeps": [0.007, 9]}
   },
   "error_detail": "source error",
-  "health": {"status": "ok"},
+  "health": {"status": "ok", "seeds": 4},
+  "health_no_seeds": {"status": "ok", "seeds": 0},
   "admin": {
     "unknown_source": "nope",
     "bad_mode_body": {"mode": "weird"},
