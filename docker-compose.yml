@@ -1,4 +1,34 @@
 services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+      POSTGRES_DB: app
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app -d app"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build: ./backend
+    command: sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://app:app@postgres:5432/app
+      MOCKS_URL: http://mocks:8090
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mocks:
+        condition: service_healthy
+
   mocks:
     build: ./mocks
     ports:
@@ -11,3 +41,6 @@ services:
       interval: 10s
       timeout: 3s
       retries: 3
+
+volumes:
+  pgdata:
