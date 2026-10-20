@@ -1,0 +1,13 @@
+services:
+  mocks:
+    build: ./mocks
+    ports:
+      - "8090:8090"
+    env_file:
+      - path: mocks/.env
+        required: false
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8090/health')"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
