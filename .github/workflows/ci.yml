@@ -43,8 +43,34 @@ jobs:
       - name: Build images
         run: docker compose build
 
-  test:
-    name: test (${{ matrix.service }})
+  unit:
+    name: unit tests (${{ matrix.service }})
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        service: [mocks, backend]
+    defaults:
+      run:
+        working-directory: ${{ matrix.service }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: ${{ matrix.service }}/uv.lock
+          python-version: "3.12"
+
+      - name: Sync dependencies
+        run: uv sync --locked
+
+      - name: Run unit tests
+        run: uv run pytest -q tests/unit
+
+  integration:
+    name: integration tests (${{ matrix.service }})
     needs: build
     runs-on: ubuntu-latest
     strategy:
@@ -82,5 +108,5 @@ jobs:
       - name: Sync dependencies
         run: uv sync --locked
 
-      - name: Run tests
-        run: uv run pytest -q
+      - name: Run integration tests
+        run: uv run pytest -q tests/integration
