@@ -11,7 +11,8 @@ class PipelineSettings(BaseSettings):
     source_timeout_s: float = 3
     source_attempts: int = 3
     retry_pause_s: float = 0.5
-    poll_interval_s: float = 1
+    # Fallback check in case a notification was missed.
+    safety_poll_s: float = 30
 
     @property
     def stage_pause_s(self) -> float:

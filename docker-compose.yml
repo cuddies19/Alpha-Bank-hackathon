@@ -28,6 +28,28 @@ services:
         condition: service_healthy
       mocks:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+
+  worker:
+    build: ./backend
+    command: python -m app.pipeline.worker
+    restart: on-failure
+    stop_grace_period: 60s
+    environment:
+      DATABASE_URL: postgresql://app:app@postgres:5432/app
+      MOCKS_URL: http://mocks:8090
+      PIPELINE_SPEED: ${PIPELINE_SPEED:-normal}
+    depends_on:
+      api:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      mocks:
+        condition: service_healthy
 
   mocks:
     build: ./mocks
