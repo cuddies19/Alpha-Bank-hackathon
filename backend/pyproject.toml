@@ -16,6 +16,7 @@ dependencies = [
 [dependency-groups]
 dev = [
     "pytest",
+    "pytest-cov>=7.1.0",
     "ruff",
 ]
 
@@ -31,5 +32,13 @@ select = ["E", "F", "I", "UP", "B", "N", "SIM", "C4", "ASYNC", "RUF", "PT"]
 ignore = ["RUF001", "RUF002", "RUF003"]  # cyrillic in strings and comments is fine
 
 [tool.pytest.ini_options]
-markers = ["small", "medium", "large"]
+markers = [
+    "positive: expected behaviour",
+    "negative: failures and bad input",
+    "smoke: key path",
+]
+addopts = "--strict-markers"
 testpaths = ["tests"]
+
+[tool.coverage.report]
+exclude_also = ["if __name__ == .__main__.:"]

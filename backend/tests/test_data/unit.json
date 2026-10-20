@@ -1,0 +1,92 @@
+{
+  "sa_urls": [
+    {
+      "url": "postgresql://app:app@localhost:5432/app",
+      "expected": "postgresql+psycopg://app:app@localhost:5432/app"
+    },
+    {
+      "url": "postgresql+psycopg://u:p@h/db",
+      "expected": "postgresql+psycopg://u:p@h/db"
+    },
+    {
+      "url": "sqlite://",
+      "expected": "sqlite://"
+    }
+  ],
+  "settings_defaults": {
+    "database_url": "postgresql://app:app@localhost:5432/app",
+    "mocks_url": "http://localhost:8090"
+  },
+  "settings_env": {
+    "DATABASE_URL": "postgresql://x:y@db:5432/z",
+    "MOCKS_URL": "http://mocks:1"
+  },
+  "health": {
+    "status": "ok"
+  },
+  "illegal_transitions": [
+    [
+      "draft",
+      "approved"
+    ],
+    [
+      "issued",
+      "draft"
+    ],
+    [
+      "rejected",
+      "approved"
+    ],
+    [
+      "unknown",
+      "draft"
+    ]
+  ],
+  "legal_transition": [
+    "draft",
+    "submitted"
+  ],
+  "illegal_message": "illegal status change: draft -> approved",
+  "create_defaults": {
+    "status": "draft",
+    "status_label": "Черновик",
+    "consent_bki": false,
+    "consent_id": null,
+    "documents": []
+  },
+  "app_row": {
+    "id": 7,
+    "status": "draft",
+    "status_label": "Черновик"
+  },
+  "history_meta": {
+    "missing": [
+      "consent_id"
+    ]
+  },
+  "custom_label": "Своя метка",
+  "source_check": {
+    "app_id": 7,
+    "source": "bki",
+    "status": "unavailable",
+    "attempts": 3,
+    "latency_ms": 9001,
+    "payload": null,
+    "message": "m"
+  },
+  "recommendation": {
+    "score": 1,
+    "class": "A"
+  },
+  "submitted_ids": [
+    1,
+    2,
+    3
+  ],
+  "stuck_ids": [
+    11,
+    12
+  ],
+  "notifies": 3,
+  "pause_s": 0.25
+}

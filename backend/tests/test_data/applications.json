@@ -1,0 +1,75 @@
+{
+  "igor": {
+    "inn": "7701234567",
+    "product": "overdraft",
+    "amount_rub": 1000000,
+    "term_months": 12,
+    "consent_bki": true,
+    "consent_id": "cns-1",
+    "documents": []
+  },
+  "with_document": {
+    "inn": "7701234567",
+    "product": "overdraft",
+    "amount_rub": 1000000,
+    "term_months": 12,
+    "consent_bki": true,
+    "consent_id": "cns-1",
+    "documents": [
+      {
+        "name": "a"
+      }
+    ]
+  },
+  "with_passport": {
+    "inn": "7701234567",
+    "product": "overdraft",
+    "amount_rub": 1000000,
+    "term_months": 12,
+    "consent_bki": true,
+    "consent_id": "cns-1",
+    "documents": [
+      {
+        "type": "passport"
+      }
+    ]
+  },
+  "no_consent": {
+    "inn": "7701234567",
+    "product": "overdraft",
+    "amount_rub": 1000000,
+    "term_months": 12,
+    "consent_bki": false,
+    "consent_id": null,
+    "documents": []
+  },
+  "empty_inn": {
+    "inn": "",
+    "product": "overdraft",
+    "amount_rub": 1000000,
+    "term_months": 12,
+    "consent_bki": false,
+    "consent_id": null,
+    "documents": []
+  },
+  "any_purpose_large": {
+    "inn": "7701234567",
+    "product": "any_purpose",
+    "amount_rub": 4500000,
+    "term_months": 12,
+    "consent_bki": true,
+    "consent_id": "cns-1",
+    "documents": []
+  },
+  "with_str_passport": {
+    "inn": "7701234567",
+    "product": "overdraft",
+    "amount_rub": 1000000,
+    "term_months": 12,
+    "consent_bki": true,
+    "consent_id": "cns-1",
+    "documents": [
+      "passport"
+    ]
+  }
+}

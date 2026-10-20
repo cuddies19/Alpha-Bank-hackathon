@@ -1,50 +1,45 @@
-import os
-import uuid
-
 import pytest
-from fastapi.testclient import TestClient
-from sqlalchemy import create_engine, text
-from sqlalchemy.engine import URL, make_url
-from sqlalchemy.exc import OperationalError
 
-from app.db.session import sa_url
-from app.main import app
-from app.settings import settings
+from app.pipeline.sources import enrich as real_enrich
+from tests.source_mocks import Sources, load_json
+
+TIMEOUT_S = 3
+ATTEMPTS = 3
 
 
-@pytest.fixture
-def client() -> TestClient:
-    return TestClient(app)
-
-
-_unreachable: list[str] = []
-
-
-def _unavailable(reason: str) -> None:
-    # In CI a missing database is a failure, not a skip.
-    if os.environ.get("CI"):
-        pytest.fail(reason)
-    pytest.skip(reason)
+def pytest_collection_modifyitems(items: list[pytest.Item]) -> None:
+    """Every test has exactly one of positive / negative."""
+    bad = [
+        item.nodeid
+        for item in items
+        if len({m.name for m in item.iter_markers()} & {"positive", "negative"}) != 1
+    ]
+    if bad:
+        raise pytest.UsageError("need exactly one of positive/negative on: " + ", ".join(bad))
 
 
 @pytest.fixture
-def pg_url() -> URL:
-    """URL of an empty schema in Postgres; the schema is removed after the test."""
-    if _unreachable:
-        _unavailable(_unreachable[0])
-    base = make_url(sa_url(os.environ.get("DATABASE_URL") or settings.database_url))
-    admin = create_engine(base, isolation_level="AUTOCOMMIT", connect_args={"connect_timeout": 1})
-    schema = "t_" + uuid.uuid4().hex[:12]
-    try:
-        with admin.connect() as conn:
-            conn.execute(text(f"create schema {schema}"))
-    except OperationalError:
-        _unreachable.append("Postgres is not reachable at DATABASE_URL")
-        admin.dispose()
-        _unavailable(_unreachable[0])
-    try:
-        yield base.update_query_dict({"options": f"-csearch_path={schema}"})
-    finally:
-        with admin.connect() as conn:
-            conn.execute(text(f"drop schema {schema} cascade"))
-        admin.dispose()
+def expected() -> dict:
+    return load_json("expected")
+
+
+@pytest.fixture
+def applications() -> dict:
+    return load_json("applications")
+
+
+@pytest.fixture
+def sources() -> Sources:
+    return Sources()
+
+
+@pytest.fixture
+def enrich(sources):
+    """The real enrich, talking to the source mocks."""
+
+    async def enrich(inn: str, consent_id: str):
+        return await real_enrich(
+            inn, consent_id, "http://mocks.test", TIMEOUT_S, ATTEMPTS, 0, transport=sources.transport
+        )
+
+    return enrich

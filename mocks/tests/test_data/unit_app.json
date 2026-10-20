@@ -1,0 +1,27 @@
+{
+  "unknown_inn": "1234567890",
+  "seeded_inn": "7701234567",
+  "months": 3,
+  "bad_inns": ["abc", "12345"],
+  "bki_body": {"inn": "7701234567", "consent_id": "c1"},
+  "bki_bad_body": {"inn": "12", "consent_id": "c1"},
+  "jitter_ms": 7,
+  "slow_default_ms": 4000,
+  "slow_custom_ms": 250,
+  "down_hang_s": 9,
+  "default_modes": "bki=down",
+  "apply": {
+    "ok": {"mode": "ok", "sleeps": [0.007]},
+    "slow": {"mode": "slow", "delay_ms": 250, "sleeps": [0.257]},
+    "down": {"mode": "down", "sleeps": [0.007, 9]}
+  },
+  "error_detail": "source error",
+  "health": {"status": "ok"},
+  "admin": {
+    "unknown_source": "nope",
+    "bad_mode_body": {"mode": "weird"},
+    "negative_delay_body": {"mode": "slow", "delay_ms": -1},
+    "slow_body": {"mode": "slow", "delay_ms": 250},
+    "ok_body": {"mode": "ok", "delay_ms": 250}
+  }
+}

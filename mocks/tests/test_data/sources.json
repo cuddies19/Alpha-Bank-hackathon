@@ -1,0 +1,15 @@
+{
+  "unknown": [
+    {"inn": "5001234567", "kind": "ul"},
+    {"inn": "500123456789", "kind": "ip"}
+  ],
+  "unknown_months": {"inn": "5001234567", "months": 6},
+  "stable": [
+    {"inn": "7799000011"},
+    {"inn": "779900001122"}
+  ],
+  "consent_id": "c1",
+  "bad_inns": ["123", "12345678901", "abcdefghij", "٧٧٧٧٧٧٧٧٧٧"],
+  "bki_no_consent": {"inn": "7701234567"},
+  "igor_egrul_absent_key": "ogrnip"
+}

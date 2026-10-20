@@ -1,0 +1,14 @@
+{
+  "status_code": 200,
+  "body": {
+    "inn": "7701234567",
+    "ogrn": "1247700123456",
+    "entity_type": "ul",
+    "full_name": "ООО «Дом и уют»",
+    "status": "active",
+    "registration_date": "2024-06-12",
+    "okved": "47.91",
+    "address": "г. Москва, ул. Тверская, д. 10",
+    "head_name": "Соколов И. А."
+  }
+}
