@@ -20,17 +20,23 @@ def test_different_inns_differ() -> None:
 @pytest.mark.small
 def test_entity_type_from_length() -> None:
     ul, ip = generator.egrul("1234567890"), generator.egrul("123456789012")
-    assert ul["entity_type"] == "ul" and len(ul["ogrn"]) == 13 and "ogrnip" not in ul
-    assert ip["entity_type"] == "ip" and len(ip["ogrnip"]) == 15 and "ogrn" not in ip
+    assert ul["entity_type"] == "ul"
+    assert len(ul["ogrn"]) == 13
+    assert "ogrnip" not in ul
+    assert ip["entity_type"] == "ip"
+    assert len(ip["ogrnip"]) == 15
+    assert "ogrn" not in ip
 
 
 @pytest.mark.small
 def test_statement_invariants() -> None:
     s = generator.statement("1234567890", 12)
     labels = [m["month"] for m in s["months"]]
-    assert len(labels) == 12 and labels == sorted(labels)
+    assert len(labels) == 12
+    assert labels == sorted(labels)
     assert all(m["inflow_rub"] > 0 and m["outflow_rub"] > 0 for m in s["months"])
-    assert s["balance_rub"] > 0 and 0 <= s["marketplace_share"] <= 1
+    assert s["balance_rub"] > 0
+    assert 0 <= s["marketplace_share"] <= 1
     nets = [m["inflow_rub"] - m["outflow_rub"] for m in s["months"]]
     assert s["avg_net_flow_rub"] == round(sum(nets) / 12)
 

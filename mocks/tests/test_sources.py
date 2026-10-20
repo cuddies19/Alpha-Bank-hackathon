@@ -9,13 +9,16 @@ UNKNOWN_IP = "500123456789"
 @pytest.mark.medium
 def test_igor_all_sources(client: TestClient) -> None:
     egrul = client.get(f"/egrul/{IGOR}").json()
-    assert egrul["entity_type"] == "ul" and egrul["head_name"] == "Соколов И. А."
+    assert egrul["entity_type"] == "ul"
+    assert egrul["head_name"] == "Соколов И. А."
     assert "ogrnip" not in egrul
     assert client.get(f"/fns/{IGOR}").json()["income_last_year_rub"] == 44_800_000
     bki = client.post("/bki/report", json={"inn": IGOR, "consent_id": "c1"}).json()
-    assert bki["loans"][0]["balance_rub"] == 450_000 and bki["inquiries_30d"] == 2
+    assert bki["loans"][0]["balance_rub"] == 450_000
+    assert bki["inquiries_30d"] == 2
     st = client.get(f"/statement/{IGOR}").json()
-    assert len(st["months"]) == 12 and st["avg_net_flow_rub"] == 610_000
+    assert len(st["months"]) == 12
+    assert st["avg_net_flow_rub"] == 610_000
 
 
 @pytest.mark.medium
@@ -28,7 +31,7 @@ def test_statement_months_param(client: TestClient) -> None:
 
 
 @pytest.mark.medium
-@pytest.mark.parametrize("inn,kind", [(UNKNOWN, "ul"), (UNKNOWN_IP, "ip")])
+@pytest.mark.parametrize(("inn", "kind"), [(UNKNOWN, "ul"), (UNKNOWN_IP, "ip")])
 def test_unknown_inn_is_stable(client: TestClient, inn: str, kind: str) -> None:
     def fetch() -> list:
         return [

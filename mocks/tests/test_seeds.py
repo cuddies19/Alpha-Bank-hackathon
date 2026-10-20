@@ -22,7 +22,7 @@ def test_seed_files_exist() -> None:
 @pytest.mark.parametrize("path", SEED_FILES, ids=lambda p: p.stem)
 def test_seed_has_required_keys(path: Path) -> None:
     seed = _load(path)
-    assert REQUIRED_KEYS <= seed.keys()
+    assert seed.keys() >= REQUIRED_KEYS
     assert seed["inn"] == path.stem
     assert len(seed["statement"]["months"]) == 12
 

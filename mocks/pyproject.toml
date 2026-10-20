@@ -24,7 +24,8 @@ line-length = 110
 target-version = "py312"
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "UP", "B"]
+select = ["E", "F", "I", "UP", "B", "N", "SIM", "C4", "ASYNC", "RUF", "PT"]
+ignore = ["RUF001", "RUF002", "RUF003"]  # cyrillic in strings and comments is fine
 
 [tool.pytest.ini_options]
 markers = ["small", "medium", "large"]

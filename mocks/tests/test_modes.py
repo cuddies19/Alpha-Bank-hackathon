@@ -23,9 +23,9 @@ def sleeps(monkeypatch: pytest.MonkeyPatch) -> list[float]:
 def test_parse_modes() -> None:
     assert modes.parse_modes("bki=down, fns=slow") == {"bki": "down", "fns": "slow"}
     assert modes.parse_modes("") == {}
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="bad mode entry"):
         modes.parse_modes("bki=broken")
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="bad mode entry"):
         modes.parse_modes("nope=down")
 
 
@@ -88,7 +88,8 @@ def test_down_hangs(client: TestClient, sleeps: list[float]) -> None:
 def test_error_then_back_to_ok(client: TestClient, sleeps: list[float]) -> None:
     client.post("/_admin/sources/bki", json={"mode": "error"})
     r = client.post("/bki/report", json=BKI)
-    assert r.status_code == 500 and r.json() == {"detail": "source error"}
+    assert r.status_code == 500
+    assert r.json() == {"detail": "source error"}
     assert "X-Mock-Latency-Ms" in r.headers
     client.post("/_admin/sources/bki", json={"mode": "ok"})
     assert client.post("/bki/report", json=BKI).status_code == 200
