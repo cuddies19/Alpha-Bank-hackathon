@@ -10,13 +10,13 @@ config = context.config
 url = config.get_main_option("sqlalchemy.url") or sa_url(settings.database_url)
 
 if context.is_offline_mode():
-    context.configure(url=url, target_metadata=Base.metadata, literal_binds=True)
+    context.configure(url=url, target_metadata=Base.metadata, literal_binds=True, compare_server_default=True)
     with context.begin_transaction():
         context.run_migrations()
 else:
     engine = create_engine(url)
     with engine.connect() as connection:
-        context.configure(connection=connection, target_metadata=Base.metadata)
+        context.configure(connection=connection, target_metadata=Base.metadata, compare_server_default=True)
         with context.begin_transaction():
             context.run_migrations()
     engine.dispose()

@@ -1,5 +1,9 @@
 """Application storage over a SQLAlchemy Session.
 
+For endpoint authors: endpoints are plain `def` (the engine is sync). Open the
+session inside the handler with `with SessionLocal.begin() as s:`. Worker DB calls
+must be short, because they block the asyncio loop.
+
 Functions flush but never commit: the caller owns the transaction.
 Claim pattern for the worker: one short transaction,
     with SessionLocal.begin() as s:
@@ -10,11 +14,11 @@ then run the stages outside it. Never hold a transaction across stages or HTTP c
 
 from typing import Any
 
-from sqlalchemy import func, select
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.db.models import Application, SourceCheck, StatusHistory
-from app.db.statuses import check_transition
+from app.db.statuses import STATUS_LABELS, check_transition
 
 
 def create_application(
@@ -28,6 +32,8 @@ def create_application(
     documents: list[Any] | None = None,
 ) -> Application:
     app = Application(
+        status="draft",
+        status_label=STATUS_LABELS["draft"],
         inn=inn,
         product=product,
         amount_rub=amount_rub,
@@ -66,8 +72,7 @@ def change_status(
     from_status = app.status
     check_transition(from_status, to_status)
     app.status = to_status
-    app.status_label = label or to_status
-    app.updated_at = func.now()
+    app.status_label = label or STATUS_LABELS[to_status]
     session.add(
         StatusHistory(
             application_id=app_id,
@@ -111,7 +116,6 @@ def save_recommendation(session: Session, app_id: int, data: dict) -> None:
     if app is None:
         raise ValueError(f"application {app_id} not found")
     app.recommendation = data
-    app.updated_at = func.now()
     session.flush()
 
 

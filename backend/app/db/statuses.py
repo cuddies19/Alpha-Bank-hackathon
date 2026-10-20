@@ -13,6 +13,36 @@ STATUSES = (
     "issued",
 )
 
+STATUS_LABELS: dict[str, str] = {
+    "draft": "Черновик",
+    "submitted": "Заявка отправлена",
+    "completeness_check": "Проверяем полноту заявки",
+    "needs_info": "Нужны данные",
+    "enrichment": "Запрашиваем данные из источников",
+    "scoring": "Оцениваем риск",
+    "rules": "Проверяем кредитные правила",
+    "manual_review": "На рассмотрении у специалиста",
+    "approved": "Одобрено",
+    "rejected": "Отказ",
+    "counter_offer": "Предложение банка",
+    "issued": "Деньги зачислены",
+}
+
+# Labels and reasons used by the pipeline.
+L_UNAVAILABLE = "Источник недоступен"
+L_SOURCE_ERROR = "Ошибка источника"
+L_FAILURE = "Ошибка обработки"
+L_INTERRUPTED = "Обработка прервана"
+
+R_CLAIMED = "Взята в работу"
+R_INCOMPLETE = "Заявка заполнена не полностью"
+R_COMPLETE = "Заявка заполнена полностью"
+R_SOURCE_SILENT = "Источник не ответил"
+R_SOURCE_ERROR = "Источник вернул ошибку"
+R_SOURCES_CHECKED = "Источники проверены"
+R_SCORED = "Оценка получена"
+R_NO_RULES = "Правила пока не подключены"
+
 # From status -> statuses it may move to. Empty means final.
 TRANSITIONS: dict[str, set[str]] = {
     "draft": {"submitted"},
