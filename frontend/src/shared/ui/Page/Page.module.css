@@ -1,0 +1,171 @@
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.titles {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.titleLine {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.description {
+  color: var(--ink-secondary);
+  max-width: 720px;
+}
+
+.back {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--ink-secondary);
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: var(--radius-xs);
+}
+
+.back:hover {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.sectionHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.sectionTitles {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.eyebrow,
+.subtitle {
+  color: var(--ink-secondary);
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  color: var(--ink-secondary);
+}
+
+.tagAi {
+  color: var(--accent-text);
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  color: var(--ink-secondary);
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+.container {
+  width: 100%;
+  padding: var(--space-8) 0 var(--space-12);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.narrow {
+  max-width: 760px;
+}
+
+.tight {
+  gap: var(--space-4);
+}
+
+.flushTop {
+  padding-top: var(--space-8);
+}
+
+.roomyTop {
+  padding-top: var(--space-8);
+}
+
+.columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-6) var(--space-12);
+  align-items: flex-start;
+}
+
+.main {
+  flex: 999 1 var(--main-basis, 520px);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.side {
+  flex: 1 1 var(--side-basis, 360px);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.sideFixed {
+  flex: 0 1 384px;
+}
+
+.mainRoomy {
+  gap: var(--space-6);
+}
+
+@media (max-width: 767px) {
+  .container {
+    padding: var(--space-5) var(--space-4) 112px;
+    gap: var(--space-6);
+  }
+
+  .roomyTop {
+    padding-top: var(--space-6);
+  }
+
+  .side,
+  .sideFixed {
+    flex-basis: 100%;
+  }
+}

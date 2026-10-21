@@ -1,0 +1,152 @@
+.score {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.track,
+.labels {
+  display: grid;
+  grid-template-columns: 40fr 15fr 8fr 12fr 25fr;
+  gap: 3px;
+}
+
+.track {
+  position: relative;
+  height: 12px;
+}
+
+.segment {
+  background: var(--line);
+  border-radius: 3px;
+}
+
+.segmentOn {
+  background: var(--ink);
+}
+
+.marker {
+  position: absolute;
+  top: -8px;
+  width: 4px;
+  height: 28px;
+  margin-left: -2px;
+  border-radius: 2px;
+  background: var(--ink);
+  box-shadow: 0 0 0 2px var(--surface);
+}
+
+.labels {
+  color: var(--ink-secondary);
+  text-align: center;
+}
+
+.labelOn {
+  color: var(--ink);
+}
+
+.ends {
+  position: relative;
+  height: 16px;
+  color: var(--ink-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.ends span {
+  position: absolute;
+  transform: translateX(-50%);
+}
+
+.ends span:first-child {
+  transform: none;
+}
+
+.ends span:last-child {
+  transform: translateX(-100%);
+}
+
+.factors {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.factor,
+.axis {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) 44px;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.bar {
+  position: relative;
+  height: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.bar::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -4px;
+  bottom: -4px;
+  width: 1px;
+  background: var(--line-strong);
+}
+
+.neg,
+.pos {
+  position: relative;
+  height: 100%;
+}
+
+.neg span {
+  position: absolute;
+  right: 0;
+  top: 3px;
+  bottom: 3px;
+  background: var(--danger);
+  border-radius: 4px 0 0 4px;
+}
+
+.pos span {
+  position: absolute;
+  left: 0;
+  top: 3px;
+  bottom: 3px;
+  background: var(--success);
+  border-radius: 0 4px 4px 0;
+}
+
+.value {
+  text-align: right;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.valuePos {
+  color: var(--success);
+}
+
+.valueNeg {
+  color: var(--danger);
+}
+
+.axis {
+  color: var(--ink-secondary);
+}
+
+.axisScale {
+  display: flex;
+  justify-content: space-between;
+}
+
+@media (max-width: 599px) {
+  .factor,
+  .axis {
+    grid-template-columns: minmax(0, 1fr) 80px 40px;
+    gap: var(--space-2);
+  }
+}

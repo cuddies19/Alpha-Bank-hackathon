@@ -1,0 +1,60 @@
+.card {
+  width: 100%;
+  max-width: 520px;
+  background: var(--surface);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.persona {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-3) 14px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--line);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+}
+
+.persona:hover {
+  background: var(--surface-muted);
+}
+
+.selected,
+.selected:hover {
+  box-shadow: inset 0 0 0 2px var(--ink);
+}
+
+.persona:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+.personaText {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.secondary {
+  color: var(--ink-secondary);
+}
+
+@media (max-width: 599px) {
+  .card {
+    padding: var(--space-6) var(--space-4);
+    border-radius: var(--radius-lg);
+  }
+
+  .persona {
+    flex-wrap: wrap;
+  }
+}

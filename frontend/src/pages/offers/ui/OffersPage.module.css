@@ -1,0 +1,17 @@
+.offers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(440px, 100%), 1fr));
+  gap: var(--space-6);
+  align-items: start;
+}
+
+.calculator {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+  gap: var(--space-8);
+  padding-top: var(--space-2);
+}
+
+.compare {
+  scroll-margin-top: var(--space-6);
+}

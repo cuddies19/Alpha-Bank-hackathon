@@ -1,0 +1,39 @@
+.summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  cursor: pointer;
+  list-style: none;
+}
+
+.summary::-webkit-details-marker {
+  display: none;
+}
+
+.summary:focus-visible {
+  border-radius: var(--radius-sm);
+}
+
+.chevron {
+  flex: none;
+  color: var(--ink-secondary);
+  transition: transform 0.15s;
+}
+
+.details[open] .chevron {
+  transform: rotate(90deg);
+}
+
+.content {
+  padding-top: var(--space-4);
+}
+
+.divided {
+  border-top: 1px solid var(--line);
+  padding-top: var(--space-3);
+}
+
+.divided .content {
+  padding-top: var(--space-3);
+}

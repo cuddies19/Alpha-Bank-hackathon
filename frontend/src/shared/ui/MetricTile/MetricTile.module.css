@@ -1,0 +1,58 @@
+.metric {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-6);
+  background: var(--surface);
+  border-radius: var(--radius-xl);
+  min-width: 0;
+}
+
+.outlined {
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.label,
+.icon,
+.hint,
+.deltaLabel {
+  color: var(--ink-secondary);
+}
+
+.value {
+  color: var(--ink);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.delta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--ink-secondary);
+  flex-wrap: wrap;
+}
+
+.success {
+  color: var(--success);
+}
+.danger {
+  color: var(--danger);
+}
+
+.numeric {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 599px) {
+  .metric {
+    padding: var(--space-5) var(--space-4);
+  }
+}

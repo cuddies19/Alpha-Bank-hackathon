@@ -1,0 +1,24 @@
+.answer {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.answerIcon {
+  color: var(--success);
+}
+
+.answerTitle {
+  flex: 1;
+  color: var(--ink-secondary);
+}
+
+.amountField {
+  max-width: 280px;
+}
+
+@media (max-width: 599px) {
+  .answer {
+    flex-wrap: wrap;
+  }
+}

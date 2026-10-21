@@ -1,0 +1,77 @@
+.stepper {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.step {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  position: relative;
+}
+
+.step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 15px;
+  left: 40px;
+  right: calc(var(--space-2) * -1 + 8px);
+  height: 2px;
+  border-radius: 1px;
+  background: var(--line);
+}
+
+.done:not(:last-child)::after {
+  background: var(--ink);
+}
+
+.marker {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.done .marker {
+  background: var(--ink);
+  color: var(--surface);
+}
+
+.current .marker {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.upcoming .marker {
+  box-shadow: inset 0 0 0 1.5px var(--line-strong);
+  color: var(--ink-secondary);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-right: var(--space-2);
+}
+
+.upcoming .label,
+.description {
+  color: var(--ink-secondary);
+}
+
+@media (max-width: 599px) {
+  .step:not(.current) .text {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+}

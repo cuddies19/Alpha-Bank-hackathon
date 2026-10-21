@@ -1,0 +1,109 @@
+.dialog {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  max-width: 100vw;
+  max-height: 100vh;
+  overflow: visible;
+}
+
+.dialog::backdrop {
+  background: var(--scrim);
+}
+
+.modal {
+  width: min(480px, calc(100vw - 32px));
+  margin: auto;
+}
+
+.modalBody {
+  background: var(--surface);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.drawer {
+  height: 100vh;
+  max-height: 100vh;
+  margin: 0 0 0 auto;
+  width: min(480px, 100vw);
+}
+
+.wide {
+  width: min(560px, 100vw);
+}
+
+.drawerBody {
+  height: 100%;
+  background: var(--surface);
+  border-radius: var(--radius-xl) 0 0 var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+}
+
+.drawerHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-5) var(--space-6);
+  border-bottom: 1px solid var(--line);
+}
+
+.heading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.titles {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.drawerContent {
+  flex: 1;
+  overflow: auto;
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.drawerFoot {
+  padding: var(--space-4) var(--space-6) var(--space-6);
+  border-top: 1px solid var(--line);
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.subtitle {
+  color: var(--ink-secondary);
+}
+
+@media (max-width: 599px) {
+  .modalBody {
+    padding: var(--space-6);
+  }
+
+  .drawerBody {
+    border-radius: 0;
+  }
+}

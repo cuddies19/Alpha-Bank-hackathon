@@ -1,0 +1,92 @@
+.bar {
+  display: flex;
+  gap: var(--space-1);
+  border-bottom: 1px solid var(--line);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.flush {
+  border-bottom: 0;
+}
+
+.tab {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 48px;
+  padding: 0 var(--space-4);
+  border: 0;
+  background: transparent;
+  color: var(--ink-secondary);
+  text-decoration: none;
+  font-size: 15px;
+  line-height: 22px;
+  font-weight: 500;
+  box-shadow: inset 0 -2px 0 transparent;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.tab:hover {
+  color: var(--ink);
+}
+
+.tab:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+.active,
+.active:hover {
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: inset 0 -2px 0 var(--ink);
+}
+
+.count {
+  min-width: 22px;
+  height: 22px;
+  padding: 0 7px;
+  border-radius: var(--radius-full);
+  background: var(--surface-muted);
+  box-shadow: inset 0 0 0 1px var(--line);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: var(--warning);
+}
+
+@media (max-width: 599px) {
+  .bar {
+    flex-wrap: wrap;
+    gap: 0;
+    overflow: visible;
+  }
+
+  .tab {
+    flex: 1 1 auto;
+    justify-content: center;
+    gap: var(--space-1);
+    height: 44px;
+    padding: 0 var(--space-2);
+    font-size: 13px;
+  }
+
+  .count {
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    font-size: 11px;
+  }
+}

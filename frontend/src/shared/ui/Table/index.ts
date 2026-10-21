@@ -1,0 +1,15 @@
+export {
+  Table,
+  Th,
+  Td,
+  Tr,
+  RowHeader,
+  CellStack,
+  RowLink,
+  SortButton,
+  Pager,
+  type TableProps,
+  type ThProps,
+  type TdProps,
+  type PagerProps,
+} from './Table';

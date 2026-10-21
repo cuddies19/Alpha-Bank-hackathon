@@ -1,0 +1,28 @@
+.fab {
+  position: fixed;
+  right: max(var(--space-6), calc((100vw - var(--shell-max)) / 2 + var(--space-6)));
+  bottom: var(--space-6);
+  z-index: 20;
+  width: 56px;
+  height: 56px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--brand);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+}
+
+.fab:hover {
+  background: var(--accent-hover);
+}
+
+@media (max-width: 767px) {
+  .fab {
+    right: var(--space-4);
+    bottom: 96px;
+  }
+}
