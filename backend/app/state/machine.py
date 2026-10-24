@@ -90,6 +90,7 @@ TRANSITIONS: dict[ApplicationStatus, dict[ApplicationStatus, set[ActorType]]] = 
     },
     ApplicationStatus.client_action: {
         ApplicationStatus.processing: {ActorType.system},
+        ApplicationStatus.submitted: {ActorType.client},
         ApplicationStatus.withdrawn: {ActorType.client},
     },
     ApplicationStatus.approved: {

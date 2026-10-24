@@ -8,8 +8,9 @@ from sqlalchemy.orm import Session
 
 from app.config import get_settings
 from app.errors import ApiError
-from app.models import ActorType, Application, Document, DocumentStatus, User
+from app.models import ActorType, Application, ApplicationStatus, Document, DocumentStatus, User
 from app.services import audit
+from app.state.machine import actor_from_user, transition
 
 ALLOWED_EXTENSIONS = {".pdf", ".jpg", ".jpeg", ".png"}
 ALLOWED_MIME_TYPES = {"application/pdf", "image/jpeg", "image/jpg", "image/png"}
@@ -77,6 +78,14 @@ def save_document(
             "mime_type": document.mime_type,
         },
     )
+    if application.status == ApplicationStatus.client_action:
+        transition(
+            db,
+            application,
+            ApplicationStatus.submitted,
+            actor_from_user(user),
+            {"comment": "Клиент загрузил документы"},
+        )
     db.commit()
     db.refresh(document)
     return document

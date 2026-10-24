@@ -56,6 +56,7 @@ transition(
 | `manual_review` | `client_action`, `approved`, `counter_offer`, `rejected` | underwriter |
 | `manual_review` | `withdrawn` | client |
 | `client_action` | `processing` | system |
+| `client_action` | `submitted` | client (после загрузки документа) |
 | `client_action` | `withdrawn` | client |
 | `approved`, `counter_offer` | `signing` | client |
 | `approved`, `counter_offer` | `client_declined` | client |
@@ -85,6 +86,7 @@ stateDiagram-v2
     manual_review --> rejected: underwriter
     manual_review --> withdrawn: client
     client_action --> processing: system
+    client_action --> submitted: client
     client_action --> withdrawn: client
     approved --> signing: client
     approved --> client_declined: client

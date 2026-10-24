@@ -71,3 +71,47 @@ def test_foreign_application_document_upload_returns_404(client, login, create_a
         files={"file": ("report.pdf", b"fake", "application/pdf")},
     )
     assert response.status_code == 404
+
+
+def test_upload_returns_application_from_client_action(client, igor, olga, create_application):
+    application = create_application()
+    submitted = client.post(f"/applications/{application['id']}/submit", headers=igor)
+    assert submitted.status_code == 200, submitted.text
+    client.post(f"/bank/applications/{application['id']}/take", headers=olga)
+    client.post(
+        f"/bank/applications/{application['id']}/decision",
+        headers=olga,
+        json={
+            "outcome": "request",
+            "requested_documents": ["Бухгалтерская отчётность за 2025 год"],
+            "client_message": "Пришлите отчётность.",
+        },
+    )
+
+    uploaded = client.post(
+        f"/applications/{application['id']}/documents",
+        headers=igor,
+        data={"doc_type": "financial_statement"},
+        files={"file": ("report.pdf", b"%PDF-1.7 fake", "application/pdf")},
+    )
+    assert uploaded.status_code == 201, uploaded.text
+
+    detail = client.get(f"/applications/{application['id']}", headers=igor).json()
+    assert detail["status"] == "submitted"
+    assert detail["history"][-1]["from_status"] == "client_action"
+    assert detail["history"][-1]["to_status"] == "submitted"
+
+    queue = client.get("/bank/applications", headers=olga).json()
+    assert queue["counters"]["new"] == 1
+
+    again = client.post(
+        f"/applications/{application['id']}/documents",
+        headers=igor,
+        data={"doc_type": "other"},
+        files={"file": ("extra.pdf", b"%PDF-1.7 fake", "application/pdf")},
+    )
+    assert again.status_code == 201
+
+    detail = client.get(f"/applications/{application['id']}", headers=igor).json()
+    assert detail["status"] == "submitted"
+    assert sum(item["to_status"] == "submitted" for item in detail["history"]) == 2

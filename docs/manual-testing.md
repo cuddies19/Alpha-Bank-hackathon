@@ -223,7 +223,7 @@ curl -s -X POST $API/applications/$APP_ID/submit \
 | 3.2.4 | `decision` с `outcome=approve` | 200, `approved`, создано решение, клиенту ушло уведомление |
 | 3.2.5 | `decision` с `outcome=counter` + новые сумма/срок/ставка | 200, `counter_offer`, платёж пересчитан |
 | 3.2.6 | `decision` с `outcome=request` без `requested_documents` | 422, `documents_required` |
-| 3.2.7 | `decision` с `outcome=request` + документы | 200, `client_action`, в карточке клиента описание запроса |
+| 3.2.7 | `decision` с `outcome=request` + документы | 200, `client_action`, в карточке клиента описание запроса; после загрузки документа клиентом — `submitted` |
 | 3.2.8 | `decision` с `outcome=decline` без причины | 422, `decline_reason_required` |
 | 3.2.9 | `decision` с `outcome=decline` + причина | 200, `rejected` |
 | 3.2.10 | `decision` по заявке не в `manual_review` | 409, `invalid_transition` |
