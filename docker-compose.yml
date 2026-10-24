@@ -28,6 +28,7 @@ services:
       context: ./backend
     environment:
       DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-cabinet}:${POSTGRES_PASSWORD:-cabinet}@db:5432/${POSTGRES_DB:-cabinet}
+      APP_ENV: ${APP_ENV:-dev}
       JWT_SECRET: ${JWT_SECRET:-dev-secret-change-me-please-use-32-bytes}
       ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES:-1440}
       DEMO_PASSWORD: ${DEMO_PASSWORD:-demo123}

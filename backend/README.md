@@ -64,3 +64,4 @@ docker compose up --build
 - Статус заявки меняется только через `app.state.machine.transition`.
 - Контракт API меняется только после сообщения фронту.
 - Для подачи заявки нужны согласия `personal_data`, `bki_request`, `terms` со значением `true`.
+- При `APP_ENV != dev` нужен явный `JWT_SECRET`, иначе приложение не стартует.
