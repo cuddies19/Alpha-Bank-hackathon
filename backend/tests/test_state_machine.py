@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import pytest
-from sqlalchemy import func, select
+from sqlalchemy import func, select, update
 
 from app.errors import ApiError
 from app.models import ActorType, Application, ApplicationStatus, AuditLog, User
@@ -50,6 +50,28 @@ def test_draft_to_approved_is_rejected_with_409(client, igor, create_application
     assert error.value.status_code == 409
     assert error.value.code == "invalid_transition"
     assert db.get(Application, application.id).status == ApplicationStatus.draft
+
+
+def test_transition_reloads_status_before_check(create_application, db):
+    created = create_application()
+    application = db.get(Application, created["id"])
+    client_user = _user(db, "igor.sokolov")
+    db.execute(
+        update(Application)
+        .where(Application.id == application.id)
+        .values(status=ApplicationStatus.submitted)
+        .execution_options(synchronize_session=False)
+    )
+
+    with pytest.raises(ApiError) as error:
+        transition(
+            db,
+            application,
+            ApplicationStatus.submitted,
+            actor_from_user(client_user),
+        )
+    assert error.value.status_code == 409
+    assert error.value.code == "invalid_transition"
 
 
 def test_rejected_to_signed_is_rejected_with_409(create_application, db):

@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.errors import ApiError
@@ -150,6 +151,11 @@ def transition(
     неверная роль при допустимом переходе — 403 forbidden.
     """
     payload = payload or {}
+    db.flush()
+    db.execute(
+        select(Application.id).where(Application.id == application.id).with_for_update()
+    )
+    db.refresh(application)
     from_status = application.status
     allowed = TRANSITIONS.get(from_status, {})
     if to_status not in allowed:
