@@ -260,7 +260,7 @@ def decline_offer(
 
 def sign_application(db: Session, application: Application, user: User) -> Application:
     # transition() ниже отклонит подписание не на этапе signing.
-    decision = application.latest_decision
+    decision = application.current_decision
     amount = (decision.amount if decision and decision.amount else application.amount) or 0
     term_months = (
         decision.term_months if decision and decision.term_months else application.term_months

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from app.models import Application
+
 
 def _submitted_application(client, igor, create_application):
     application = create_application()
@@ -81,6 +83,21 @@ def test_resubmit_clears_previous_decision_and_assignee(client, igor, olga, crea
     queue = client.get("/bank/applications?status=submitted", headers=olga).json()
     item = next(row for row in queue["items"] if row["id"] == application["id"])
     assert item["taken_by_name"] is None
+
+
+def test_current_decision_ignores_previous_cycle(client, igor, olga, create_application, db):
+    application = _submitted_application(client, igor, create_application)
+    client.post(f"/bank/applications/{application['id']}/take", headers=olga)
+    client.post(
+        f"/bank/applications/{application['id']}/decision",
+        headers=olga,
+        json={"outcome": "decline", "decline_reason": "Стоп-фактор"},
+    )
+    client.post(f"/applications/{application['id']}/resubmit", headers=igor)
+
+    row = db.get(Application, application["id"])
+    assert row.latest_decision is not None
+    assert row.current_decision is None
 
 
 def test_client_cannot_take_or_decide(client, igor, create_application):

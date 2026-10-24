@@ -152,6 +152,15 @@ class Application(Base):
         return max(self.decisions, key=lambda item: item.decided_at, default=None)
 
     @property
+    def current_decision(self) -> Decision | None:
+        decision = self.latest_decision
+        if decision is None:
+            return None
+        if self.submitted_at and decision.decided_at < self.submitted_at:
+            return None
+        return decision
+
+    @property
     def latest_score(self) -> Score | None:
         return max(self.scores, key=lambda item: item.created_at, default=None)
 

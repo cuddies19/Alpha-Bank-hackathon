@@ -7,7 +7,6 @@ from app.models import (
     Application,
     ApplicationStatus,
     AuditLog,
-    Decision,
     DecisionOutcome,
     Document,
     Loan,
@@ -126,18 +125,8 @@ def rule_results_out(application: Application) -> list[RuleResultOut]:
     ]
 
 
-def current_decision(application: Application) -> Decision | None:
-    """Решение текущего цикла: после повторной подачи старое решение не показываем."""
-    decision = application.latest_decision
-    if decision is None:
-        return None
-    if application.submitted_at and decision.decided_at < application.submitted_at:
-        return None
-    return decision
-
-
 def client_decision(application: Application) -> ClientDecisionOut | None:
-    decision = current_decision(application)
+    decision = application.current_decision
     if decision is None:
         return None
     return ClientDecisionOut(
@@ -155,7 +144,7 @@ def client_decision(application: Application) -> ClientDecisionOut | None:
 
 
 def bank_decision(application: Application) -> BankDecisionOut | None:
-    decision = current_decision(application)
+    decision = application.current_decision
     if decision is None:
         return None
     return BankDecisionOut(
