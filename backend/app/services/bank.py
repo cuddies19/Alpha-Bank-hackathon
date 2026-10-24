@@ -230,7 +230,7 @@ def decide(
         application,
         target_status,
         actor_from_user(user),
-        {"comment": data.client_message or data.internal_comment},
+        {"comment": data.client_message},
     )
     audit.record(
         db,

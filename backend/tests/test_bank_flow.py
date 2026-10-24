@@ -148,6 +148,29 @@ def test_request_documents_moves_to_client_action(client, olga, igor, create_app
     assert response.json()["stages"][2]["description"].startswith("Банк запросил документы")
 
 
+def test_internal_comment_not_visible_to_client(client, olga, igor, create_application):
+    application = _submitted_application(client, igor, create_application)
+    client.post(f"/bank/applications/{application['id']}/take", headers=olga)
+
+    decision = client.post(
+        f"/bank/applications/{application['id']}/decision",
+        headers=olga,
+        json={
+            "outcome": "request",
+            "requested_documents": ["Бухгалтерская отчётность за 2025 год"],
+            "internal_comment": "Клиент выглядит рискованно",
+        },
+    )
+    assert decision.status_code == 200, decision.text
+
+    detail = client.get(f"/applications/{application['id']}", headers=igor).json()
+    comments = [item["comment"] for item in detail["history"] if item["comment"]]
+    assert all("рискованно" not in comment for comment in comments)
+
+    card = client.get(f"/bank/applications/{application['id']}", headers=olga).json()
+    assert card["decision"]["internal_comment"] == "Клиент выглядит рискованно"
+
+
 def test_bank_audit_and_sources(client, olga, igor, create_application):
     application = _submitted_application(client, igor, create_application)
     client.post(f"/bank/applications/{application['id']}/take", headers=olga)
