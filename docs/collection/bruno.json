@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "Alpha Bank: демо-сценарии",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

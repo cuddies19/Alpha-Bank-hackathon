@@ -69,7 +69,9 @@ async def _fetch(
         if made < attempts:
             await asyncio.sleep(pause_s)
     else:
-        result.update(status="unavailable", message=unavailable_message(source, attempts, timeout_s))
+        result.update(
+            status="unavailable", message=unavailable_message(source, attempts, timeout_s)
+        )
     result["attempts"] = made
     result["latency_ms"] = int((time.monotonic() - started) * 1000)
     return result

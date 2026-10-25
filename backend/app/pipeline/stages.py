@@ -1,4 +1,7 @@
-"""Processing stages for one application: completeness -> enrichment -> scoring -> rules."""
+"""Processing of one application: completeness -> sources -> scoring -> rules.
+
+The application is in `processing` for all of it; the stages are only pauses and log lines.
+"""
 
 import asyncio
 import logging
@@ -8,35 +11,31 @@ from typing import Any
 
 from sqlalchemy.orm import Session, sessionmaker
 
-from app.db import store
-from app.db.models import Application
-from app.db.statuses import (
+from app.models import Application, ApplicationStatus
+from app.pipeline import store
+from app.pipeline.scoring import get_score
+from app.pipeline.settings import pipeline_settings
+from app.pipeline.texts import (
     L_FAILURE,
-    L_INTERRUPTED,
     L_SCORING_DOWN,
     L_SOURCE_ERROR,
     L_UNAVAILABLE,
-    R_COMPLETE,
-    R_INCOMPLETE,
-    R_SCORED,
+    MISSING_NAMES,
+    R_INTERRUPTED,
+    R_MANUAL,
     R_SOURCE_ERROR,
     R_SOURCE_SILENT,
-    R_SOURCES_CHECKED,
 )
-from app.pipeline.scoring import get_score
-from app.pipeline.settings import pipeline_settings
 from app.rules.engine import evaluate, load_rules
 
 log = logging.getLogger(__name__)
 
-REQUIRED_FIELDS = ("inn", "product", "amount_rub", "term_months")
-
-# Documents every application of a product must carry: product -> document names.
+# Documents every application of a product must carry: product code -> document types.
 # Empty for now; amount-based document requests are a credit rule, not a completeness check.
 REQUIRED_DOCUMENTS: dict[str, tuple[str, ...]] = {}
 
-Enrich = Callable[[str, str], Awaitable[dict[str, dict[str, Any]]]]
-Score = Callable[[str, dict[str, dict[str, Any]]], Awaitable[dict[str, Any]]]
+EnrichFn = Callable[[str, str], Awaitable[dict[str, dict[str, Any]]]]
+ScoreFn = Callable[[str, dict[str, dict[str, Any]]], Awaitable[dict[str, Any]]]
 Sleep = Callable[[float], Awaitable[None]]
 
 RULES = load_rules()
@@ -54,27 +53,28 @@ async def default_score(inn: str, results: dict[str, dict[str, Any]]) -> dict[st
     )
 
 
-def _document_names(documents: list[Any] | None) -> set[str]:
-    # A document is a plain name or an object with "type" or "name".
-    names = set()
-    for d in documents or []:
-        if isinstance(d, str):
-            names.add(d)
-        elif isinstance(d, dict):
-            names.add(str(d.get("type") or d.get("name")))
-    return names
-
-
 def missing_items(app: Application) -> list[str]:
     """What the applicant still has to provide; empty when the application is complete."""
-    missing = [f for f in REQUIRED_FIELDS if getattr(app, f) in (None, "")]
-    if not app.consent_bki:
+    missing = []
+    if not app.company.inn:
+        missing.append("inn")
+    if not app.product:
+        missing.append("product")
+    if not app.amount:
+        missing.append("amount")
+    if not app.term_months:
+        missing.append("term_months")
+    if not app.consents.get("bki_request"):
         missing.append("consent_bki")
-    if not app.consent_id:
-        missing.append("consent_id")
-    have = _document_names(app.documents)
-    missing += [f"document:{d}" for d in REQUIRED_DOCUMENTS.get(app.product, ()) if d not in have]
+    have = {d.doc_type for d in app.documents}
+    code = app.product.code if app.product else None
+    missing += [f"document:{d}" for d in REQUIRED_DOCUMENTS.get(code, ()) if d not in have]
     return missing
+
+
+def missing_text(missing: list[str]) -> str:
+    names = [MISSING_NAMES.get(m) or f"документ {m.removeprefix('document:')}" for m in missing]
+    return "Не хватает данных: " + ", ".join(names)
 
 
 def failed_sources_label(results: dict[str, dict[str, Any]]) -> str | None:
@@ -88,15 +88,15 @@ def failed_sources_label(results: dict[str, dict[str, Any]]) -> str | None:
 async def process_application(
     factory: sessionmaker[Session],
     app_id: int,
-    enrich: Enrich,
+    enrich: EnrichFn,
     pause_s: float,
     sleep: Sleep = asyncio.sleep,
-    score: Score = default_score,
+    score: ScoreFn = default_score,
     today: Callable[[], date] = date.today,
 ) -> None:
-    """Drive an application that is already in completeness_check to its next stop.
+    """Drive an application that is in `processing` to its next stop.
 
-    Every status change gets its own short transaction; none is held across pauses or HTTP calls.
+    Every step gets its own short transaction; none is held across pauses or HTTP calls.
     """
     try:
         await _run(factory, app_id, enrich, pause_s, sleep, score, today)
@@ -104,7 +104,7 @@ async def process_application(
         log.exception("application %s failed", app_id)
         try:
             with factory.begin() as s:
-                store.change_status(s, app_id, "manual_review", L_INTERRUPTED, label=L_FAILURE)
+                store.move(s, app_id, "manual_review", R_INTERRUPTED, [L_FAILURE])
         except Exception:
             log.exception("application %s: fallback to manual_review failed", app_id)
 
@@ -112,27 +112,29 @@ async def process_application(
 async def _run(
     factory: sessionmaker[Session],
     app_id: int,
-    enrich: Enrich,
+    enrich: EnrichFn,
     pause_s: float,
     sleep: Sleep,
-    score: Score,
+    score: ScoreFn,
     today: Callable[[], date],
 ) -> None:
     await sleep(pause_s)
     with factory.begin() as s:
         app = store.get_application(s, app_id)
+        if app is None or app.status != ApplicationStatus.processing:
+            return  # the client withdrew it during the pause
         missing = missing_items(app)
         if missing:
-            store.change_status(s, app_id, "needs_info", R_INCOMPLETE, {"missing": missing})
+            store.move(s, app_id, "client_action", missing_text(missing))
             return
-        inn, consent_id = app.inn, app.consent_id
+        inn, consent_id = app.company.inn, app.number
         application = {
-            "product": app.product,
-            "amount_rub": app.amount_rub,
+            "product": app.product.code,
+            "amount_rub": app.amount,
             "term_months": app.term_months,
-            "documents": [{"type": n} for n in sorted(_document_names(app.documents))],
+            "rate": app.product.rate,
+            "documents": [{"type": d.doc_type} for d in app.documents],
         }
-        store.change_status(s, app_id, "enrichment", R_COMPLETE)
 
     await sleep(pause_s)
     results = await enrich(inn, consent_id)
@@ -150,33 +152,84 @@ async def _run(
             )
         label = failed_sources_label(results)
         if label:
-            failed = sorted(k for k, r in results.items() if r["status"] != "ok")
             reason = R_SOURCE_ERROR if label == L_SOURCE_ERROR else R_SOURCE_SILENT
-            store.change_status(s, app_id, "manual_review", reason, {"sources": failed}, label)
+            store.move(s, app_id, "manual_review", reason, [label])
             return
-        store.change_status(s, app_id, "scoring", R_SOURCES_CHECKED)
 
     await sleep(pause_s)
     answer = await score(inn, results)
+    if answer["status"] != "ok":
+        with factory.begin() as s:
+            store.move(s, app_id, "manual_review", answer["message"], [L_SCORING_DOWN])
+        return
     with factory.begin() as s:
-        if answer["status"] != "ok":
-            store.change_status(s, app_id, "manual_review", answer["message"], label=L_SCORING_DOWN)
-            return
-        scored = {"score": answer["score"], "class": answer["risk_class"]}
-        store.change_status(s, app_id, "rules", R_SCORED, scored)
+        store.save_score(s, app_id, answer["score"], answer["risk_class"], answer["source"])
 
     await sleep(pause_s)
     decision = evaluate(application, results, {"risk_class": answer["risk_class"]}, RULES, today())
     recommendation = {
-        **scored,
+        "outcome": recommended_outcome(decision.outcome, decision.recommendation["kind"]),
+        "reason": decision.explanation,
+        "score": answer["score"],
+        "class": answer["risk_class"],
         **decision.recommendation,
         "explanation": decision.explanation,
         "payment_rub": decision.payment_rub,
         "share": decision.share,
     }
     with factory.begin() as s:
-        store.save_rule_results(s, app_id, decision.results)
-        store.save_recommendation(s, app_id, recommendation)
+        _finish(s, app_id, decision, recommendation, application)
+
+
+def recommended_outcome(outcome: str, kind: str) -> str | None:
+    """Core's DecisionOutcome for the underwriter; None lets Core guess from rules and score."""
+    if outcome == "approved":
+        return "approve"
+    if outcome == "rejected":
+        return "decline"
+    return {"counter_offer": "counter", "reduce_amount": "counter", "request_data": "request"}.get(
+        kind
+    )
+
+
+def _finish(
+    s: Session, app_id: int, decision: Any, recommendation: dict, application: dict
+) -> None:
+    """Final status, decision row and recommendation in one transaction."""
+    # The comment is shown to the client; the underwriter text stays in the recommendation.
+    outcome = decision.outcome
+    if outcome == "manual_review" and decision.recommendation["kind"] == "request_data":
+        status = "client_action"
+        reason = "Нужны документы: " + "; ".join(decision.recommendation["documents"])
+    elif outcome == "manual_review":
+        status = outcome
+        reason = R_MANUAL
+    else:
+        status = outcome
         reason = decision.client_reason or decision.explanation
-        meta = {"failed": decision.failed}
-        store.change_status(s, app_id, decision.outcome, reason, meta, decision.client_reason)
+    if not store.move(s, app_id, status, reason):
+        return
+    store.save_rule_results(s, app_id, decision.results)
+    store.set_recommendation(s, app_id, recommendation)
+    if status == "approved":
+        store.save_decision(
+            s,
+            app_id,
+            "approve",
+            amount=application["amount_rub"],
+            term_months=application["term_months"],
+            rate=application["rate"],
+            monthly_payment=decision.payment_rub,
+        )
+    elif status == "rejected":
+        store.save_decision(
+            s, app_id, "decline", client_message=reason, decline_reason=decision.client_reason
+        )
+    elif status == "client_action":
+        store.save_decision(
+            s,
+            app_id,
+            "request",
+            requested_documents=decision.recommendation["documents"],
+            client_message=reason,
+        )

@@ -2,6 +2,7 @@
   "application": {
     "inn": "7701234567",
     "product": "credit_line",
+    "rate": 21.5,
     "amount_rub": 3000000,
     "term_months": 18,
     "documents": []

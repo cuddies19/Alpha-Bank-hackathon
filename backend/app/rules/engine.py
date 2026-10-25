@@ -8,7 +8,7 @@ import yaml
 
 from app.pipeline.sources import SOURCES, TITLES
 from app.rules.dates import months_between
-from app.rules.payments import monthly_payment, safe_amount
+from app.services.finance import monthly_payment
 
 RULES_FILE = Path(__file__).parent / "rules.yaml"
 
@@ -27,6 +27,12 @@ class Decision:
     payment_rub: int | None = None
     share: float | None = None
     failed: list[str] = field(default_factory=list)
+
+
+def safe_amount(net_flow: int, months: int, rate: float, target_share: float, step: int) -> int:
+    """Biggest amount (rounded down to step) whose payment fits target_share of net_flow."""
+    payment_per_ruble = monthly_payment(1_000_000, months, rate) / 1_000_000
+    return int(net_flow * target_share / payment_per_ruble // step * step)
 
 
 def _money(n: int) -> str:
@@ -113,7 +119,9 @@ def _run_rules(rules: dict, product: str, facts: Facts) -> list[tuple[dict, dict
             if threshold is None:
                 continue
         value, passed = CHECKS[rule["code"]](facts, threshold)
-        out.append((rule, {"code": rule["code"], "value": value, "threshold": threshold, "passed": passed}))
+        out.append(
+            (rule, {"code": rule["code"], "value": value, "threshold": threshold, "passed": passed})
+        )
     return out
 
 
@@ -132,7 +140,9 @@ def _payment_rec(facts: Facts, share_rule: dict | None, too_high: bool, limits: 
     """Counter offer, or 'reduce the amount' when the payment share is too high."""
     share = facts.share
     if share_rule and not too_high and facts.risk_class in share_rule["counter_classes"]:
-        safe = safe_amount(facts.net_flow, facts.term, rate, share_rule["target_share"], share_rule["step"])
+        safe = safe_amount(
+            facts.net_flow, facts.term, rate, share_rule["target_share"], share_rule["step"]
+        )
         if safe >= limits.get("min_amount", 1):
             now, limit = _percents(share, share_rule["threshold"])
             text = (
@@ -164,7 +174,7 @@ def _review_reasons(auto: dict, sources: dict, facts: Facts) -> list[str]:
 def evaluate(application: dict, sources: dict, score: dict, rules: dict, today: date) -> Decision:
     product = application["product"]
     limits = rules["products"][product]
-    rate = limits["annual_rate"]
+    rate = application["rate"]
     facts = _facts(application, sources, score, rate, today)
     ran = _run_rules(rules, product, facts)
     results = [r for _, r in ran]
@@ -173,7 +183,9 @@ def evaluate(application: dict, sources: dict, score: dict, rules: dict, today: 
     payment = monthly_payment(facts.amount, facts.term, rate)
     share = None if facts.share is None else round(facts.share, 4)
 
-    def decision(outcome: str, rec: dict, explanation: str, client_reason: str | None = None) -> Decision:
+    def decision(
+        outcome: str, rec: dict, explanation: str, client_reason: str | None = None
+    ) -> Decision:
         return Decision(outcome, rec, explanation, client_reason, results, payment, share, failed)
 
     # no data is not a reason to reject: the underwriter gets a note
@@ -202,7 +214,12 @@ def evaluate(application: dict, sources: dict, score: dict, rules: dict, today: 
         rec, text = _payment_rec(facts, share_rule, "payment_share_max" in codes, limits, rate)
         return decision("manual_review", rec, text + note_text)
 
-    docs = [d for rule, _ in failed_rules if rule.get("on_fail") == "request_data" for d in rule["documents"]]
+    docs = [
+        d
+        for rule, _ in failed_rules
+        if rule.get("on_fail") == "request_data"
+        for d in rule["documents"]
+    ]
     if share_rule in unknown:
         docs = share_rule["no_data_documents"] + docs
     if docs:
@@ -215,4 +232,6 @@ def evaluate(application: dict, sources: dict, score: dict, rules: dict, today: 
     if not reasons:
         text = "Автоодобрение: небольшая сумма, хороший класс риска, все правила пройдены"
         return decision("approved", _rec(), text)
-    return decision("manual_review", _rec(), "Нужно решение кредитного специалиста: " + "; ".join(reasons))
+    return decision(
+        "manual_review", _rec(), "Нужно решение кредитного специалиста: " + "; ".join(reasons)
+    )

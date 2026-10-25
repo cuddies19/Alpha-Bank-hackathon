@@ -1,0 +1,24 @@
+meta {
+  name: Статус заявки
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{api}}/applications/{{igorAppId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{igorToken}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.status: isString
+}
+
+docs {
+  Текущий статус заявки. Повторите запрос, пока конвейер не закончит работу.
+}

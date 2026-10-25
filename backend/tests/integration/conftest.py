@@ -5,30 +5,27 @@ from pathlib import Path
 
 import psycopg
 import pytest
-from alembic import command
 from alembic.config import Config
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine, select, text
 from sqlalchemy.engine import URL, make_url
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import sessionmaker
 
-from app.db import store
-from app.db.models import Base
-from app.db.session import sa_url
+from alembic import command
+from app.config import get_settings
 from app.main import app
+from app.models import Application, ApplicationStatus, Company, Document, Product, User
 from app.pipeline import worker
-from app.settings import settings
+from app.services.seed import seed_demo_data
+from app.state.machine import actor_from_user, transition
 
 BACKEND = Path(__file__).resolve().parents[2]
-INSERT = (
-    "insert into applications (inn, product, amount_rub, term_months, status) "
-    "values ('7701234567', 'overdraft', 1000000, 12, :status) returning id"
-)
 TRIGGER_COUNT = (
     "select count(*) from pg_trigger "
     "where tgname = 'applications_notify_submitted' and tgrelid = 'applications'::regclass"
 )
+CLEAN = "truncate applications, audit_log, notifications restart identity cascade"
 
 _unreachable: list[str] = []
 
@@ -40,47 +37,68 @@ def _unavailable(reason: str) -> None:
     pytest.skip(reason)
 
 
-@pytest.fixture
-def client() -> TestClient:
-    return TestClient(app)
+def _migrate(url: URL) -> None:
+    """Run `alembic upgrade head` on url (alembic reads the url from the settings)."""
+    old = os.environ.get("DATABASE_URL")
+    os.environ["DATABASE_URL"] = url.render_as_string(hide_password=False)
+    get_settings.cache_clear()
+    try:
+        command.upgrade(Config(str(BACKEND / "alembic.ini")), "head")
+    finally:
+        if old is None:
+            del os.environ["DATABASE_URL"]
+        else:
+            os.environ["DATABASE_URL"] = old
+        get_settings.cache_clear()
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def pg_url() -> URL:
-    """URL of an empty schema in Postgres; the schema is removed after the test."""
+    """URL of a fresh database with migrations applied and demo data; dropped at the end."""
     if _unreachable:
         _unavailable(_unreachable[0])
-    base = make_url(sa_url(settings.database_url))
+    base = make_url(get_settings().database_url)
     admin = create_engine(base, isolation_level="AUTOCOMMIT", connect_args={"connect_timeout": 1})
-    schema = "t_" + uuid.uuid4().hex[:12]
+    name = "t_" + uuid.uuid4().hex[:12]
     try:
         with admin.connect() as conn:
-            conn.execute(text(f"create schema {schema}"))
+            conn.execute(text(f"create database {name}"))
     except OperationalError:
         _unreachable.append("Postgres is not reachable at DATABASE_URL")
         admin.dispose()
         _unavailable(_unreachable[0])
+    url = base.set(database=name)
     try:
-        yield base.update_query_dict({"options": f"-csearch_path={schema}"})
+        _migrate(url)
+        engine = create_engine(url)
+        with sessionmaker(engine)() as db:
+            seed_demo_data(db)
+        engine.dispose()
+        yield url
     finally:
         with admin.connect() as conn:
-            conn.execute(text(f"drop schema {schema} cascade"))
+            conn.execute(text(f"drop database if exists {name} with (force)"))
         admin.dispose()
 
 
-@pytest.fixture
-def factory(pg_url):
-    """Sessions on a schema built from the models."""
+@pytest.fixture(scope="session")
+def engine(pg_url):
     engine = create_engine(pg_url)
-    Base.metadata.create_all(engine)
-    yield sessionmaker(engine, expire_on_commit=False)
+    yield engine
     engine.dispose()
 
 
 @pytest.fixture
-def session(factory):
-    with factory() as s:
-        yield s
+def factory(engine):
+    """Sessions like Core's SessionLocal, on an empty applications table."""
+    with engine.begin() as conn:
+        conn.execute(text(CLEAN))
+    return sessionmaker(engine, autoflush=False, expire_on_commit=False)
+
+
+@pytest.fixture
+def client() -> TestClient:
+    return TestClient(app)
 
 
 @pytest.fixture
@@ -88,11 +106,38 @@ def new_application(factory, applications):
     """Create an application from applications.json; returns its id."""
 
     def create(name: str = "igor", submit: bool = False) -> int:
-        with factory.begin() as s:
-            row = store.create_application(s, **applications[name])
+        data = applications[name]
+        with factory.begin() as db:
+            company = db.scalar(select(Company).where(Company.inn == data["inn"]))
+            product = db.scalar(select(Product).where(Product.code == data["product"]))
+            user = db.scalar(select(User).where(User.company_id == company.id))
+            application = Application(
+                number="T-" + uuid.uuid4().hex[:10],
+                company_id=company.id,
+                product_id=product.id,
+                amount=data["amount"],
+                term_months=data["term_months"],
+                purpose="test",
+                consents=data["consents"],
+                status=ApplicationStatus.draft,
+                created_by_id=user.id,
+            )
+            application.documents = [
+                Document(
+                    doc_type=doc_type,
+                    filename=f"{doc_type}.pdf",
+                    path=f"{doc_type}.pdf",
+                    mime_type="application/pdf",
+                    size_bytes=1,
+                    uploaded_by_id=user.id,
+                )
+                for doc_type in data["documents"]
+            ]
+            db.add(application)
+            db.flush()
             if submit:
-                store.change_status(s, row.id, "submitted", "test")
-            return row.id
+                transition(db, application, ApplicationStatus.submitted, actor_from_user(user))
+            return application.id
 
     return create
 
@@ -105,23 +150,7 @@ def no_sleep():
     return no_sleep
 
 
-# Migrations and notifications
-
-
-@pytest.fixture
-def alembic_cfg(pg_url):
-    cfg = Config(str(BACKEND / "alembic.ini"))
-    cfg.set_main_option("script_location", str(BACKEND / "migrations"))
-    cfg.set_main_option("sqlalchemy.url", pg_url.render_as_string(hide_password=False).replace("%", "%%"))
-    return cfg
-
-
-@pytest.fixture
-def migrated_engine(alembic_cfg, pg_url):
-    command.upgrade(alembic_cfg, "head")
-    engine = create_engine(pg_url)
-    yield engine
-    engine.dispose()
+# Notifications
 
 
 @pytest.fixture
@@ -131,44 +160,50 @@ def app_name() -> str:
 
 @pytest.fixture
 def dsn(pg_url, app_name) -> str:
-    plain = pg_url.set(drivername="postgresql").render_as_string(hide_password=False)
-    return f"{plain}&application_name={app_name}"
+    url = pg_url.set(drivername="postgresql").update_query_dict({"application_name": app_name})
+    return url.render_as_string(hide_password=False)
 
 
 @pytest.fixture
-def trigger_count(migrated_engine):
+def trigger_count(engine):
     def count() -> int:
-        with migrated_engine.connect() as conn:
+        with engine.connect() as conn:
             return conn.execute(text(TRIGGER_COUNT)).scalar_one()
 
     return count
 
 
 @pytest.fixture
-def insert_application(migrated_engine):
+def insert_application(new_application, factory):
+    """Create an application straight in the given status (draft or submitted)."""
+
     def insert(status: str) -> int:
-        with migrated_engine.begin() as conn:
-            return conn.execute(text(INSERT), {"status": status}).scalar_one()
+        app_id = new_application()
+        if status != "draft":
+            set_status(factory, app_id, status)
+        return app_id
 
     return insert
 
 
-@pytest.fixture
-def set_status(migrated_engine):
-    def update(app_id: int, status: str) -> None:
-        with migrated_engine.begin() as conn:
-            conn.execute(
-                text("update applications set status = :s where id = :id"), {"s": status, "id": app_id}
-            )
-
-    return update
+def set_status(factory, app_id: int, status: str) -> None:
+    with factory.begin() as db:
+        db.get(Application, app_id).status = ApplicationStatus(status)
 
 
 @pytest.fixture
-def touch_application(migrated_engine):
+def change_status(factory):
+    def change(app_id: int, status: str) -> None:
+        set_status(factory, app_id, status)
+
+    return change
+
+
+@pytest.fixture
+def touch_application(factory):
     def touch(app_id: int) -> None:
-        with migrated_engine.begin() as conn:
-            conn.execute(text("update applications set amount_rub = 5 where id = :id"), {"id": app_id})
+        with factory.begin() as db:
+            db.get(Application, app_id).amount = 5
 
     return touch
 
@@ -217,7 +252,9 @@ class Server:
     async def start(self) -> None:
         self.stop = asyncio.Event()
         # safety poll is set high: only a notify or a reconnect can wake the worker
-        self.task = asyncio.create_task(worker.serve(self.factory, None, 0, self.dsn, 1000, self.stop, set()))
+        self.task = asyncio.create_task(
+            worker.serve(self.factory, None, 0, self.dsn, 1000, self.stop, set())
+        )
 
     async def finish(self) -> None:
         self.stop.set()
@@ -225,8 +262,8 @@ class Server:
 
 
 @pytest.fixture
-def server(migrated_engine, dsn, monkeypatch):
-    srv = Server(sessionmaker(migrated_engine), dsn)
+def server(factory, dsn, monkeypatch):
+    srv = Server(factory, dsn)
     monkeypatch.setattr(worker, "poll", srv.poll)
     monkeypatch.setattr(worker, "RECONNECT_PAUSE_S", 0.05)
     return srv

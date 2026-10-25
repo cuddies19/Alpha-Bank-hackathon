@@ -1,0 +1,23 @@
+meta {
+  name: Взять в работу
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{api}}/bank/applications/{{igorAppId}}/take
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{olgaToken}}
+}
+
+assert {
+  res.status: in [200, 409]
+}
+
+docs {
+  Ольга берёт заявку. 409, если заявка не ждёт ручной проверки или уже взята.
+}

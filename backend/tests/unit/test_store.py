@@ -1,159 +1,153 @@
+from types import SimpleNamespace
+
 import pytest
 
-from app.db import store
-from app.db.models import Application, SourceCheck, StatusHistory
-from tests.unit.fakes import FakeSession, application
+from app.errors import ApiError
+from app.models import (
+    ApplicationStatus,
+    Decision,
+    DecisionOutcome,
+    RuleResult,
+    Score,
+    SourceCheck,
+    SourceStatus,
+)
+from app.pipeline import store
+from app.state.machine import SYSTEM_ACTOR
+from tests.unit.fakes import FakeSession
 
 
 @pytest.fixture
-def draft(unit):
-    """An application row in draft, as the DB would hold it."""
-    return application(unit["app_row"])
+def application(unit):
+    return SimpleNamespace(id=unit["app_id"], recommendation=None)
 
 
 @pytest.fixture
-def session(draft):
-    return FakeSession(rows={draft.id: draft}, scalar_rows=[draft])
+def session(application):
+    return FakeSession(rows={application.id: application}, scalar_rows=[application])
+
+
+@pytest.fixture
+def calls(monkeypatch):
+    """Replace transition(); it records its calls and raises what `calls.error` holds."""
+    state = SimpleNamespace(seen=[], error=None)
+
+    def transition(db, application, to_status, actor, payload):
+        if state.error:
+            raise state.error
+        state.seen.append((application, to_status, actor, payload))
+
+    monkeypatch.setattr(store, "transition", transition)
+    return state
 
 
 @pytest.mark.positive
-def test_create_application_applies_defaults(applications, unit) -> None:
-    s = FakeSession()
-    data = applications["igor"]
-    app = store.create_application(s, data["inn"], data["product"], data["amount_rub"], data["term_months"])
-    assert s.added == [app]
-    assert s.flushes == 1
-    assert s.refreshed == [app]
-    for field, value in unit["create_defaults"].items():
-        assert getattr(app, field) == value
-    assert (app.inn, app.product, app.amount_rub, app.term_months) == (
-        data["inn"],
-        data["product"],
-        data["amount_rub"],
-        data["term_months"],
-    )
-
-
-@pytest.mark.positive
-def test_create_application_keeps_consents_and_documents(applications) -> None:
-    data = applications["with_passport"]
-    app = store.create_application(
-        FakeSession(),
-        data["inn"],
-        data["product"],
-        data["amount_rub"],
-        data["term_months"],
-        consent_bki=data["consent_bki"],
-        consent_id=data["consent_id"],
-        documents=data["documents"],
-    )
-    assert app.consent_bki is True
-    assert app.consent_id == data["consent_id"]
-    assert app.documents == data["documents"]
-
-
-@pytest.mark.positive
-def test_get_application_found(session, draft) -> None:
-    assert store.get_application(session, draft.id) is draft
+def test_get_application_found(session, application) -> None:
+    assert store.get_application(session, application.id) is application
 
 
 @pytest.mark.negative
-def test_get_application_missing(session, draft) -> None:
-    assert store.get_application(session, draft.id + 1) is None
+def test_get_application_missing(session, application) -> None:
+    assert store.get_application(session, application.id + 1) is None
 
 
 @pytest.mark.positive
-def test_change_status_updates_row_and_writes_history(session, draft, unit) -> None:
-    result = store.change_status(session, draft.id, "submitted", "why", unit["history_meta"])
-    assert result is draft
-    assert draft.status == "submitted"
-    assert draft.status_label == "Заявка отправлена"
-    (history,) = [o for o in session.added if isinstance(o, StatusHistory)]
-    assert (history.application_id, history.from_status, history.to_status, history.reason) == (
-        draft.id,
-        "draft",
-        "submitted",
-        "why",
-    )
-    assert history.meta == unit["history_meta"]
-    assert session.flushes == 1
-    assert session.refreshed == [draft]
+def test_take_submitted_returns_a_list(session, application) -> None:
+    assert store.take_submitted(session, 5) == [application]
 
 
 @pytest.mark.positive
-def test_change_status_custom_label_and_empty_meta(session, draft, unit) -> None:
-    store.change_status(session, draft.id, "submitted", None, label=unit["custom_label"])
-    assert draft.status_label == unit["custom_label"]
-    (history,) = session.added
-    assert history.meta == {}
-    assert history.reason is None
+def test_stuck_ids_returns_a_list(session, application) -> None:
+    assert store.stuck_ids(session) == [application]
+
+
+@pytest.mark.positive
+def test_move_goes_through_the_state_machine(session, application, calls, unit) -> None:
+    assert store.move(session, application.id, "approved", unit["comment"], unit["labels"])
+    ((app, status, actor, payload),) = calls.seen
+    assert app is application
+    assert status == ApplicationStatus.approved
+    assert actor is SYSTEM_ACTOR
+    assert payload == {"comment": unit["comment"], "labels": unit["labels"]}
+
+
+@pytest.mark.positive
+def test_move_without_labels_sends_an_empty_list(session, application, calls, unit) -> None:
+    store.move(session, application.id, "approved", unit["comment"])
+    assert calls.seen[0][3]["labels"] == []
 
 
 @pytest.mark.negative
-def test_change_status_unknown_application() -> None:
-    s = FakeSession()
-    with pytest.raises(ValueError, match="not found"):
-        store.change_status(s, 999, "submitted", None)
-    assert s.added == []
+def test_move_unknown_application(calls) -> None:
+    assert store.move(FakeSession(), 999, "approved", "c") is False
+    assert calls.seen == []
 
 
 @pytest.mark.negative
-def test_change_status_illegal_transition_changes_nothing(session, draft) -> None:
-    with pytest.raises(ValueError, match="illegal status change: draft -> approved"):
-        store.change_status(session, draft.id, "approved", None)
-    assert draft.status == "draft"
-    assert session.added == []
+def test_move_conflict_returns_false(session, application, calls, unit) -> None:
+    calls.error = ApiError(409, "invalid_transition", unit["withdrawn_message"])
+    assert store.move(session, application.id, "approved", "c") is False
+
+
+@pytest.mark.negative
+def test_move_other_errors_are_raised(session, application, calls) -> None:
+    calls.error = ApiError(403, "forbidden", "no")
+    with pytest.raises(ApiError):
+        store.move(session, application.id, "approved", "c")
 
 
 @pytest.mark.positive
-def test_save_source_check_stores_all_fields(unit) -> None:
+@pytest.mark.parametrize("case", [0, 1, 2])
+def test_save_source_check_maps_status_and_fills_defaults(unit, case) -> None:
     s = FakeSession()
-    c = unit["source_check"]
-    store.save_source_check(
-        s, c["app_id"], c["source"], c["status"], c["attempts"], c["latency_ms"], c["payload"], c["message"]
-    )
+    c = unit["source_checks"][case]
+    store.save_source_check(s, unit["app_id"], *c["args"])
     (check,) = s.added
     assert isinstance(check, SourceCheck)
-    for field, value in c.items():
-        assert getattr(check, "application_id" if field == "app_id" else field) == value
-    assert s.flushes == 1
+    want = c["expected"]
+    assert check.application_id == unit["app_id"]
+    assert check.status == SourceStatus(want["status"])
+    for field in ("source", "attempts", "response_time_ms", "response"):
+        assert getattr(check, field) == want[field]
 
 
 @pytest.mark.positive
-def test_save_source_check_defaults_to_one_attempt() -> None:
+def test_save_score(unit) -> None:
     s = FakeSession()
-    store.save_source_check(s, 7, "fns", "ok")
-    (check,) = s.added
-    assert check.attempts == 1
-    assert check.latency_ms is None
-
-
-@pytest.mark.positive
-def test_save_recommendation(session, draft, unit) -> None:
-    store.save_recommendation(session, draft.id, unit["recommendation"])
-    assert draft.recommendation == unit["recommendation"]
-    assert session.flushes == 1
-
-
-@pytest.mark.negative
-def test_save_recommendation_unknown_application(unit) -> None:
-    with pytest.raises(ValueError, match="not found"):
-        store.save_recommendation(FakeSession(), 999, unit["recommendation"])
-
-
-@pytest.mark.positive
-def test_take_submitted_returns_a_list(session, draft) -> None:
-    result = store.take_submitted(session, 5)
-    assert result == [draft]
-    assert isinstance(result, list)
-    assert isinstance(result[0], Application)
+    store.save_score(s, unit["app_id"], *unit["score"].values())
+    (score,) = s.added
+    assert isinstance(score, Score)
+    assert (score.application_id, score.score, score.risk_class, score.model_version) == (
+        unit["app_id"],
+        640,
+        "B",
+        "stub",
+    )
 
 
 @pytest.mark.positive
 def test_save_rule_results_stores_values_as_text(unit) -> None:
     s = FakeSession()
-    store.save_rule_results(s, 7, unit["rule_results"])
-    assert [(r.application_id, r.code, r.value, r.threshold, r.passed) for r in s.added] == [
+    store.save_rule_results(s, unit["app_id"], unit["rule_results"])
+    assert all(isinstance(r, RuleResult) for r in s.added)
+    assert [(r.code, r.value, r.threshold, r.passed, r.comment) for r in s.added] == [
         tuple(row) for row in unit["rule_rows"]
     ]
-    assert s.flushes == 1
+
+
+@pytest.mark.positive
+def test_save_decision(unit) -> None:
+    s = FakeSession()
+    store.save_decision(s, unit["app_id"], "approve", **unit["decision_fields"])
+    (decision,) = s.added
+    assert isinstance(decision, Decision)
+    assert decision.outcome == DecisionOutcome.approve
+    assert decision.application_id == unit["app_id"]
+    for field, value in unit["decision_fields"].items():
+        assert getattr(decision, field) == value
+
+
+@pytest.mark.positive
+def test_set_recommendation(session, application, unit) -> None:
+    store.set_recommendation(session, application.id, unit["recommendation"])
+    assert application.recommendation == unit["recommendation"]

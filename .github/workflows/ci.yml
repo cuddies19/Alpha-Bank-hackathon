@@ -11,7 +11,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: [mocks, backend]
+        include:
+          - service: mocks
+            format_paths: .
+          - service: backend
+            # Core code is checked by backend.yml; here we format only our parts.
+            format_paths: app/pipeline app/rules tests/unit tests/integration tests/conftest.py tests/source_mocks.py
     defaults:
       run:
         working-directory: ${{ matrix.service }}
@@ -31,7 +36,7 @@ jobs:
         run: uv run ruff check .
 
       - name: Ruff format
-        run: uv run ruff format --check .
+        run: uv run ruff format --check ${{ matrix.format_paths }}
 
   build:
     name: docker build
@@ -81,18 +86,18 @@ jobs:
       run:
         working-directory: ${{ matrix.service }}
     env:
-      DATABASE_URL: postgresql://app:app@localhost:5432/app
+      DATABASE_URL: postgresql+psycopg://cabinet:cabinet@localhost:5432/cabinet
     services:
       postgres:
         image: postgres:16-alpine
         env:
-          POSTGRES_USER: app
-          POSTGRES_PASSWORD: app
-          POSTGRES_DB: app
+          POSTGRES_USER: cabinet
+          POSTGRES_PASSWORD: cabinet
+          POSTGRES_DB: cabinet
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U app -d app"
+          --health-cmd "pg_isready -U cabinet -d cabinet"
           --health-interval 5s
           --health-timeout 3s
           --health-retries 10

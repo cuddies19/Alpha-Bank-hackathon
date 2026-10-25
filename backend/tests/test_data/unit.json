@@ -1,135 +1,55 @@
 {
-  "sa_urls": [
-    {
-      "url": "postgresql://app:app@localhost:5432/app",
-      "expected": "postgresql+psycopg://app:app@localhost:5432/app"
-    },
-    {
-      "url": "postgresql+psycopg://u:p@h/db",
-      "expected": "postgresql+psycopg://u:p@h/db"
-    },
-    {
-      "url": "sqlite://",
-      "expected": "sqlite://"
-    }
-  ],
-  "settings_defaults": {
-    "database_url": "postgresql://app:app@localhost:5432/app",
-    "mocks_url": "http://localhost:8090"
-  },
-  "settings_env": {
-    "DATABASE_URL": "postgresql://x:y@db:5432/z",
-    "MOCKS_URL": "http://mocks:1"
-  },
-  "health": {
-    "status": "ok"
-  },
-  "illegal_transitions": [
-    [
-      "draft",
-      "approved"
-    ],
-    [
-      "issued",
-      "draft"
-    ],
-    [
-      "rejected",
-      "approved"
-    ],
-    [
-      "unknown",
-      "draft"
-    ]
-  ],
-  "legal_transition": [
-    "draft",
-    "submitted"
-  ],
-  "illegal_message": "illegal status change: draft -> approved",
-  "create_defaults": {
-    "status": "draft",
-    "status_label": "Черновик",
-    "consent_bki": false,
-    "consent_id": null,
-    "documents": []
-  },
-  "app_row": {
-    "id": 7,
-    "status": "draft",
-    "status_label": "Черновик"
-  },
-  "history_meta": {
-    "missing": [
-      "consent_id"
-    ]
-  },
-  "custom_label": "Своя метка",
-  "source_check": {
-    "app_id": 7,
-    "source": "bki",
-    "status": "unavailable",
-    "attempts": 3,
-    "latency_ms": 9001,
-    "payload": null,
-    "message": "m"
-  },
-  "recommendation": {
-    "score": 1,
-    "class": "A"
-  },
-  "submitted_ids": [
-    1,
-    2,
-    3
-  ],
-  "stuck_ids": [
-    11,
-    12
-  ],
+  "submitted_ids": [1, 2, 3],
+  "stuck_ids": [11, 12],
   "notifies": 3,
-  "pause_s": 0.25,
-  "rule_results": [
+  "app_id": 7,
+  "product_rates": {"overdraft": 23.0, "credit": 21.5, "credit_line": 21.5},
+  "source_checks": [
     {
-      "code": "amount_min",
-      "value": 500000,
-      "threshold": 100000,
-      "passed": true
+      "args": ["bki", "unavailable", 3, 9001, null, "m"],
+      "expected": {
+        "source": "bki",
+        "status": "unavailable",
+        "attempts": 3,
+        "response_time_ms": 9001,
+        "response": {"message": "m"}
+      }
     },
     {
-      "code": "business_age",
-      "value": null,
-      "threshold": 6,
-      "passed": false
+      "args": ["fns", "ok", 1, null, {"income": 5}, null],
+      "expected": {
+        "source": "fns",
+        "status": "ok",
+        "attempts": 1,
+        "response_time_ms": 0,
+        "response": {"income": 5}
+      }
     },
     {
-      "code": "egrul_status",
-      "value": "active",
-      "threshold": null,
-      "passed": true
+      "args": ["egrul", "error", 1, 4, null, null],
+      "expected": {
+        "source": "egrul",
+        "status": "fail",
+        "attempts": 1,
+        "response_time_ms": 4,
+        "response": {}
+      }
     }
+  ],
+  "score": {"score": 640, "risk_class": "B", "model_version": "stub"},
+  "rule_results": [
+    {"code": "amount_min", "value": 500000, "threshold": 100000, "passed": true},
+    {"code": "business_age", "value": null, "threshold": 6, "passed": false, "comment": "text"},
+    {"code": "egrul_status", "value": "active", "threshold": null, "passed": true}
   ],
   "rule_rows": [
-    [
-      7,
-      "amount_min",
-      "500000",
-      "100000",
-      true
-    ],
-    [
-      7,
-      "business_age",
-      null,
-      "6",
-      false
-    ],
-    [
-      7,
-      "egrul_status",
-      "active",
-      null,
-      true
-    ]
-  ]
+    ["amount_min", "500000", "100000", true, null],
+    ["business_age", "", "6", false, "text"],
+    ["egrul_status", "active", "", true, null]
+  ],
+  "decision_fields": {"amount": 1000, "term_months": 12, "rate": 21.5, "monthly_payment": 90},
+  "recommendation": {"score": 1, "class": "A"},
+  "comment": "why",
+  "labels": ["Своя метка"],
+  "withdrawn_message": "Переход недопустим"
 }

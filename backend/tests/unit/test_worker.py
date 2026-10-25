@@ -5,7 +5,6 @@ from types import SimpleNamespace
 import psycopg
 import pytest
 
-from app.db import statuses
 from app.pipeline import worker
 from tests.unit.fakes import FakeConnection, FakeFactory, row
 
@@ -76,13 +75,19 @@ def polls(monkeypatch):
 
 
 @pytest.mark.positive
-def test_claim_moves_submitted_to_completeness_check(submitted, factory, unit) -> None:
+def test_claim_moves_submitted_to_processing(submitted, factory, unit, expected) -> None:
     ids = worker.claim(factory, 10)
     assert ids == unit["submitted_ids"]
-    assert submitted.statuses == ["completeness_check"] * 3
-    assert {c.reason for c in submitted.changes} == {statuses.R_CLAIMED}
-    assert [c.app_id for c in submitted.changes] == ids
+    assert submitted.statuses == ["processing"] * 3
+    assert {m.comment for m in submitted.moves} == {expected["claimed_comment"]}
+    assert [m.app_id for m in submitted.moves] == ids
     assert len(factory.sessions) == 1
+
+
+@pytest.mark.negative
+def test_claim_skips_applications_that_cannot_move(submitted, factory) -> None:
+    submitted.refuse = {"processing"}
+    assert worker.claim(factory, 10) == []
 
 
 @pytest.mark.positive
@@ -93,31 +98,28 @@ def test_claim_respects_limit(submitted, factory) -> None:
 @pytest.mark.positive
 def test_claim_with_nothing_submitted(worker_store, factory) -> None:
     assert worker.claim(factory, 10) == []
-    assert worker_store.changes == []
+    assert worker_store.moves == []
 
 
 @pytest.mark.positive
-def test_recover_stuck_sends_interrupted_to_manual_review(worker_store, unit) -> None:
-    factory = FakeFactory(scalar_rows=unit["stuck_ids"])
-    assert worker.recover_stuck(factory) == len(unit["stuck_ids"])
-    assert [c.app_id for c in worker_store.changes] == unit["stuck_ids"]
-    assert worker_store.statuses == ["manual_review"] * 2
-    assert {(c.reason, c.label) for c in worker_store.changes} == {
-        (statuses.L_INTERRUPTED, statuses.L_INTERRUPTED)
-    }
+def test_recover_stuck_returns_applications_left_in_processing(worker_store, factory, unit) -> None:
+    worker_store.stuck = unit["stuck_ids"]
+    assert worker.recover_stuck(factory) == unit["stuck_ids"]
+    assert worker_store.moves == []
 
 
 @pytest.mark.positive
 def test_recover_stuck_with_nothing_stuck(worker_store, factory) -> None:
-    assert worker.recover_stuck(factory) == 0
-    assert worker_store.changes == []
+    assert worker.recover_stuck(factory) == []
 
 
 # poll / run_once
 
 
 @pytest.mark.positive
-def test_poll_starts_a_task_per_claimed_application(submitted, factory, processed, run, unit) -> None:
+def test_poll_starts_a_task_per_claimed_application(
+    submitted, factory, processed, run, unit
+) -> None:
     async def scenario():
         running: set[asyncio.Task] = set()
         started = await worker.poll(factory, no_enrich, PAUSE, running)
@@ -142,7 +144,7 @@ def test_poll_claims_nothing_when_at_capacity(submitted, factory, processed, run
         return started
 
     assert run(scenario()) == 0
-    assert submitted.changes == []
+    assert submitted.moves == []
     assert processed == []
 
 
@@ -158,7 +160,9 @@ def test_poll_claims_only_free_capacity(submitted, factory, processed, run) -> N
 
 
 @pytest.mark.positive
-def test_run_once_processes_everything_then_returns(submitted, factory, processed, run, unit) -> None:
+def test_run_once_processes_everything_then_returns(
+    submitted, factory, processed, run, unit
+) -> None:
     started = run(worker.run_once(factory, no_enrich, PAUSE))
     assert started == len(unit["submitted_ids"])
     assert sorted(processed) == unit["submitted_ids"]
@@ -177,7 +181,9 @@ def loop_signals(monkeypatch):
             raise NotImplementedError
         rec.loop_handlers[sig] = callback
 
-    monkeypatch.setattr(asyncio.SelectorEventLoop, "add_signal_handler", add_signal_handler, raising=False)
+    monkeypatch.setattr(
+        asyncio.SelectorEventLoop, "add_signal_handler", add_signal_handler, raising=False
+    )
     if hasattr(asyncio, "ProactorEventLoop"):
         monkeypatch.setattr(
             asyncio.ProactorEventLoop, "add_signal_handler", add_signal_handler, raising=False
@@ -349,7 +355,9 @@ def test_listen_and_work_polls_on_start_and_on_notify(connection, polls, factory
 
 
 @pytest.mark.positive
-def test_listen_and_work_returns_at_once_when_already_stopped(connection, polls, factory, run) -> None:
+def test_listen_and_work_returns_at_once_when_already_stopped(
+    connection, polls, factory, run
+) -> None:
     async def scenario():
         stop = asyncio.Event()
         stop.set()
@@ -401,7 +409,12 @@ def listen_script(monkeypatch):
 
 @pytest.mark.positive
 def test_serve_reconnects_after_connection_errors(listen_script, factory, run, caplog) -> None:
-    listen_script.steps = [psycopg.OperationalError("lost"), OSError("reset"), RuntimeError("bug"), "stop"]
+    listen_script.steps = [
+        psycopg.OperationalError("lost"),
+        OSError("reset"),
+        RuntimeError("bug"),
+        "stop",
+    ]
 
     async def scenario():
         stop = asyncio.Event()
@@ -441,9 +454,14 @@ def test_serve_does_nothing_when_already_stopped(listen_script, factory, run) ->
 
 
 @pytest.fixture
-def main_env(monkeypatch, unit):
+def main_env(monkeypatch, unit, processed):
     rec = SimpleNamespace(
-        serve_kwargs=None, enrich_calls=[], signals=0, drained=False, enrich_result={"k": 1}
+        serve_kwargs=None,
+        enrich_calls=[],
+        signals=0,
+        drained=False,
+        enrich_result={"k": 1},
+        recovered=processed,
     )
 
     async def fake_enrich_sources(*args):
@@ -461,11 +479,15 @@ def main_env(monkeypatch, unit):
 
     monkeypatch.setattr(worker, "enrich_sources", fake_enrich_sources)
     monkeypatch.setattr(worker, "serve", fake_serve)
-    monkeypatch.setattr(worker, "recover_stuck", lambda: 2)
-    monkeypatch.setattr(worker, "_stop_on_signals", lambda stop: setattr(rec, "signals", rec.signals + 1))
+    monkeypatch.setattr(worker, "SessionLocal", FakeFactory())
+    monkeypatch.setattr(worker, "recover_stuck", lambda: unit["stuck_ids"])
+    monkeypatch.setattr(
+        worker, "_stop_on_signals", lambda stop: setattr(rec, "signals", rec.signals + 1)
+    )
     monkeypatch.setattr(worker.pipeline_settings, "speed", "fast")
-    monkeypatch.setattr(worker.settings, "database_url", "postgresql://u:p@h/db")
-    monkeypatch.setattr(worker.settings, "mocks_url", "http://mocks.test")
+    core = SimpleNamespace(database_url="postgresql+psycopg://u:p@h/db")
+    monkeypatch.setattr(worker, "get_settings", lambda: core)
+    monkeypatch.setattr(worker.pipeline_settings, "mocks_url", "http://mocks.test")
     return rec
 
 
@@ -506,6 +528,12 @@ def test_main_waits_for_running_applications_before_exit(main_env, run) -> None:
     assert main_env.drained is True
 
 
+@pytest.mark.positive
+def test_main_processes_interrupted_applications_again(main_env, run, unit) -> None:
+    run(worker.main())
+    assert sorted(main_env.recovered) == unit["stuck_ids"]
+
+
 @pytest.fixture
 def fake_asyncio(monkeypatch):
     rec = SimpleNamespace(calls=[])
@@ -515,7 +543,9 @@ def fake_asyncio(monkeypatch):
         return "result"
 
     monkeypatch.setattr(
-        worker, "asyncio", SimpleNamespace(run=fake_run, SelectorEventLoop=asyncio.SelectorEventLoop)
+        worker,
+        "asyncio",
+        SimpleNamespace(run=fake_run, SelectorEventLoop=asyncio.SelectorEventLoop),
     )
     return rec
 

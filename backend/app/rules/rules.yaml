@@ -11,20 +11,17 @@ products:
     max_amount: 20000000
     min_term: 12
     max_term: 12
-    annual_rate: 0.215
   credit_line:
     description: Кредитная линия
     max_amount: 30000000
     max_term: 18
-    annual_rate: 0.215
-  any_purpose:
+  credit:
     description: Кредит на любые цели
     min_amount: 300000
     max_amount: 150000000
     min_term: 12
     max_term: 120
     min_age_months: 12
-    annual_rate: 0.215
 
 # Автоодобрение: небольшая сумма, хороший класс риска, все правила и источники в порядке
 auto_approve:

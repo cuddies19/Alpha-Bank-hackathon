@@ -1,45 +1,54 @@
 [project]
-name = "backend"
+name = "alpha-cabinet-backend"
 version = "0.1.0"
-description = "API and worker"
-requires-python = ">=3.12"
+description = "Ядро кредитного кабинета: заявки, машина состояний, аудит, консоль андеррайтера"
+requires-python = ">=3.12,<3.13"
 dependencies = [
-    "fastapi",
-    "uvicorn[standard]",
-    "httpx",
-    "psycopg[binary]",
-    "pydantic-settings",
-    "sqlalchemy>=2",
-    "alembic>=1.20.0",
+    "alembic>=1.13.3",
+    "bcrypt==4.0.1",
+    "fastapi>=0.115.0",
+    "httpx>=0.27.2",
+    "passlib[bcrypt]>=1.7.4",
+    "psycopg[binary]>=3.2.3",
+    "pydantic-settings>=2.5.2",
+    "pyjwt>=2.9.0",
+    "python-multipart>=0.0.12",
     "pyyaml>=6.0.3",
+    "sqlalchemy>=2.0.35",
+    "uvicorn[standard]>=0.31.1",
 ]
 
 [dependency-groups]
 dev = [
-    "pytest",
+    "pytest>=8.3.3",
     "pytest-cov>=7.1.0",
-    "ruff",
+    "ruff>=0.6.9",
 ]
 
 [tool.uv]
 package = false
 
 [tool.ruff]
-line-length = 110
+line-length = 100
 target-version = "py312"
+extend-exclude = ["alembic/versions"]
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "UP", "B", "N", "SIM", "C4", "ASYNC", "RUF", "PT"]
-ignore = ["RUF001", "RUF002", "RUF003"]  # cyrillic in strings and comments is fine
+select = ["E4", "E7", "E9", "F", "I"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
 
 [tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q --strict-markers"
 markers = [
     "positive: expected behaviour",
     "negative: failures and bad input",
     "smoke: key path",
 ]
-addopts = "--strict-markers"
-testpaths = ["tests"]
 
 [tool.coverage.report]
 exclude_also = ["if __name__ == .__main__.:"]

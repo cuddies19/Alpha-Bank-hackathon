@@ -6,70 +6,51 @@ from dataclasses import dataclass, field
 from types import SimpleNamespace
 from typing import Any
 
-from app.db.models import Application
-
-
-class FakeScalars:
-    def __init__(self, rows: list[Any]) -> None:
-        self.rows = rows
-
-    def __iter__(self):
-        return iter(self.rows)
-
-    def one_or_none(self):
-        return self.rows[0] if self.rows else None
+from app.models import ApplicationStatus
 
 
 class FakeSession:
-    """Enough of sqlalchemy.orm.Session for app.db.store.
+    """Enough of sqlalchemy.orm.Session for app.pipeline.store.
 
     `rows` answers get(); `scalar_rows` is what any select() returns.
     """
 
-    def __init__(self, rows: dict[int, Any] | None = None, scalar_rows: list[Any] | None = None) -> None:
+    def __init__(
+        self, rows: dict[int, Any] | None = None, scalar_rows: list[Any] | None = None
+    ) -> None:
         self.rows = rows or {}
         self.scalar_rows = scalar_rows or []
         self.added: list[Any] = []
-        self.flushes = 0
-        self.refreshed: list[Any] = []
 
     def add(self, obj: Any) -> None:
         self.added.append(obj)
 
-    def flush(self) -> None:
-        self.flushes += 1
-
-    def refresh(self, obj: Any) -> None:
-        self.refreshed.append(obj)
-
     def get(self, model: type, key: int) -> Any:
         return self.rows.get(key)
 
-    def scalars(self, stmt: Any) -> FakeScalars:
-        return FakeScalars(self.scalar_rows)
+    def scalars(self, stmt: Any) -> list[Any]:
+        return self.scalar_rows
 
 
 class FakeFactory:
     """Stands in for sessionmaker: begin() yields one FakeSession per transaction."""
 
-    def __init__(self, scalar_rows: list[Any] | None = None) -> None:
-        self.scalar_rows = scalar_rows or []
+    def __init__(self) -> None:
         self.sessions: list[FakeSession] = []
 
     @contextmanager
     def begin(self):
-        session = FakeSession(scalar_rows=self.scalar_rows)
+        session = FakeSession()
         self.sessions.append(session)
         yield session
 
 
 @dataclass
-class StatusChange:
+class Move:
     app_id: int
     to_status: str
-    reason: str | None
-    meta: dict | None
-    label: str | None
+    comment: str
+    labels: list[str] | None
 
 
 @dataclass
@@ -78,44 +59,66 @@ class FakeStore:
 
     apps: dict[int, Any] = field(default_factory=dict)
     submitted: list[Any] = field(default_factory=list)
-    changes: list[StatusChange] = field(default_factory=list)
+    stuck: list[int] = field(default_factory=list)
+    moves: list[Move] = field(default_factory=list)
     checks: list[tuple] = field(default_factory=list)
+    scores: list[tuple] = field(default_factory=list)
     recommendations: list[tuple[int, dict]] = field(default_factory=list)
     rule_results: list[tuple[int, list[dict]]] = field(default_factory=list)
+    decisions: list[tuple[int, str, dict]] = field(default_factory=list)
     fail_on: set[str] = field(default_factory=set)
+    refuse: set[str] = field(default_factory=set)
 
-    def get_application(self, session: Any, app_id: int) -> Any:
+    def get_application(self, db: Any, app_id: int) -> Any:
         return self.apps.get(app_id)
 
-    def take_submitted(self, session: Any, limit: int) -> list[Any]:
+    def take_submitted(self, db: Any, limit: int) -> list[Any]:
         return self.submitted[:limit]
 
-    def change_status(self, session, app_id, to_status, reason, meta=None, label=None) -> None:
-        if to_status in self.fail_on:
-            raise RuntimeError(f"cannot change to {to_status}")
-        self.changes.append(StatusChange(app_id, to_status, reason, meta, label))
+    def stuck_ids(self, db: Any) -> list[int]:
+        return self.stuck
 
-    def save_source_check(self, session, *args) -> None:
+    def move(self, db, app_id, to_status, comment, labels=None) -> bool:
+        if to_status in self.fail_on:
+            raise RuntimeError(f"cannot move to {to_status}")
+        if to_status in self.refuse:
+            return False
+        self.moves.append(Move(app_id, to_status, comment, labels))
+        return True
+
+    def save_source_check(self, db, *args) -> None:
         self.checks.append(args)
 
-    def save_rule_results(self, session, app_id, results) -> None:
+    def save_score(self, db, *args) -> None:
+        self.scores.append(args)
+
+    def save_rule_results(self, db, app_id, results) -> None:
         self.rule_results.append((app_id, results))
 
-    def save_recommendation(self, session, app_id, data) -> None:
+    def save_decision(self, db, app_id, outcome, **fields) -> None:
+        self.decisions.append((app_id, outcome, fields))
+
+    def set_recommendation(self, db, app_id, data) -> None:
         self.recommendations.append((app_id, data))
 
     @property
     def statuses(self) -> list[str]:
-        return [c.to_status for c in self.changes]
+        return [m.to_status for m in self.moves]
 
 
-def application(data: dict) -> Application:
-    """A transient (never persisted) Application."""
-    return Application(**data)
-
-
-def row(data: dict, app_id: int = 1) -> SimpleNamespace:
-    return SimpleNamespace(id=app_id, **data)
+def row(data: dict, app_id: int = 1, rate: float = 21.5) -> SimpleNamespace:
+    """An application-like object built from applications.json."""
+    return SimpleNamespace(
+        id=app_id,
+        number=f"A-{app_id}",
+        status=ApplicationStatus.processing,
+        amount=data["amount"],
+        term_months=data["term_months"],
+        consents=data["consents"],
+        company=SimpleNamespace(inn=data["inn"]),
+        product=SimpleNamespace(code=data["product"], rate=rate),
+        documents=[SimpleNamespace(doc_type=d) for d in data["documents"]],
+    )
 
 
 class FakeConnection:

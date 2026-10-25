@@ -1,7 +1,8 @@
 {
   "application": {
     "inn": "770498765432",
-    "product": "any_purpose",
+    "product": "credit",
+    "rate": 21.5,
     "amount_rub": 1500000,
     "term_months": 24,
     "documents": []

@@ -1,7 +1,6 @@
 import asyncio
 from datetime import date
 from pathlib import Path
-from types import SimpleNamespace
 
 import pytest
 import yaml
@@ -17,11 +16,12 @@ TODAY = date(2026, 10, 20)
 
 
 @pytest.fixture
-def row(applications):
+def row(applications, unit):
     """An application-like object built from applications.json."""
 
-    def make(name: str = "igor"):
-        return SimpleNamespace(**applications[name])
+    def make(name: str = "igor", app_id: int = 1):
+        data = applications[name]
+        return fakes.row(data, app_id, unit["product_rates"][data["product"]])
 
     return make
 
@@ -32,7 +32,13 @@ def results():
 
     def make(statuses: dict[str, str]) -> dict:
         return {
-            s: {"source": s, "status": statuses.get(s, "ok"), "attempts": 1, "latency_ms": 5, "payload": {}}
+            s: {
+                "source": s,
+                "status": statuses.get(s, "ok"),
+                "attempts": 1,
+                "latency_ms": 5,
+                "payload": {},
+            }
             for s in SOURCES
         }
 
@@ -51,11 +57,9 @@ def run():
 
 
 @pytest.fixture
-def fake_store(applications):
+def fake_store(row):
     """FakeStore with the 'igor' (id 1, complete) and 'no_consent' (id 2, incomplete) applications."""
-    return FakeStore(
-        apps={1: fakes.row(applications["igor"], 1), 2: fakes.row(applications["no_consent"], 2)}
-    )
+    return FakeStore(apps={1: row("igor", 1), 2: row("no_consent", 2)})
 
 
 @pytest.fixture

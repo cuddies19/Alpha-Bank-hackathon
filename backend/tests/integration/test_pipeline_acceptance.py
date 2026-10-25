@@ -6,8 +6,7 @@ import threading
 import pytest
 from sqlalchemy import select
 
-from app.db import store
-from app.db.models import SourceCheck, StatusHistory
+from app.models import Application, SourceCheck, SourceStatus, StatusHistory
 from app.pipeline import worker
 
 ATTEMPTS = 3
@@ -18,9 +17,11 @@ def history(factory):
     def read(app_id: int) -> list[str]:
         with factory() as s:
             rows = s.scalars(
-                select(StatusHistory).where(StatusHistory.application_id == app_id).order_by(StatusHistory.id)
+                select(StatusHistory.to_status)
+                .where(StatusHistory.application_id == app_id)
+                .order_by(StatusHistory.id)
             ).all()
-        return [r.to_status for r in rows]
+        return [r.value for r in rows]
 
     return read
 
@@ -37,30 +38,29 @@ def checks(factory):
 
 @pytest.fixture
 def application(factory):
-    def read(app_id: int):
+    def read(app_id: int) -> Application:
         with factory() as s:
-            return store.get_application(s, app_id)
+            return s.get(Application, app_id)
 
     return read
 
 
 @pytest.mark.smoke
 @pytest.mark.positive
-def test_happy_path_walks_all_stages_to_manual_review(
+def test_happy_path_goes_to_manual_review(
     factory, new_application, enrich, application, history, checks, expected, applications
 ) -> None:
     app_id = new_application(submit=True)
 
-    processed = asyncio.run(worker.run_once(factory, enrich, 0))
+    assert asyncio.run(worker.run_once(factory, enrich, 0)) == 1
 
-    assert processed == 1
     app = application(app_id)
     assert app.status == "manual_review"
-    assert history(app_id)[-6:] == expected["history_happy"]
+    assert history(app_id) == ["submitted", "processing", "manual_review"]
     found = checks(app_id)
     assert set(found) == set(expected["sources"])
-    assert all(c.status == "ok" and c.payload for c in found.values())
-    assert found["egrul"].payload["inn"] == applications["igor"]["inn"]
+    assert all(c.status == SourceStatus.ok and c.response for c in found.values())
+    assert found["egrul"].response["inn"] == applications["igor"]["inn"]
     assert app.recommendation is not None
 
 
@@ -76,20 +76,19 @@ def test_bki_down_goes_to_manual_review_and_keeps_other_sources(
 
     app = application(app_id)
     assert app.status == "manual_review"
-    assert app.status_label == expected["labels"]["bki_unavailable"]
+    assert app.labels == [expected["labels"]["bki_unavailable"]]
     assert app.recommendation is None
-    assert history(app_id)[-4:] == expected["history_bki_down"]
-    assert "scoring" not in history(app_id)
-    assert "rules" not in history(app_id)
+    assert history(app_id) == ["submitted", "processing", "manual_review"]
     found = checks(app_id)
     assert set(found) == set(expected["sources"])
-    assert found["bki"].status == "unavailable"
-    assert found["bki"].message == expected["bki_unavailable_message"]
+    assert found["bki"].status == SourceStatus.unavailable
+    assert found["bki"].response == {"message": expected["bki_unavailable_message"]}
     assert found["bki"].attempts == ATTEMPTS
     assert len(sources.bki.calls) == ATTEMPTS
+    assert sources.bki.calls[0]["json"]["consent_id"] == app.number
     for name in set(expected["sources"]) - {"bki"}:
-        assert found[name].status == "ok"
-        assert found[name].payload
+        assert found[name].status == SourceStatus.ok
+        assert found[name].response
 
 
 @pytest.mark.negative
@@ -104,7 +103,7 @@ def test_bki_http_500_also_ends_in_manual_review(
     app = application(app_id)
     assert app.status == "manual_review"
     assert app.recommendation is None
-    assert checks(app_id)["bki"].status == "unavailable"
+    assert checks(app_id)["bki"].status == SourceStatus.unavailable
 
 
 @pytest.mark.positive
@@ -134,6 +133,6 @@ def test_concurrent_workers_never_process_same_application_twice(
     assert sum(counts) == len(ids)
     assert len(sources.bki.calls) == len(ids)  # each application enriched exactly once
     for app_id in ids:
-        assert history(app_id).count("completeness_check") == 1
+        assert history(app_id).count("processing") == 1
         assert history(app_id)[-1] == "manual_review"
         assert len(checks(app_id)) == 4

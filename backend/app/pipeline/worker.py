@@ -2,7 +2,7 @@
 
 Runs submitted applications through the stages. A Postgres NOTIFY only wakes the worker;
 the applications table is the queue and is claimed with SKIP LOCKED.
-On start, applications left mid-stage by a crash are moved to manual_review.
+On start, applications left in `processing` by a crash are processed again from the start.
 """
 
 import asyncio
@@ -10,74 +10,74 @@ import contextlib
 import logging
 import signal
 import sys
-from datetime import timedelta
 from typing import Any
 
 import psycopg
-from sqlalchemy import func, select
 from sqlalchemy.orm import Session, sessionmaker
 
-from app.db import store
-from app.db.models import Application
-from app.db.session import SessionLocal
-from app.db.statuses import L_INTERRUPTED, R_CLAIMED
+from app.config import get_settings
+from app.db import SessionLocal
+from app.pipeline import demo, store
 from app.pipeline.settings import pipeline_settings
 from app.pipeline.sources import enrich as enrich_sources
-from app.pipeline.stages import Enrich, process_application
-from app.settings import settings
+from app.pipeline.stages import EnrichFn, process_application
+from app.pipeline.texts import R_CLAIMED
 
 log = logging.getLogger(__name__)
 
 BATCH = 10
 CHANNEL = "applications_submitted"
 RECONNECT_PAUSE_S = 1.5
-STUCK_STATUSES = ("completeness_check", "enrichment", "scoring", "rules")
-STUCK_AFTER = timedelta(minutes=1)
 
 
 def claim(factory: sessionmaker[Session] = SessionLocal, limit: int = BATCH) -> list[int]:
-    """Move submitted applications to completeness_check in one short transaction."""
+    """Move submitted applications to processing in one short transaction."""
+    claimed = []
     with factory.begin() as s:
-        ids = [a.id for a in store.take_submitted(s, limit)]
-        for app_id in ids:
-            store.change_status(s, app_id, "completeness_check", R_CLAIMED)
-    return ids
+        for app in store.take_submitted(s, limit):
+            if store.move(s, app.id, "processing", R_CLAIMED):
+                claimed.append(app.id)
+    return claimed
 
 
-def recover_stuck(factory: sessionmaker[Session] = SessionLocal) -> int:
-    """Move applications interrupted mid-stage to manual_review."""
-    # We run a single worker instance, so a stale row means a crashed run.
+def recover_stuck(factory: sessionmaker[Session] = SessionLocal) -> list[int]:
+    """Ids left in `processing` by a crashed run (we run a single worker)."""
     with factory.begin() as s:
-        ids = list(
-            s.scalars(
-                select(Application.id).where(
-                    Application.status.in_(STUCK_STATUSES),
-                    Application.updated_at < func.now() - STUCK_AFTER,
-                )
-            )
-        )
-        for app_id in ids:
-            store.change_status(s, app_id, "manual_review", L_INTERRUPTED, label=L_INTERRUPTED)
-    return len(ids)
+        return store.stuck_ids(s)
+
+
+def start(
+    factory: sessionmaker[Session],
+    ids: list[int],
+    enrich: EnrichFn,
+    pause_s: float,
+    running: set[asyncio.Task],
+) -> None:
+    if not ids:
+        return
+    # The demo speed is read when applications start, so a change applies to new ones.
+    with factory.begin() as s:
+        pause_s /= demo.get_speed(s)
+    for app_id in ids:
+        task = asyncio.create_task(process_application(factory, app_id, enrich, pause_s))
+        running.add(task)
+        task.add_done_callback(running.discard)
 
 
 async def poll(
     factory: sessionmaker[Session],
-    enrich: Enrich,
+    enrich: EnrichFn,
     pause_s: float,
     running: set[asyncio.Task],
 ) -> int:
     """Claim free capacity and start a task per application; returns how many were started."""
     free = BATCH - len(running)
     ids = claim(factory, free) if free > 0 else []
-    for app_id in ids:
-        task = asyncio.create_task(process_application(factory, app_id, enrich, pause_s))
-        running.add(task)
-        task.add_done_callback(running.discard)
+    start(factory, ids, enrich, pause_s, running)
     return len(ids)
 
 
-async def run_once(factory: sessionmaker[Session], enrich: Enrich, pause_s: float) -> int:
+async def run_once(factory: sessionmaker[Session], enrich: EnrichFn, pause_s: float) -> int:
     running: set[asyncio.Task] = set()
     started = await poll(factory, enrich, pause_s, running)
     await asyncio.gather(*running)
@@ -124,7 +124,7 @@ async def wait_for_work(
 
 async def listen_and_work(
     factory: sessionmaker[Session],
-    enrich: Enrich,
+    enrich: EnrichFn,
     pause_s: float,
     dsn: str,
     safety_poll_s: float,
@@ -148,7 +148,7 @@ async def listen_and_work(
 
 async def serve(
     factory: sessionmaker[Session],
-    enrich: Enrich,
+    enrich: EnrichFn,
     pause_s: float,
     dsn: str,
     safety_poll_s: float,
@@ -174,19 +174,26 @@ async def main() -> None:
 
     async def enrich(inn: str, consent_id: str) -> dict[str, dict[str, Any]]:
         return await enrich_sources(
-            inn, consent_id, settings.mocks_url, cfg.source_timeout_s, cfg.source_attempts, cfg.retry_pause_s
+            inn,
+            consent_id,
+            cfg.mocks_url,
+            cfg.source_timeout_s,
+            cfg.source_attempts,
+            cfg.retry_pause_s,
         )
 
     stop = asyncio.Event()
     _stop_on_signals(stop)
-    log.info("recovered %d interrupted applications", recover_stuck())
-    log.info("worker started, speed=%s", cfg.speed)
     running: set[asyncio.Task] = set()
+    stuck = recover_stuck()
+    log.info("processing again %d interrupted applications", len(stuck))
+    start(SessionLocal, stuck, enrich, cfg.stage_pause_s, running)
+    log.info("worker started, speed=%s", cfg.speed)
     await serve(
         factory=SessionLocal,
         enrich=enrich,
         pause_s=cfg.stage_pause_s,
-        dsn=settings.database_url,
+        dsn=get_settings().database_url.replace("+psycopg", ""),
         safety_poll_s=cfg.safety_poll_s,
         stop=stop,
         running=running,

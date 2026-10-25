@@ -8,11 +8,12 @@ ATTEMPTS = 3
 
 
 def pytest_collection_modifyitems(items: list[pytest.Item]) -> None:
-    """Every test has exactly one of positive / negative."""
+    """Every test has exactly one of positive / negative (Core's tests/core are exempt)."""
     bad = [
         item.nodeid
         for item in items
-        if len({m.name for m in item.iter_markers()} & {"positive", "negative"}) != 1
+        if not item.nodeid.startswith("tests/core/")
+        and len({m.name for m in item.iter_markers()} & {"positive", "negative"}) != 1
     ]
     if bad:
         raise pytest.UsageError("need exactly one of positive/negative on: " + ", ".join(bad))
@@ -39,7 +40,27 @@ def enrich(sources):
 
     async def enrich(inn: str, consent_id: str):
         return await real_enrich(
-            inn, consent_id, "http://mocks.test", TIMEOUT_S, ATTEMPTS, 0, transport=sources.transport
+            inn,
+            consent_id,
+            "http://mocks.test",
+            TIMEOUT_S,
+            ATTEMPTS,
+            0,
+            transport=sources.transport,
         )
 
     return enrich
+
+
+@pytest.fixture
+def pauses(monkeypatch):
+    """Record the pause every started application gets (process_application is replaced)."""
+    from app.pipeline import worker  # imported here: Core tests set env before app.config loads
+
+    seen: list[float] = []
+
+    async def fake(factory, app_id, enrich, pause_s, sleep=None) -> None:
+        seen.append(pause_s)
+
+    monkeypatch.setattr(worker, "process_application", fake)
+    return seen

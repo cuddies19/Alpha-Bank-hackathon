@@ -38,7 +38,9 @@ def build_features(results: dict[str, dict[str, Any]], today: date) -> dict[str,
     max_overdue_days_24m, inquiries_30d, avg_net_flow_rub, marketplace_share,
     revenue_to_other_bank, monthly_payments_rub.
     """
-    egrul, fns, bki, statement = (_payload(results, s) for s in ("egrul", "fns", "bki", "statement"))
+    egrul, fns, bki, statement = (
+        _payload(results, s) for s in ("egrul", "fns", "bki", "statement")
+    )
     return {
         "business_age_months": months_between(egrul.get("registration_date"), today),
         "income_last_year_rub": fns.get("income_last_year_rub"),
@@ -58,9 +60,17 @@ def _request(inn: str, features: dict[str, Any]) -> tuple[str, dict[str, Any]]:
     return "/score", {"inn": inn, "features": features}
 
 
-def _answer(source: str, message: str | None, score: int | None = None, risk_class: str | None = None):
+def _answer(
+    source: str, message: str | None, score: int | None = None, risk_class: str | None = None
+):
     status = "unavailable" if score is None else "ok"
-    return {"status": status, "score": score, "risk_class": risk_class, "source": source, "message": message}
+    return {
+        "status": status,
+        "score": score,
+        "risk_class": risk_class,
+        "source": source,
+        "message": message,
+    }
 
 
 def _parse(response: httpx.Response) -> dict[str, Any]:

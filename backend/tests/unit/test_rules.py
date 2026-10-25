@@ -97,5 +97,5 @@ def test_yaml_has_product_limits():
     products = load_rules()["products"]
     assert products["overdraft"]["max_amount"] == 20_000_000
     assert products["credit_line"]["max_term"] == 18
-    assert products["any_purpose"]["min_age_months"] == 12
-    assert {p["annual_rate"] for p in products.values()} == {0.215}
+    assert products["credit"]["min_age_months"] == 12
+    assert all("annual_rate" not in p for p in products.values())

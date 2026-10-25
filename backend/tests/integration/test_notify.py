@@ -8,13 +8,13 @@ from app.pipeline import worker
 
 @pytest.mark.positive
 def test_trigger_fires_on_insert_and_status_change_only(
-    trigger_count, insert_application, set_status, touch_application, notified
+    trigger_count, insert_application, change_status, touch_application, notified
 ) -> None:
     assert trigger_count() == 1
 
     draft_id = insert_application("draft")
     assert notified(lambda: insert_application("draft")) == []
-    assert notified(lambda: set_status(draft_id, "submitted")) == [str(draft_id)]
+    assert notified(lambda: change_status(draft_id, "submitted")) == [str(draft_id)]
     assert notified(lambda: touch_application(draft_id)) == []
     assert len(notified(lambda: insert_application("submitted"))) == 1
 

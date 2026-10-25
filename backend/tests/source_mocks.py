@@ -61,3 +61,20 @@ class Sources:
     def _route(self, request: httpx.Request) -> httpx.Response:
         name = request.url.path.strip("/").split("/")[0]
         return (self.score if name == "score" else self.mocks[name]).respond(request)
+
+
+DEMO_ADMIN = load_json("demo_admin")
+
+
+class FakeAdmin:
+    """The mocks admin API as an httpx transport; records the calls."""
+
+    def __init__(self, modes: dict) -> None:
+        self.modes = modes
+        self.calls: list[tuple[str, str, dict | None]] = []
+        self.transport = httpx.MockTransport(self.handle)
+
+    def handle(self, request: httpx.Request) -> httpx.Response:
+        body = json.loads(request.content) if request.content else None
+        self.calls.append((request.method, request.url.path, body))
+        return httpx.Response(200, json=self.modes)

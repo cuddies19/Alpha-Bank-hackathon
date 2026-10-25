@@ -1,0 +1,39 @@
+meta {
+  name: Создать заявку
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{api}}/applications
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{igorToken}}
+}
+
+body:json {
+  {
+    "product_id": 3,
+    "amount": 3000000,
+    "term_months": 18,
+    "purpose": "Пополнение оборотных средств",
+    "consents": {"personal_data": true, "bki_request": true, "terms": true}
+  }
+}
+
+assert {
+  res.status: in [200, 201]
+  res.body.status: eq draft
+}
+
+script:post-response {
+  bru.setVar("igorAppId", res.body.id);
+}
+
+docs {
+  Игорь создаёт черновик: кредитная линия 3 000 000 на 18 месяцев.
+  Номер заявки сохраняется в igorAppId.
+}
