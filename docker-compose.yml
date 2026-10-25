@@ -70,7 +70,7 @@ services:
       DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-cabinet}:${POSTGRES_PASSWORD:-cabinet}@db:5432/${POSTGRES_DB:-cabinet}
       SEED_ON_STARTUP: "false"
       PIPELINE_MOCKS_URL: http://mocks:8090
-      PIPELINE_SCORING_URL: ${PIPELINE_SCORING_URL:-}
+      PIPELINE_SCORING_URL: ${PIPELINE_SCORING_URL:-http://api:8000}
       PIPELINE_SPEED: ${PIPELINE_SPEED:-normal}
     depends_on:
       api:
