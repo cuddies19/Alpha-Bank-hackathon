@@ -44,19 +44,21 @@ export function DocumentsPage() {
     { value: 'all', label: 'Все заявки' },
     ...(applications.data ?? []).map((a) => ({
       value: a.id,
-      label: `№ ${a.id} · ${a.status === 'draft' ? 'черновик' : a.productName.toLowerCase()}`,
+      label: `№ ${a.number} · ${a.status === 'draft' ? 'черновик' : a.productName.toLowerCase()}`,
     })),
   ];
   const targetApp = filter === 'all' ? applications.data?.[0]?.id : filter;
+  const numberOf = (id: string) => applications.data?.find((a) => a.id === id)?.number ?? id;
+  const targetNumber = targetApp ? numberOf(targetApp) : '';
 
   const onFiles = (files: FileList) => {
     if (!targetApp) return;
     for (const file of Array.from(files)) {
       uploadExtra.mutate(
-        { applicationId: targetApp, name: file.name, size: formatSize(file.size) },
+        { applicationId: targetApp, name: file.name, size: formatSize(file.size), file },
         {
           onSuccess: () =>
-            toast.show({ title: 'Документ загружен', description: `${file.name} · заявка № ${targetApp}` }),
+            toast.show({ title: 'Документ загружен', description: `${file.name} · заявка № ${targetNumber}` }),
         },
       );
     }
@@ -74,6 +76,7 @@ export function DocumentsPage() {
         documentId: doc.documentId,
         name: file.name,
         size: formatSize(file.size),
+        file,
       });
     };
     input.click();
@@ -84,8 +87,8 @@ export function DocumentsPage() {
       <PageHeader title="Документы" />
       <Section title="Загрузить документ" gap={3}>
         <Text variant="body-sm" tone="secondary">
-          Проверим файл сразу после загрузки и привяжем к {filter === 'all' ? 'последней заявке' : `заявке № ${filter}`}
-          .
+          Проверим файл сразу после загрузки и привяжем к{' '}
+          {filter === 'all' ? 'последней заявке' : `заявке № ${numberOf(filter)}`}.
         </Text>
         <DocumentUpload label="Перетащите файл или выберите на компьютере" onFiles={onFiles} />
       </Section>
@@ -123,7 +126,7 @@ export function DocumentsPage() {
                             </span>
                           </Cluster>
                         </Td>
-                        <Td nowrap>№ {doc.applicationId}</Td>
+                        <Td nowrap>№ {numberOf(doc.applicationId)}</Td>
                         <Td nowrap>{doc.date}</Td>
                         <Td>
                           <Badge tone={doc.tone}>{doc.status}</Badge>

@@ -8,7 +8,6 @@ import {
   CellStack,
   Chip,
   Cluster,
-  DescriptionList,
   ExpandableCard,
   PageContainer,
   PageHeader,
@@ -20,7 +19,10 @@ import {
   Td,
   Text,
   Th,
+  Tr,
 } from '@/shared/ui';
+import { AuditDrawer, AuditFields } from './AuditDetails';
+import styles from './AuditPage.module.css';
 
 const ACTORS: Array<{ id: 'all' | AuditActor; label: string }> = [
   { id: 'all', label: 'Все' },
@@ -31,7 +33,7 @@ const ACTORS: Array<{ id: 'all' | AuditActor; label: string }> = [
 const PAGE_SIZE = 15;
 
 function downloadCsv(rows: AuditEvent[]) {
-  const header = ['Время', 'Кто', 'Роль', 'Заявка', 'Действие', 'Было → стало'];
+  const header = ['Время', 'Кто', 'Роль', 'Заявка', 'Действие', 'Подробности'];
   const lines = rows.map((r) => [r.time, r.who, r.role, r.applicationId, r.action, r.change]);
   const csv = [header, ...lines].map((cells) => cells.map((c) => `"${c.replace(/"/g, '""')}"`).join(';')).join('\n');
   const url = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' }));
@@ -47,6 +49,7 @@ export function AuditPage() {
   const [actor, setActor] = useState<'all' | AuditActor>('all');
   const [applicationId, setApplicationId] = useState('all');
   const [page, setPage] = useState(1);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const applications = useMemo(
     () => [...new Set((audit.data ?? []).map((e) => e.applicationId).filter((id) => id !== '—'))].sort(),
@@ -58,7 +61,8 @@ export function AuditPage() {
   const pages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
   const current = Math.min(page, pages);
   const visible = rows.slice((current - 1) * PAGE_SIZE, current * PAGE_SIZE);
-  const summary = `${rows.length} ${plural(rows.length, ['событие', 'события', 'событий'])} за 24 октября`;
+  const selected = rows.find((e) => e.id === selectedId);
+  const summary = `${rows.length} ${plural(rows.length, ['событие', 'события', 'событий'])} в журнале`;
 
   return (
     <PageContainer spacing="tight">
@@ -101,28 +105,9 @@ export function AuditPage() {
         </Button>
       </Cluster>
       <AsyncContent query={audit} skeleton={<TableSkeleton rows={6} />}>
-        {() => (
-          <>
-            <CardList>
-              {visible.map((e) => (
-                <ExpandableCard
-                  key={e.id}
-                  title={e.action}
-                  aside={
-                    <Text as="span" variant="body-sm" tone="secondary" numeric>
-                      {e.time}
-                    </Text>
-                  }
-                  meta={`${e.who} · ${e.role}${e.applicationId !== '—' ? ` · № ${e.applicationId}` : ''}`}
-                >
-                  <DescriptionList
-                    variant="rows"
-                    items={[{ term: 'Было → стало', details: e.change, regular: true }]}
-                  />
-                </ExpandableCard>
-              ))}
-              {pages > 1 ? <Pager summary={summary} page={current} pages={pages} onChange={setPage} /> : null}
-            </CardList>
+        {() => {
+          const toggle = (id: string) => setSelectedId((current) => (current === id ? null : id));
+          const table = (
             <Table
               desktopOnly
               dense
@@ -135,12 +120,11 @@ export function AuditPage() {
                   <Th>Кто</Th>
                   <Th>Заявка</Th>
                   <Th>Действие</Th>
-                  <Th>Было → стало</Th>
                 </tr>
               </thead>
               <tbody>
                 {visible.map((e) => (
-                  <tr key={e.id}>
+                  <Tr key={e.id} selected={e.id === selectedId} onClick={() => toggle(e.id)}>
                     <Td nowrap className="tabular">
                       {e.time}
                     </Td>
@@ -148,14 +132,48 @@ export function AuditPage() {
                       <CellStack main={e.who} sub={e.role} strong={false} />
                     </Td>
                     <Td nowrap>{e.applicationId}</Td>
-                    <Td>{e.action}</Td>
-                    <Td tone="secondary">{e.change}</Td>
-                  </tr>
+                    <Td>
+                      <button
+                        type="button"
+                        className={styles.rowButton}
+                        aria-pressed={e.id === selectedId}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          toggle(e.id);
+                        }}
+                      >
+                        {e.action}
+                      </button>
+                    </Td>
+                  </Tr>
                 ))}
               </tbody>
             </Table>
-          </>
-        )}
+          );
+          return (
+            <>
+              <CardList>
+                {visible.map((e) => (
+                  <ExpandableCard
+                    key={e.id}
+                    title={e.action}
+                    aside={
+                      <Text as="span" variant="body-sm" tone="secondary" numeric>
+                        {e.time}
+                      </Text>
+                    }
+                    meta={`${e.who} · ${e.role}${e.applicationId !== '—' ? ` · № ${e.applicationId}` : ''}`}
+                  >
+                    <AuditFields event={e} />
+                  </ExpandableCard>
+                ))}
+                {pages > 1 ? <Pager summary={summary} page={current} pages={pages} onChange={setPage} /> : null}
+              </CardList>
+              {table}
+              <AuditDrawer event={selected} onClose={() => setSelectedId(null)} />
+            </>
+          );
+        }}
       </AsyncContent>
     </PageContainer>
   );

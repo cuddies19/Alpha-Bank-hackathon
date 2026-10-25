@@ -43,3 +43,9 @@ export function buildSchedule(input: AnnuityInput & { firstDate: Date }): Schedu
     return { index: i + 1, date: formatDate(date), payment: principal + interest, principal, interest, rest };
   });
 }
+
+export function loadLabel(share: number): string {
+  if (share <= 30) return 'комфортная нагрузка';
+  if (share <= 50) return 'нагрузка на грани';
+  return 'высокая нагрузка';
+}

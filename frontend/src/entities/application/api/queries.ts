@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { isProcessing } from '../lib/status';
-import type { Application, DecisionInput, DraftInput } from '../model/types';
-import { applicationApi, type DraftPatch, type UploadInput } from './applicationApi';
+import type { Application, DecisionInput, DraftInput, DraftPatch, UploadInput } from '../model/types';
+import { applicationApi } from './applicationApi';
 import { applicationKeys } from './keys';
 
 const POLL_MS = 1_500;

@@ -1,5 +1,5 @@
 import type { CaseHistoryEntry, ScoringFactor, SourceCheck } from '@/entities/application';
-import type { AuditEvent } from '@/entities/audit';
+import type { MockAuditEvent } from '../db';
 import type { PipelineStats, Source } from '@/entities/integration';
 
 export const ANALYST = 'О. Кравцова';
@@ -176,7 +176,7 @@ export const DOM_I_UYUT_HISTORY: CaseHistoryEntry[] = [
   },
 ];
 
-export function seedAudit(): AuditEvent[] {
+export function seedAudit(): MockAuditEvent[] {
   return [
     {
       id: 'a5',

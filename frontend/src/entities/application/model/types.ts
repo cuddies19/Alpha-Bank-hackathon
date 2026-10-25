@@ -94,6 +94,7 @@ export type SlaLevel = 'ok' | 'warn' | 'late';
 
 export interface Application {
   id: string;
+  number: string;
   companyId: string;
   companyName: string;
   inn: string;
@@ -135,6 +136,9 @@ export interface DraftInput {
   productId: ProductId;
   amount: number;
   term: number;
+  goal?: string;
+  neededBy?: string;
+  repaymentSource?: string;
 }
 
 export type CheckStatus = 'ok' | 'warn' | 'fail';
@@ -227,4 +231,28 @@ export interface DecisionInput {
   message: string;
   declineReason: string;
   comment: string;
+}
+
+export type DraftPatch = Partial<
+  Pick<Application, 'amount' | 'term' | 'goal' | 'neededBy' | 'repaymentSource' | 'draftStep'>
+> & { consents?: Partial<Record<ConsentId, boolean>>; contactName?: string; phone?: string };
+
+export interface UploadInput {
+  applicationId: string;
+  documentId?: string;
+  name: string;
+  size: string;
+  file?: File;
+}
+
+export type BankStage = 'pipeline' | 'manual' | 'client' | 'decided';
+
+export interface QueueItem extends Application {
+  bankStage: BankStage;
+}
+
+export interface SigningFile {
+  id: string;
+  title: string;
+  meta: string;
 }

@@ -1,28 +1,32 @@
 import { mockResponse } from '@/shared/api';
+import { USE_API } from '@/shared/config';
 import * as server from '@/mocks/server';
-import type { DecisionInput, DraftInput } from '../model/types';
+import type { Application, DecisionInput, DraftInput, DraftPatch, QueueItem, UploadInput } from '../model/types';
+import { httpApplicationApi } from './httpApplicationApi';
 
-export const applicationApi = {
+const one = (produce: () => Application): Promise<Application> => mockResponse(produce);
+
+const mockApplicationApi = {
   listForCompany: (companyId: string) => mockResponse(() => server.listClientApplications(companyId)),
-  get: (id: string) => mockResponse(() => server.getApplication(id)),
-  createDraft: (companyId: string, input: DraftInput) => mockResponse(() => server.createDraft(companyId, input)),
-  updateDraft: (id: string, patch: server.DraftPatch) => mockResponse(() => server.updateDraft(id, patch)),
-  uploadDocument: (input: server.UploadInput) => mockResponse(() => server.uploadDocument(input)),
+  get: (id: string) => one(() => server.getApplication(id)),
+  createDraft: (companyId: string, input: DraftInput) => one(() => server.createDraft(companyId, input)),
+  updateDraft: (id: string, patch: DraftPatch) => one(() => server.updateDraft(id, patch)),
+  uploadDocument: (input: UploadInput) => one(() => server.uploadDocument(input)),
   removeDocument: (applicationId: string, documentId: string) =>
-    mockResponse(() => server.removeDocument(applicationId, documentId)),
-  submit: (id: string) => mockResponse(() => server.submitApplication(id)),
-  withdraw: (id: string) => mockResponse(() => server.withdrawApplication(id)),
-  acceptOffer: (id: string) => mockResponse(() => server.acceptOffer(id)),
-  declineOffer: (id: string) => mockResponse(() => server.declineOffer(id)),
-  uploadRequestedDocument: (input: server.UploadInput) => mockResponse(() => server.uploadRequestedDocument(input)),
-  respondToRequest: (id: string, comment: string) => mockResponse(() => server.respondToRequest(id, comment)),
+    one(() => server.removeDocument(applicationId, documentId)),
+  submit: (id: string) => one(() => server.submitApplication(id)),
+  withdraw: (id: string) => one(() => server.withdrawApplication(id)),
+  acceptOffer: (id: string) => one(() => server.acceptOffer(id)),
+  declineOffer: (id: string) => one(() => server.declineOffer(id)),
+  uploadRequestedDocument: (input: UploadInput) => one(() => server.uploadRequestedDocument(input)),
+  respondToRequest: (id: string, comment: string) => one(() => server.respondToRequest(id, comment)),
   signingDocuments: (id: string) => mockResponse(() => server.getSigningDocuments(id)),
-  sign: (id: string, code: string) => mockResponse(() => server.signApplication(id, code)),
+  sign: (id: string, code: string) => one(() => server.signApplication(id, code)),
 
-  queue: () => mockResponse(() => server.listQueue()),
+  queue: (): Promise<QueueItem[]> => mockResponse(() => server.listQueue()),
   getCase: (id: string) => mockResponse(() => server.getCase(id)),
-  takeInWork: (id: string) => mockResponse(() => server.takeInWork(id)),
-  decide: (input: DecisionInput) => mockResponse(() => server.decide(input)),
+  takeInWork: (id: string) => one(() => server.takeInWork(id)),
+  decide: (input: DecisionInput) => one(() => server.decide(input)),
 };
 
-export type { DraftPatch, UploadInput, QueueItem } from '@/mocks/server';
+export const applicationApi: typeof httpApplicationApi = USE_API ? httpApplicationApi : mockApplicationApi;

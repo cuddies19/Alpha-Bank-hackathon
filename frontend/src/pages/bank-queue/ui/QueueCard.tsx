@@ -18,7 +18,7 @@ export function QueueCard({ application: app, stage, to }: QueueCardProps) {
           {formatMoney(app.amount)}
         </Text>
       }
-      meta={`№ ${app.id} · ${app.productName}`}
+      meta={`№ ${app.number} · ${app.productName}`}
       footer={
         <Cluster gap={3}>
           {app.sla ? <SlaBadge text={app.sla.text} level={app.sla.level} /> : null}

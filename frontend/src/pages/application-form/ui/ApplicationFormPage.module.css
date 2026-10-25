@@ -26,12 +26,7 @@
 
 @media (max-width: 767px) {
   .footer {
-    position: sticky;
-    bottom: 76px;
-    z-index: 5;
-    padding: var(--space-3) var(--space-4);
-    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-    box-shadow: var(--shadow-md);
+    padding: var(--space-4);
   }
 
   .footer > a,

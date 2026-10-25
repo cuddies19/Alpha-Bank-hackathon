@@ -29,7 +29,7 @@ export function ApplicationSentPage() {
             <Stack gap={2}>
               <h1 className="title-1">Заявка отправлена</h1>
               <Text variant="body-lg" tone="secondary">
-                {app.productName} · <Amount>{formatMoney(app.amount)}</Amount> · № {app.id}
+                {app.productName} · <Amount>{formatMoney(app.amount)}</Amount> · № {app.number}
               </Text>
             </Stack>
             <Stack gap={3}>

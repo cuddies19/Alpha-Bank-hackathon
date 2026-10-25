@@ -5,7 +5,7 @@ export type Role = 'client' | 'bank';
 export type PersonaId = 'igor' | 'anna' | 'marina' | 'sergey' | 'olga';
 
 export interface Persona {
-  id: PersonaId;
+  id: PersonaId | string;
   role: Role;
   initials: string;
   name: string;

@@ -42,7 +42,11 @@ export function CompanyStep({ app, onChange, onSave }: StepProps) {
                   { term: 'ОГРН', details: company.ogrn, valueClassName: 'tabular' },
                   { term: 'Дата регистрации', details: company.registeredAt },
                   { term: 'Полное название', details: company.fullName, full: true },
-                  { term: 'ОКВЭД', details: `${company.okved} — ${company.okvedTitle}`, full: true },
+                  {
+                    term: 'ОКВЭД',
+                    details: company.okvedTitle ? `${company.okved} — ${company.okvedTitle}` : company.okved,
+                    full: true,
+                  },
                   { term: 'Юридический адрес', details: company.address, full: true },
                   { term: 'Руководитель', details: `${company.director}, ${company.directorPosition}`, full: true },
                 ]}

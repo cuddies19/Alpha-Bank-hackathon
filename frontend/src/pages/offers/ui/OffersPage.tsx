@@ -70,7 +70,14 @@ function Offers({ data, companyId }: { data: Recommendation; companyId: string }
   const recalculated = amount === data.comfortAmount;
 
   const apply = (offer: Offer, offerAmount: number, offerTerm: number) =>
-    createDraft.mutate({ productId: offer.productId, amount: offerAmount, term: offerTerm });
+    createDraft.mutate({
+      productId: offer.productId,
+      amount: offerAmount,
+      term: offerTerm,
+      goal: data.need.goal,
+      neededBy: data.need.neededBy,
+      repaymentSource: data.need.repaymentSource,
+    });
 
   const params3 = (rate: number, months: number, payment: number) => [
     { label: 'Срок', value: formatMonths(months) },
@@ -221,9 +228,9 @@ function Offers({ data, companyId }: { data: Recommendation; companyId: string }
           <thead>
             <tr>
               <Th srOnly>Параметр</Th>
-              <Th>Кредитная линия</Th>
-              <Th>Кредит на любые цели</Th>
-              <Th>Овердрафт</Th>
+              {data.comparisonColumns.map((column) => (
+                <Th key={column}>{column}</Th>
+              ))}
             </tr>
           </thead>
           <tbody>

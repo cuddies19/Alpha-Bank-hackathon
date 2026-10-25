@@ -4,6 +4,7 @@ import { sessionApi, useSession, type PersonaId } from '@/entities/session';
 import { routes } from '@/shared/config';
 import { Alert, Avatar, Button, ButtonLink, Drawer, Icon, SegmentedControl, Stack, Cluster } from '@/shared/ui';
 import {
+  demoScenariosAvailable,
   useApplyScenario,
   useDemoSettings,
   useResetDemo,
@@ -79,13 +80,18 @@ export function DemoPanel({ open, onClose }: DemoPanelProps) {
 
   const enter = async (entry: Entry) => {
     const personas = await sessionApi.personas();
-    const persona = personas.find((p) => p.id === entry.persona);
-    if (!persona) return;
+    const known = personas.find((p) => p.id === entry.persona);
+    if (!known) return;
     if (entry.scenario) await applyScenario.mutateAsync(entry.scenario);
+    const persona = await sessionApi.switchTo(known);
     signIn(persona);
     onClose();
-    navigate(entry.to);
+    navigate(demoScenariosAvailable ? entry.to : persona.home);
   };
+
+  const entries = demoScenariosAvailable
+    ? ENTRIES
+    : ENTRIES.filter((e) => !e.scenario).map((e) => ({ ...e, note: e.persona === 'olga' ? e.note : 'Клиент' }));
 
   const doReset = async () => {
     await reset.mutateAsync();
@@ -109,7 +115,7 @@ export function DemoPanel({ open, onClose }: DemoPanelProps) {
 
       <section className={styles.group}>
         <h3 className={`label ${styles.heading}`}>Войти как</h3>
-        {ENTRIES.map((entry) => (
+        {entries.map((entry) => (
           <button key={entry.name} type="button" className={styles.person} onClick={() => void enter(entry)}>
             <Avatar size="md">{entry.initials}</Avatar>
             <span className={styles.personText}>

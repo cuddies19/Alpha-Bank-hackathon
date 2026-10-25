@@ -48,7 +48,9 @@ export function IssuedPage() {
                 items={[
                   {
                     term: 'Счёт зачисления',
-                    details: `•• ${profile.data?.company.accountMask ?? '····'}`,
+                    details: profile.data?.company.accountMask
+                      ? `•• ${profile.data.company.accountMask}`
+                      : 'Расчётный счёт',
                     valueClassName: 'amount-md',
                   },
                   { term: 'Первый платёж', details: app.decision.firstPayment ?? '—', valueClassName: 'amount-md' },
@@ -57,7 +59,7 @@ export function IssuedPage() {
                     details: formatMoney(app.decision.payment),
                     valueClassName: 'amount-md tabular',
                   },
-                  { term: 'Договор', details: `№ ${app.id}-Д`, valueClassName: 'amount-md' },
+                  { term: 'Договор', details: `№ ${app.number}-Д`, valueClassName: 'amount-md' },
                 ]}
               />
               <Cluster gap={3}>

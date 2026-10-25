@@ -22,7 +22,7 @@ import { COMPANIES, CONSENT_TEXTS } from './data/companies';
 import { DEMO_PASSWORD, PERSONAS } from './data/personas';
 import { PRODUCTS, RECOMMENDATION } from './data/products';
 import { buildCase } from './cases';
-import { db, notificationsFor, prefsFor, resetDb, save, type DemoSettings } from './db';
+import { db, notificationsFor, prefsFor, resetDb, save, type DemoSettings, type MockAuditEvent } from './db';
 import { advance, isInPipeline, REVIEW_SLA_MS, submit } from './pipeline';
 import { clock, clockSeconds, stamp, uid } from './time';
 
@@ -216,6 +216,18 @@ export function getProfile(companyId: string): CompanyProfile {
   };
 }
 
+export function listConsentTexts() {
+  return CONSENT_TEXTS;
+}
+
+export function listPrefs(companyId: string) {
+  return prefsFor(companyId);
+}
+
+export function listRevokedConsents(companyId: string): ConsentId[] {
+  return db.revokedConsents[companyId] ?? [];
+}
+
 export function setPref(companyId: string, prefId: NotificationPrefId, enabled: boolean) {
   const pref = prefsFor(companyId).find((p) => p.id === prefId);
   if (pref) pref.enabled = enabled;
@@ -298,6 +310,7 @@ export function createDraft(companyId: string, input: DraftInput): Application {
       : {
           ...base,
           id: `2026-10-0${150 + db.applications.length}`,
+          number: `2026-10-0${150 + db.applications.length}`,
           companyId,
           companyName: c.shortName,
           inn: c.inn,
@@ -918,7 +931,7 @@ export function decide(input: DecisionInput): Application {
       unread: true,
     },
   );
-  const staff = (action: string, change: string): AuditEvent => ({
+  const staff = (action: string, change: string): MockAuditEvent => ({
     id: uid('a'),
     time: clockSeconds(now),
     who: ANALYST,
@@ -952,7 +965,26 @@ export function getPipelineStats() {
 
 export function listAudit(): AuditEvent[] {
   refreshAll();
-  return db.audit;
+  return db.audit.map((e) => {
+    const [before, after] = e.change.split(' → ');
+    return {
+      ...e,
+      kind: /^Решение/.test(e.action)
+        ? ('decision' as const)
+        : /^Взята/.test(e.action)
+          ? ('taken' as const)
+          : /^Черновик создан/.test(e.action)
+            ? ('created' as const)
+            : /документ/i.test(e.action)
+              ? ('document' as const)
+              : ('other' as const),
+      applicationRef: e.applicationId === '—' ? undefined : e.applicationId,
+      details:
+        after !== undefined
+          ? [{ label: 'Изменение', before, after }]
+          : [{ label: 'Подробности', after: e.change, long: e.change.length > 60 }],
+    };
+  });
 }
 
 export function getRulesCatalog() {

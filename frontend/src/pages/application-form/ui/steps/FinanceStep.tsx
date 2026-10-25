@@ -1,5 +1,6 @@
 import { useYearTurnover } from '@/entities/account';
 import { useRemoveDocument, useUploadDocument, type ApplicationDocument } from '@/entities/application';
+import { USE_API } from '@/shared/config';
 import { formatMoney } from '@/shared/lib';
 import {
   AsyncContent,
@@ -52,7 +53,7 @@ export function FinanceStep({ app }: StepProps) {
   const onFiles = async (files: FileList) => {
     for (const file of Array.from(files)) {
       await upload
-        .mutateAsync({ applicationId: app.id, name: file.name, size: formatSize(file.size) })
+        .mutateAsync({ applicationId: app.id, name: file.name, size: formatSize(file.size), file })
         .catch(() => undefined);
     }
   };
@@ -130,7 +131,7 @@ export function FinanceStep({ app }: StepProps) {
         <DocumentUpload
           files={uploaded}
           onFiles={(files) => void onFiles(files)}
-          onRemove={(id) => remove.mutate(id)}
+          onRemove={USE_API ? undefined : (id) => remove.mutate(id)}
           hint="PDF, JPG или PNG до 20 МБ. Проверим файл сразу после загрузки"
         />
         {upload.isError ? <ErrorState error={upload.error} title="Файл не загрузился" /> : null}

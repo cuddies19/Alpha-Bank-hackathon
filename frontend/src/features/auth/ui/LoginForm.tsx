@@ -2,22 +2,20 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState, type FormEvent } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { sessionApi, useSession, type Persona, type Role } from '@/entities/session';
-import { routes } from '@/shared/config';
+import { features, routes } from '@/shared/config';
 import { cx } from '@/shared/lib';
 import { Alert, Avatar, Badge, Button, CardSkeleton, SegmentedControl, Stack, TextField } from '@/shared/ui';
 import styles from './LoginForm.module.css';
-
-const DEMO_PASSWORD = 'demo-2026';
 
 export function LoginForm() {
   const navigate = useNavigate();
   const location = useLocation();
   const { signIn } = useSession();
-  const personas = useQuery({ queryKey: ['personas'], queryFn: sessionApi.personas });
+  const personas = useQuery({ queryKey: ['personas'], queryFn: sessionApi.personas, enabled: features.demo });
 
   const [role, setRole] = useState<Role>('client');
-  const [login, setLogin] = useState('igor.sokolov');
-  const [password, setPassword] = useState(DEMO_PASSWORD);
+  const [login, setLogin] = useState(features.demo ? 'igor.sokolov' : '');
+  const [password, setPassword] = useState(sessionApi.demoPassword);
 
   const loginMutation = useMutation({
     mutationFn: () => sessionApi.login(login, password),
@@ -39,7 +37,7 @@ export function LoginForm() {
 
   const pick = (persona: Persona) => {
     setLogin(persona.login);
-    setPassword(DEMO_PASSWORD);
+    setPassword(sessionApi.demoPassword);
     loginMutation.reset();
   };
 
@@ -60,39 +58,45 @@ export function LoginForm() {
   return (
     <form className={styles.card} onSubmit={onSubmit} noValidate>
       <h2 className="title-2">Вход</h2>
-      <SegmentedControl
-        label="Кто входит"
-        value={role}
-        onChange={changeRole}
-        options={[
-          { value: 'client', label: 'Клиент' },
-          { value: 'bank', label: 'Сотрудник банка' },
-        ]}
-      />
-      <Stack gap={2}>
-        {personas.isPending ? (
-          <CardSkeleton lines={2} />
-        ) : (
-          list.map((persona) => (
-            <button
-              key={persona.id}
-              type="button"
-              className={cx(styles.persona, persona.login === login && styles.selected)}
-              aria-pressed={persona.login === login}
-              onClick={() => pick(persona)}
-            >
-              <Avatar>{persona.initials}</Avatar>
-              <span className={styles.personaText}>
-                <span className="body-strong">{persona.name}</span>
-                <span className={cx('body-sm', styles.secondary)}>{persona.org}</span>
-              </span>
-              <Badge tone={persona.outcomeTone} icon={false}>
-                {persona.outcome}
-              </Badge>
-            </button>
-          ))
-        )}
-      </Stack>
+      {features.demo ? (
+        <>
+          <SegmentedControl
+            label="Кто входит"
+            value={role}
+            onChange={changeRole}
+            options={[
+              { value: 'client', label: 'Клиент' },
+              { value: 'bank', label: 'Сотрудник банка' },
+            ]}
+          />
+          <Stack gap={2}>
+            {personas.isPending ? (
+              <CardSkeleton lines={2} />
+            ) : (
+              list.map((persona) => (
+                <button
+                  key={persona.id}
+                  type="button"
+                  className={cx(styles.persona, persona.login === login && styles.selected)}
+                  aria-pressed={persona.login === login}
+                  onClick={() => pick(persona)}
+                >
+                  <Avatar>{persona.initials}</Avatar>
+                  <span className={styles.personaText}>
+                    <span className="body-strong">{persona.name}</span>
+                    <span className={cx('body-sm', styles.secondary)}>{persona.org}</span>
+                  </span>
+                  {persona.outcome ? (
+                    <Badge tone={persona.outcomeTone} icon={false}>
+                      {persona.outcome}
+                    </Badge>
+                  ) : null}
+                </button>
+              ))
+            )}
+          </Stack>
+        </>
+      ) : null}
       {error && !layoutError ? (
         <Alert tone="danger" title={error}>
           Проверьте раскладку клавиатуры и попробуйте снова.

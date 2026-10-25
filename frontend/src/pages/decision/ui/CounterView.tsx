@@ -57,7 +57,7 @@ export function CounterView({ app, decision }: { app: Application; decision: Dec
           <Cluster gap={3}>
             <Badge tone="warning">Предложение банка</Badge>
             <Text as="span" variant="body-sm" tone="secondary">
-              Заявка № {app.id} · решение {decision.decidedAt}
+              Заявка № {app.number} · решение {decision.decidedAt}
             </Text>
           </Cluster>
         }

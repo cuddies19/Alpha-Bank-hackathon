@@ -33,7 +33,7 @@ export function ApprovedView({ app, decision }: { app: Application; decision: De
           <Cluster gap={3}>
             <Badge tone="success">Одобрено</Badge>
             <Text as="span" variant="body-sm" tone="secondary">
-              Заявка № {app.id} · решение принято {auto ? 'автоматически ' : ''}
+              Заявка № {app.number} · решение принято {auto ? 'автоматически ' : ''}
               {decision.decidedAt}
             </Text>
           </Cluster>

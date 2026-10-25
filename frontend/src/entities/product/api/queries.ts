@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { mockResponse } from '@/shared/api';
-import * as server from '@/mocks/server';
+import { productApi } from './productApi';
 
 export const productKeys = {
   all: ['products'] as const,
@@ -8,12 +7,12 @@ export const productKeys = {
 };
 
 export function useProducts() {
-  return useQuery({ queryKey: productKeys.all, queryFn: () => mockResponse(() => server.listProducts()) });
+  return useQuery({ queryKey: productKeys.all, queryFn: productApi.list });
 }
 
 export function useRecommendation(companyId: string) {
   return useQuery({
     queryKey: productKeys.recommendation(companyId),
-    queryFn: () => mockResponse(() => server.getRecommendation(companyId)),
+    queryFn: () => productApi.recommendation(companyId),
   });
 }

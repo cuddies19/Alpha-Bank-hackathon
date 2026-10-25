@@ -1,5 +1,5 @@
 import { BankStatusBadge, SlaBadge, useTakeInWork, type Application } from '@/entities/application';
-import { CASE_TABS, routes, type CaseTab } from '@/shared/config';
+import { CASE_TABS, USE_API, routes, type CaseTab } from '@/shared/config';
 import { formatMoney, formatMonths } from '@/shared/lib';
 import { Amount, BackLink, Button, Cluster, Stack, TabBar, TabLink } from '@/shared/ui';
 import styles from './CaseHeader.module.css';
@@ -22,7 +22,7 @@ export interface CaseHeaderProps {
 export function CaseHeader({ application: app, analyst, attention = [] }: CaseHeaderProps) {
   const takeInWork = useTakeInWork();
   const mine = app.assignee === analyst;
-  const reviewing = app.status === 'manual_review';
+  const reviewing = app.status === 'manual_review' || (USE_API && app.status === 'submitted');
   return (
     <div className={styles.head}>
       <BackLink to={routes.bank.queue()}>Очередь заявок</BackLink>
@@ -33,7 +33,7 @@ export function CaseHeader({ application: app, analyst, attention = [] }: CaseHe
             <BankStatusBadge application={app} />
           </Cluster>
           <p className={`body ${styles.meta}`}>
-            ИНН {app.inn} · заявка № {app.id} · {app.productName.toLowerCase()}{' '}
+            ИНН {app.inn} · заявка № {app.number} · {app.productName.toLowerCase()}{' '}
             <Amount className={styles.amount}>{formatMoney(app.amount)}</Amount> на {formatMonths(app.term)} · подана{' '}
             {app.submittedAt}
           </p>

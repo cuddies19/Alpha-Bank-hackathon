@@ -9,7 +9,7 @@ import {
   type DecisionOutcome,
 } from '@/entities/application';
 import { sessionApi, useSession } from '@/entities/session';
-import { routes } from '@/shared/config';
+import { features, routes } from '@/shared/config';
 import { annuityPayment, formatMoney, formatMonths, parseMoney } from '@/shared/lib';
 import {
   Alert,
@@ -70,7 +70,7 @@ export function DecisionPanel({ caseData }: DecisionPanelProps) {
       <Stack gap={1}>
         <h2 className="title-3">Решение по заявке</h2>
         <Text variant="body-sm" tone="secondary">
-          № {app.id} · {app.companyName}
+          № {app.number} · {app.companyName}
         </Text>
       </Stack>
       {app.status === 'manual_review' ? (
@@ -167,14 +167,18 @@ function DecisionForm({ caseData }: DecisionPanelProps) {
               ]}
             />
           </Stack>
-          <PaymentLoadMeter title="Доля платежа в потоке" payment={app.payment} cashFlow={caseData.cashFlow} />
+          {caseData.cashFlow > 0 ? (
+            <PaymentLoadMeter title="Доля платежа в потоке" payment={app.payment} cashFlow={caseData.cashFlow} />
+          ) : null}
         </>
       ) : null}
 
       {outcome === 'counter' ? (
         <>
           <Text variant="body-sm" tone="secondary">
-            Подобрана сумма, при которой платёж {rec.share}% потока. Поля можно изменить — платёж пересчитается.
+            {caseData.cashFlow > 0
+              ? `Подобрана сумма, при которой платёж ${rec.share}% потока. Поля можно изменить — платёж пересчитается.`
+              : 'Укажите условия предложения — платёж пересчитается.'}
           </Text>
           <TextField
             label="Сумма"
@@ -199,7 +203,9 @@ function DecisionForm({ caseData }: DecisionPanelProps) {
             />
           </div>
           <DescriptionList variant="rows" items={[{ term: 'Платёж в месяц', details: formatMoney(payment) }]} />
-          <PaymentLoadMeter title="Доля платежа в потоке" payment={payment} cashFlow={caseData.cashFlow} />
+          {caseData.cashFlow > 0 ? (
+            <PaymentLoadMeter title="Доля платежа в потоке" payment={payment} cashFlow={caseData.cashFlow} />
+          ) : null}
         </>
       ) : null}
 
@@ -290,9 +296,9 @@ function DecidedView({ caseData, decision }: { caseData: ApplicationCase; decisi
   const app = caseData.application;
 
   const openAsClient = async () => {
-    const persona = (await sessionApi.personas()).find((p) => p.companyId === app.companyId);
-    if (!persona) return;
-    signIn(persona);
+    const known = (await sessionApi.personas()).find((p) => p.companyId === app.companyId || p.org === app.companyName);
+    if (!known) return;
+    signIn(await sessionApi.switchTo(known));
     navigate(routes.client.application(app.id));
   };
 
@@ -314,9 +320,11 @@ function DecidedView({ caseData, decision }: { caseData: ApplicationCase; decisi
       <Alert tone="info" title="Клиент уже видит решение">
         Уведомление пришло в кабинет клиента. Панель доступна только для чтения.
       </Alert>
-      <button type="button" className={styles.clientLink} onClick={() => void openAsClient()}>
-        <Icon name="shield" size={16} /> Режим проверки: войти как клиент
-      </button>
+      {features.demo ? (
+        <button type="button" className={styles.clientLink} onClick={() => void openAsClient()}>
+          <Icon name="shield" size={16} /> Режим проверки: войти как клиент
+        </button>
+      ) : null}
     </Stack>
   );
 }

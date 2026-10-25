@@ -31,7 +31,7 @@ export function DeclineView({ app, decision }: { app: Application; decision: Dec
           <Cluster gap={3}>
             <Badge tone="danger">Отказ</Badge>
             <Text as="span" variant="body-sm" tone="secondary">
-              Заявка № {app.id} · {app.productName.toLowerCase()} {formatMoney(app.amount)}
+              Заявка № {app.number} · {app.productName.toLowerCase()} {formatMoney(app.amount)}
             </Text>
           </Cluster>
         }

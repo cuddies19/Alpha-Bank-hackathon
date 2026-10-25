@@ -69,7 +69,7 @@ export function RequestedDocsView({ app, answered, onAnswered }: RequestedDocsVi
   const onFiles = async (list: FileList) => {
     for (const file of Array.from(list)) {
       await upload
-        .mutateAsync({ applicationId: app.id, name: file.name, size: formatSize(file.size) })
+        .mutateAsync({ applicationId: app.id, name: file.name, size: formatSize(file.size), file })
         .catch(() => undefined);
     }
   };
@@ -87,7 +87,8 @@ export function RequestedDocsView({ app, answered, onAnswered }: RequestedDocsVi
               {answered ? 'Повторное рассмотрение' : 'Нужны документы'}
             </Badge>
             <Text as="span" variant="body-sm" tone="secondary">
-              Заявка № {app.id} · {app.productName.toLowerCase()} {formatMoney(app.amount)} на {formatMonths(app.term)}
+              Заявка № {app.number} · {app.productName.toLowerCase()} {formatMoney(app.amount)} на{' '}
+              {formatMonths(app.term)}
             </Text>
           </Cluster>
         }

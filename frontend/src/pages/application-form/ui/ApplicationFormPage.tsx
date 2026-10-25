@@ -113,7 +113,7 @@ function Form({ app, step }: { app: Application; step: ApplicationFormStep }) {
     <>
       <PageHeader
         title={`Заявка на ${PRODUCT_ACCUSATIVE[app.productId] ?? app.productName}`}
-        description={`№ ${app.id} · черновик`}
+        description={`№ ${app.number} · черновик`}
       />
       <Card>
         <Stepper steps={STEPS} current={index} />
@@ -130,26 +130,26 @@ function Form({ app, step }: { app: Application; step: ApplicationFormStep }) {
               onSave={(patch) => update.mutate(patch)}
             />
             {submit.isError ? <ErrorState error={submit.error} title="Не удалось отправить заявку" /> : null}
+            <FormFooter state={state} savedAt={app.draftSavedAt} blocker={blocker ?? undefined}>
+              {prev ? (
+                <ButtonLink to={routes.client.applicationForm(app.id, prev)}>Назад</ButtonLink>
+              ) : (
+                <ButtonLink to={routes.client.offers()}>Назад</ButtonLink>
+              )}
+              {next ? (
+                <Button variant="primary" disabled={Boolean(blocker)} loading={update.isPending} onClick={goNext}>
+                  Продолжить
+                </Button>
+              ) : (
+                <Button variant="primary" disabled={Boolean(blocker)} loading={submit.isPending} onClick={send}>
+                  {submit.isPending ? 'Отправляем' : 'Отправить заявку'}
+                </Button>
+              )}
+            </FormFooter>
           </>
         }
         side={<StepAside app={app} step={step} />}
       />
-      <FormFooter state={state} savedAt={app.draftSavedAt} blocker={blocker ?? undefined}>
-        {prev ? (
-          <ButtonLink to={routes.client.applicationForm(app.id, prev)}>Назад</ButtonLink>
-        ) : (
-          <ButtonLink to={routes.client.offers()}>Назад</ButtonLink>
-        )}
-        {next ? (
-          <Button variant="primary" disabled={Boolean(blocker)} loading={update.isPending} onClick={goNext}>
-            Продолжить
-          </Button>
-        ) : (
-          <Button variant="primary" disabled={Boolean(blocker)} loading={submit.isPending} onClick={send}>
-            {submit.isPending ? 'Отправляем' : 'Отправить заявку'}
-          </Button>
-        )}
-      </FormFooter>
     </>
   );
 }

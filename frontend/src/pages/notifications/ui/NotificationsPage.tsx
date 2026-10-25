@@ -82,10 +82,11 @@ export function NotificationsPage() {
   );
 }
 
-const DAY_ORDER = ['Сегодня, 24 октября', 'Вчера, 23 октября', 'Напоминания'];
+const dayRank = (day: string) =>
+  day.startsWith('Сегодня') ? 0 : day.startsWith('Вчера') ? 1 : day === 'Напоминания' ? 3 : 2;
 
 function groupByDay(list: AppNotification[]): Array<[string, AppNotification[]]> {
   const groups = new Map<string, AppNotification[]>();
   for (const n of list) groups.set(n.day, [...(groups.get(n.day) ?? []), n]);
-  return [...groups.entries()].sort(([a], [b]) => DAY_ORDER.indexOf(a) - DAY_ORDER.indexOf(b));
+  return [...groups.entries()].sort(([a], [b]) => dayRank(a) - dayRank(b));
 }

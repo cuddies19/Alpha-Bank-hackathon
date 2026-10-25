@@ -1,5 +1,7 @@
 import type { Application } from '@/entities/application';
 import type { AuditEvent } from '@/entities/audit';
+
+export type MockAuditEvent = Omit<AuditEvent, 'details' | 'applicationRef' | 'kind'>;
 import type { ConsentId, NotificationPref } from '@/entities/company';
 import type { ClientDocument } from '@/entities/document';
 import type { Source } from '@/entities/integration';
@@ -22,7 +24,7 @@ export interface Db {
   extraDocuments: Record<string, ClientDocument[]>;
   uploads: Record<string, number>;
   sources: Source[];
-  audit: AuditEvent[];
+  audit: MockAuditEvent[];
   prefs: Record<string, NotificationPref[]>;
   revokedConsents: Record<string, ConsentId[]>;
   settings: DemoSettings;

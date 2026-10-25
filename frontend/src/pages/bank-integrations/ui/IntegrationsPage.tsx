@@ -1,3 +1,4 @@
+import { todayLabel } from '@/shared/lib';
 import { useApplicationQueue } from '@/entities/application';
 import { useSources, type Source, type SourceState } from '@/entities/integration';
 import { routes } from '@/shared/config';
@@ -33,7 +34,7 @@ export function IntegrationsPage() {
   const affected = queue.data?.filter((a) => a.sourceIssue && a.status === 'manual_review').length ?? 0;
   return (
     <PageContainer spacing="tight">
-      <PageHeader title="Внешние источники" description="Проверка каждые 30 секунд · 24 октября" />
+      <PageHeader title="Внешние источники" description={`Проверка каждые 30 секунд · ${todayLabel()}`} />
       <AsyncContent query={sources} skeleton={<TableSkeleton rows={5} />}>
         {(list) => (
           <>

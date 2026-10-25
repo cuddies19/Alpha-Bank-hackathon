@@ -9,7 +9,7 @@ import {
 } from '@/entities/application';
 import { useSession } from '@/entities/session';
 import { routes } from '@/shared/config';
-import { cx, formatMoney } from '@/shared/lib';
+import { cx, todayLabel, formatMoney } from '@/shared/lib';
 import {
   AsyncContent,
   Badge,
@@ -94,11 +94,11 @@ export function QueuePage() {
         (!mine || a.assignee === analyst) &&
         (product === 'all' || a.productId === product) &&
         (risk === 'all' || a.riskClass === risk) &&
-        (!q || a.id.includes(q) || a.inn.includes(q) || a.companyName.toLowerCase().includes(q)),
+        (!q || a.number.includes(q) || a.inn.includes(q) || a.companyName.toLowerCase().includes(q)),
     );
     const factor = sort.dir === 'asc' ? 1 : -1;
     return filtered.sort((a, b) => {
-      if (sort.key === 'id') return a.id.localeCompare(b.id) * factor;
+      if (sort.key === 'id') return a.number.localeCompare(b.number) * factor;
       const sa = a.bankStage === 'decided' ? 3 : SLA_ORDER[a.sla?.level ?? 'ok'];
       const sb = b.bankStage === 'decided' ? 3 : SLA_ORDER[b.sla?.level ?? 'ok'];
       return (sa - sb) * factor;
@@ -120,7 +120,7 @@ export function QueuePage() {
 
   return (
     <PageContainer spacing="tight">
-      <PageHeader title="Очередь заявок" description="24 октября · обновляется автоматически" />
+      <PageHeader title="Очередь заявок" description={`${todayLabel()} · обновляется автоматически`} />
       <AsyncContent query={queue} skeleton={<TableSkeleton rows={5} />}>
         {(list) => (
           <>
@@ -230,7 +230,7 @@ export function QueuePage() {
                             onClick={toggle}
                           >
                             <Td nowrap strong>
-                              {app.id}
+                              {app.number}
                             </Td>
                             <Td>
                               <CellStack main={app.companyName} sub={`ИНН ${app.inn}`} />
@@ -242,7 +242,7 @@ export function QueuePage() {
                                 icon="chevron-down"
                                 size="sm"
                                 tone="secondary"
-                                label={`${open ? 'Свернуть' : 'Подробнее о'} заявке ${app.id}`}
+                                label={`${open ? 'Свернуть' : 'Подробнее о'} заявке ${app.number}`}
                                 aria-expanded={open}
                                 aria-controls={`queue-details-${app.id}`}
                                 className={cx(styles.toggle, open && styles.toggleOpen)}

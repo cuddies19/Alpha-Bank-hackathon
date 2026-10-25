@@ -119,7 +119,7 @@ export function ApplicationsPage() {
                       {rows.map((app) => (
                         <Tr key={app.id} onClick={() => navigate(linkFor(app))}>
                           <Td nowrap>
-                            <RowLink to={linkFor(app)}>№ {app.id}</RowLink>
+                            <RowLink to={linkFor(app)}>№ {app.number}</RowLink>
                           </Td>
                           <Td>{app.productName}</Td>
                           <Td align="right">{formatMoney(app.amount)}</Td>
@@ -132,7 +132,7 @@ export function ApplicationsPage() {
                             <IconButtonLink
                               to={linkFor(app)}
                               icon="chevron-right"
-                              label={`Открыть заявку № ${app.id}`}
+                              label={`Открыть заявку № ${app.number}`}
                             />
                           </Td>
                         </Tr>

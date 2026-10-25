@@ -10,7 +10,7 @@ import {
   type Application,
 } from '@/entities/application';
 import { routes } from '@/shared/config';
-import { formatApproxMoney, formatMoney, formatMonths, formatMonthsLong, formatPercent } from '@/shared/lib';
+import { formatApproxMoney, formatMoney, formatMonths, formatMonthsLong, formatPercent, loadLabel } from '@/shared/lib';
 import {
   Alert,
   Amount,
@@ -72,11 +72,11 @@ function useStatusToasts(app: Application) {
     } else if (DECIDED.includes(app.status) && !app.closedReason) {
       toast.show({
         title: 'Решение готово',
-        description: `Заявка № ${app.id} · ${time}`,
+        description: `Заявка № ${app.number} · ${time}`,
         action: { label: 'Посмотреть решение', to: routes.client.decision(app.id) },
       });
     }
-  }, [app.status, app.id, app.closedReason, toast]);
+  }, [app.status, app.id, app.number, app.closedReason, toast]);
 }
 
 function Status({ app }: { app: Application }) {
@@ -86,7 +86,7 @@ function Status({ app }: { app: Application }) {
   const withdraw = useWithdrawApplication({
     onSuccess: () => {
       setConfirm(false);
-      toast.show({ tone: 'info', title: 'Заявка отозвана', description: `№ ${app.id}` });
+      toast.show({ tone: 'info', title: 'Заявка отозвана', description: `№ ${app.number}` });
       navigate(routes.client.applications());
     },
   });
@@ -107,7 +107,7 @@ function Status({ app }: { app: Application }) {
           </>
         }
         badge={<ApplicationStatusBadge application={app} />}
-        description={`№ ${app.id} · подана ${app.submittedAt ?? app.createdAt}`}
+        description={`№ ${app.number} · подана ${app.submittedAt ?? app.createdAt}`}
       />
       <StatusBanner app={app} />
       <Columns
@@ -241,7 +241,9 @@ function StatusBanner({ app }: { app: Application }) {
       ? 'Посмотрите причину и что можно сделать — есть вариант, который банк может рассмотреть.'
       : app.status === 'approved' && d.outcome === 'counter'
         ? 'Осталось подписать документы — деньги придут на счёт сразу.'
-        : `С этой суммой платёж займёт ${d.share ?? ''}% денежного потока — комфортная нагрузка. Условия действуют до ${d.validUntil}.`;
+        : d.share !== undefined && app.cashFlow > 0
+          ? `С этой суммой платёж займёт ${d.share}% денежного потока — ${loadLabel(d.share)}. Условия действуют до ${d.validUntil}.`
+          : `Условия действуют до ${d.validUntil}.`;
   const accepted = app.status === 'approved' && d.outcome === 'counter';
 
   return (

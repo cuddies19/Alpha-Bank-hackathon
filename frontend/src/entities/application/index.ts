@@ -1,6 +1,7 @@
 export type * from './model/types';
 export { applicationKeys } from './api/keys';
-export { applicationApi, type DraftPatch, type UploadInput, type QueueItem } from './api/applicationApi';
+export { applicationApi } from './api/applicationApi';
+export { REQUESTABLE_DOCUMENTS } from './model/documents';
 export {
   useApplication,
   useApplicationCase,

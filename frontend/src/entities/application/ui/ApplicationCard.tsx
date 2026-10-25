@@ -9,9 +9,9 @@ import styles from './ApplicationCard.module.css';
 export function ApplicationCard({ application: app, to }: { application: Application; to: string }) {
   const todo = clientTodo(app);
   return (
-    <Link className={styles.card} to={to} aria-label={`Заявка № ${app.id}, ${app.productName}`}>
+    <Link className={styles.card} to={to} aria-label={`Заявка № ${app.number}, ${app.productName}`}>
       <div className={styles.top}>
-        <span className={cx('label', styles.number)}>№ {app.id}</span>
+        <span className={cx('label', styles.number)}>№ {app.number}</span>
         <ApplicationStatusBadge application={app} />
       </div>
       <div className={styles.main}>

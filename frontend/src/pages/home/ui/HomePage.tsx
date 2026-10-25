@@ -116,13 +116,18 @@ function Metrics({ data }: { data: AccountSummary }) {
         label="Остаток на счёте"
         value={formatMoney(data.balance)}
         icon="wallet"
-        hint={`Счёт •• ${data.accountMask}`}
+        hint={data.accountMask ? `Счёт •• ${data.accountMask}` : 'Расчётный счёт'}
       />
       <MetricTile
         label="Поступления за 30 дней"
         value={formatMoney(data.incomes30d)}
         icon="arrow-down"
-        delta={{ value: data.incomeDelta.value, direction: 'up', tone: 'success', label: data.incomeDelta.label }}
+        delta={{
+          value: data.incomeDelta.value,
+          direction: data.incomeDelta.value.startsWith('−') ? 'down' : 'up',
+          tone: data.incomeDelta.value.startsWith('−') ? 'danger' : 'success',
+          label: data.incomeDelta.label,
+        }}
       />
       <MetricTile
         label="Чистый денежный поток"
@@ -141,14 +146,14 @@ function Metrics({ data }: { data: AccountSummary }) {
 }
 
 function TurnoverSection({ data }: { data: AccountSummary }) {
-  const max = Math.ceil(Math.max(...data.months.map((m) => m.income)));
+  const max = Math.max(1, Math.ceil(Math.max(...data.months.map((m) => m.income))));
   const yLabels = Array.from({ length: max + 1 }, (_, i) => (max - i === 0 ? '0' : `${max - i} млн`));
   const first = data.months[0];
   const last = data.months[data.months.length - 1];
   return (
     <Section
       title="Поступления и списания"
-      subtitle={`${data.period}, по счёту •• ${data.accountMask}`}
+      subtitle={`${data.period}, ${data.accountMask ? `по счёту •• ${data.accountMask}` : 'по расчётному счёту'}`}
       aside={<Legend items={SERIES} />}
       gap={5}
     >
@@ -187,7 +192,7 @@ function ActiveApplication({ application }: { application?: Application }) {
   return (
     <Section title="Активная заявка" aside={<ApplicationStatusBadge application={application} />}>
       <Text tone="secondary">
-        {application.productName} · <Amount>{formatMoney(application.amount)}</Amount> · № {application.id}
+        {application.productName} · <Amount>{formatMoney(application.amount)}</Amount> · № {application.number}
       </Text>
       <StatusTracker stages={stages.slice(Math.max(0, current - 1), current + 2)} />
       <Cluster>

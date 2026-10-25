@@ -45,5 +45,6 @@ export interface Recommendation {
   offers: Offer[];
   comfortAmount: number;
   alternatives: Array<{ product: string; reason: string }>;
-  comparison: Array<{ param: string; values: [string, string, string] }>;
+  comparisonColumns: string[];
+  comparison: Array<{ param: string; values: string[] }>;
 }

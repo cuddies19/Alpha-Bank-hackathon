@@ -9,7 +9,7 @@ import {
 } from '@/entities/application';
 import type { SigningDocument } from '@/entities/document';
 import { routes } from '@/shared/config';
-import { formatMoney, formatMonths, formatPercent } from '@/shared/lib';
+import { todayLabel, formatMoney, formatMonths, formatPercent } from '@/shared/lib';
 import {
   Alert,
   Amount,
@@ -172,9 +172,9 @@ function Sign({ app }: { app: Application }) {
         }
       >
         <div className={styles.preview}>
-          <p className="body-strong">Кредитный договор № {app.id}-Д</p>
+          <p className="body-strong">Кредитный договор № {app.number}-Д</p>
           <Text variant="body-sm" tone="secondary">
-            г. Москва · 24 октября 2026
+            г. Москва · {todayLabel({ year: true })}
           </Text>
           <p className="body">
             Банк открывает заёмщику {app.companyName} {app.productName.toLowerCase()} с лимитом{' '}
