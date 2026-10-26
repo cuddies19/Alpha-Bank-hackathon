@@ -257,7 +257,6 @@ function DecisionForm({ caseData }: DecisionPanelProps) {
         placeholder="Например: сезонность учтена, платёж проверен по выписке"
         value={comment}
         onChange={(e) => setComment(e.target.value)}
-        hint="Клиент его не видит"
       />
       <Button variant="primary" fullWidth disabled={invalid} onClick={() => setConfirming(true)}>
         Принять решение

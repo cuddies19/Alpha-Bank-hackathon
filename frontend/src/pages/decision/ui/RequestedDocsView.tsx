@@ -83,9 +83,6 @@ export function RequestedDocsView({ app, answered, onAnswered }: RequestedDocsVi
         description={answered ? undefined : app.decision?.message}
         eyebrow={
           <Cluster gap={3}>
-            <Badge tone={answered ? 'info' : 'warning'}>
-              {answered ? 'Повторное рассмотрение' : 'Нужны документы'}
-            </Badge>
             <Text as="span" variant="body-sm" tone="secondary">
               Заявка № {app.number} · {app.productName.toLowerCase()} {formatMoney(app.amount)} на{' '}
               {formatMonths(app.term)}

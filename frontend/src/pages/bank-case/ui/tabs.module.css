@@ -22,15 +22,19 @@
 
 .score {
   display: flex;
-  align-items: flex-end;
-  gap: var(--space-6);
+  align-items: center;
+  gap: var(--space-4) var(--space-5);
   flex-wrap: wrap;
 }
 
-.scoreValue {
-  display: flex;
-  align-items: baseline;
-  gap: var(--space-2);
+.score .riskBadge {
+  margin-left: auto;
+  height: auto;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  line-height: 22px;
+  font-weight: 600;
 }
 
 .divided {

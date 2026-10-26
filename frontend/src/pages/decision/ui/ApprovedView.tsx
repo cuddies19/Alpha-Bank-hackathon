@@ -3,7 +3,6 @@ import { PRODUCT_ACCUSATIVE } from '@/entities/product';
 import { routes } from '@/shared/config';
 import { formatApproxMoney, formatMoney, formatMonths, formatPercent } from '@/shared/lib';
 import {
-  Badge,
   ButtonLink,
   Card,
   Cluster,
@@ -31,7 +30,6 @@ export function ApprovedView({ app, decision }: { app: Application; decision: De
         title={`Банк одобрил ${PRODUCT_ACCUSATIVE[app.productId] ?? app.productName}`}
         eyebrow={
           <Cluster gap={3}>
-            <Badge tone="success">Одобрено</Badge>
             <Text as="span" variant="body-sm" tone="secondary">
               Заявка № {app.number} · решение принято {auto ? 'автоматически ' : ''}
               {decision.decidedAt}
@@ -72,7 +70,7 @@ export function ApprovedView({ app, decision }: { app: Application; decision: De
           principal={decision.amount}
           ratePct={decision.rate}
           months={decision.term}
-          firstDate={FIRST_PAYMENT}
+          firstDate={decision.firstPaymentDate ? new Date(decision.firstPaymentDate) : FIRST_PAYMENT}
         />
       </Section>
       {decision.reasons.length ? (

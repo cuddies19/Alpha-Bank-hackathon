@@ -1,6 +1,5 @@
 import { useEffect, type ReactNode } from 'react';
 import { cx } from '@/shared/lib';
-import { AppFooter } from './AppFooter';
 import styles from './AppShell.module.css';
 
 export interface AppShellProps {

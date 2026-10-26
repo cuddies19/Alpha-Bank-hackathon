@@ -1,6 +1,6 @@
 import type { ConsentId } from '@/entities/company/@x/application';
 import type { ProductId } from '@/entities/product/@x/application';
-import type { DocStatus, IconName, ProductParam, Reason, Tone } from '@/shared/ui';
+import type { DocStatus, IconName, ProductParam, Reason, Tone, TrackerStage } from '@/shared/ui';
 
 export type ApplicationStatus =
   | 'draft'
@@ -60,6 +60,7 @@ export interface Decision {
   requested?: { amount: number; term: number; payment: number; share: number };
   share?: number;
   firstPayment?: string;
+  firstPaymentDate?: string;
   validUntil?: string;
   summary?: string;
   reasons: Reason[];
@@ -120,6 +121,7 @@ export interface Application {
   consents: Record<ConsentId, string | null>;
   documents: ApplicationDocument[];
   timeline: Partial<Record<TimelineStep, string>>;
+  stages?: TrackerStage[];
   events: ApplicationEvent[];
   decision?: Decision;
   sourceIssue?: string;

@@ -16,10 +16,23 @@ export function BankStatusBadge({ application }: { application: StatusSource }) 
   return <Badge tone={tone}>{label}</Badge>;
 }
 
-export function RiskClassBadge({ riskClass, label }: { riskClass?: RiskClass; label?: string }) {
-  if (!riskClass) return <Badge icon={false}>—</Badge>;
+export function RiskClassBadge({
+  riskClass,
+  label,
+  className,
+}: {
+  riskClass?: RiskClass;
+  label?: string;
+  className?: string;
+}) {
+  if (!riskClass)
+    return (
+      <Badge icon={false} className={className}>
+        —
+      </Badge>
+    );
   return (
-    <Badge tone={RISK_TONE[riskClass]} icon={false}>
+    <Badge tone={RISK_TONE[riskClass]} icon={false} className={className}>
       {label ?? riskClass}
     </Badge>
   );

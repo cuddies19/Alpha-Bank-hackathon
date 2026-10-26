@@ -45,6 +45,7 @@ function needsInfoStages(app: Application): TrackerStage[] {
 }
 
 export function buildClientStages(app: Application): TrackerStage[] {
+  if (app.stages?.length) return app.stages;
   if (app.status === 'needs_info') return needsInfoStages(app);
 
   const t = app.timeline;

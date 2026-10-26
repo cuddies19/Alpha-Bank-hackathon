@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { sessionApi, useSession, type PersonaId } from '@/entities/session';
+import { applicationApi, type Application } from '@/entities/application';
+import { sessionApi, useSession, type Persona, type PersonaId } from '@/entities/session';
 import { routes } from '@/shared/config';
 import { Alert, Avatar, Button, ButtonLink, Drawer, Icon, SegmentedControl, Stack, Cluster } from '@/shared/ui';
 import {
+  assistantModeSwitchAvailable,
   demoScenariosAvailable,
+  fastStageSeconds,
   useApplyScenario,
   useDemoSettings,
   useResetDemo,
@@ -19,7 +22,7 @@ interface Entry {
   initials: string;
   name: string;
   note: string;
-  to: string;
+  mockTo: string;
   scenario?: 'igor-after-decision';
 }
 
@@ -29,14 +32,14 @@ const ENTRIES: Entry[] = [
     initials: 'ИС',
     name: 'Игорь Соколов',
     note: 'Начало сценария 1: встречное предложение',
-    to: routes.client.home(),
+    mockTo: routes.client.home(),
   },
   {
     persona: 'igor',
     initials: 'ИС',
     name: 'Игорь — после решения банка',
     note: 'Решение готово, можно принять предложение',
-    to: routes.client.application('2026-10-0142'),
+    mockTo: routes.client.application('2026-10-0142'),
     scenario: 'igor-after-decision',
   },
   {
@@ -44,24 +47,36 @@ const ENTRIES: Entry[] = [
     initials: 'АБ',
     name: 'Анна Белова',
     note: 'Автоматическое одобрение',
-    to: routes.client.decision('2026-10-0139'),
+    mockTo: routes.client.decision('2026-10-0139'),
   },
   {
     persona: 'marina',
     initials: 'МО',
     name: 'Марина Орлова',
     note: 'Банк запросил документы',
-    to: routes.client.decision('2026-10-0141'),
+    mockTo: routes.client.decision('2026-10-0141'),
   },
   {
     persona: 'sergey',
     initials: 'СФ',
     name: 'Сергей Фомин',
     note: 'Отказ с альтернативой',
-    to: routes.client.decision('2026-10-0140'),
+    mockTo: routes.client.decision('2026-10-0140'),
   },
-  { persona: 'olga', initials: 'ОК', name: 'Ольга Кравцова', note: 'Кредитный аналитик', to: routes.bank.queue() },
+  { persona: 'olga', initials: 'ОК', name: 'Ольга Кравцова', note: 'Кредитный аналитик', mockTo: routes.bank.queue() },
 ];
+
+function applicationRoute(app: Application) {
+  if (app.status === 'draft') return routes.client.applicationForm(app.id);
+  return app.decision ? routes.client.decision(app.id) : routes.client.application(app.id);
+}
+
+async function apiTarget(persona: Persona) {
+  if (persona.role !== 'client' || !persona.companyId) return persona.home;
+  const list = await applicationApi.listForCompany(persona.companyId).catch(() => []);
+  const latest = [...list].sort((a, b) => Number(b.id) - Number(a.id))[0];
+  return latest ? applicationRoute(latest) : persona.home;
+}
 
 export interface DemoPanelProps {
   open: boolean;
@@ -82,16 +97,19 @@ export function DemoPanel({ open, onClose }: DemoPanelProps) {
     const personas = await sessionApi.personas();
     const known = personas.find((p) => p.id === entry.persona);
     if (!known) return;
-    if (entry.scenario) await applyScenario.mutateAsync(entry.scenario);
+    if (entry.scenario && demoScenariosAvailable) await applyScenario.mutateAsync(entry.scenario);
     const persona = await sessionApi.switchTo(known);
     signIn(persona);
     onClose();
-    navigate(demoScenariosAvailable ? entry.to : persona.home);
+    navigate(demoScenariosAvailable ? entry.mockTo : await apiTarget(persona));
   };
 
   const entries = demoScenariosAvailable
     ? ENTRIES
-    : ENTRIES.filter((e) => !e.scenario).map((e) => ({ ...e, note: e.persona === 'olga' ? e.note : 'Клиент' }));
+    : ENTRIES.filter((e) => !e.scenario).map((e) => ({
+        ...e,
+        note: e.persona === 'olga' ? e.note : 'Откроется последняя заявка клиента',
+      }));
 
   const doReset = async () => {
     await reset.mutateAsync();
@@ -137,7 +155,7 @@ export function DemoPanel({ open, onClose }: DemoPanelProps) {
               onChange={(pipelineSpeed) => updateSettings.mutate({ pipelineSpeed })}
               options={[
                 { value: 'normal', label: 'Обычная' },
-                { value: 'fast', label: 'Быстрая · этапы по 3 с' },
+                { value: 'fast', label: `Быстрая · этапы по ${fastStageSeconds} с` },
               ]}
             />
           </section>
@@ -173,18 +191,20 @@ export function DemoPanel({ open, onClose }: DemoPanelProps) {
             ) : null}
           </section>
 
-          <section className={styles.group}>
-            <h3 className={`label ${styles.heading}`}>Ассистент</h3>
-            <SegmentedControl
-              label="Режим ассистента"
-              value={data.assistantMode}
-              onChange={(assistantMode) => updateSettings.mutate({ assistantMode })}
-              options={[
-                { value: 'model', label: 'Языковая модель' },
-                { value: 'rules', label: 'Упрощённый, на правилах' },
-              ]}
-            />
-          </section>
+          {assistantModeSwitchAvailable ? (
+            <section className={styles.group}>
+              <h3 className={`label ${styles.heading}`}>Ассистент</h3>
+              <SegmentedControl
+                label="Режим ассистента"
+                value={data.assistantMode}
+                onChange={(assistantMode) => updateSettings.mutate({ assistantMode })}
+                options={[
+                  { value: 'model', label: 'Языковая модель' },
+                  { value: 'rules', label: 'Упрощённый, на правилах' },
+                ]}
+              />
+            </section>
+          ) : null}
         </>
       ) : null}
 

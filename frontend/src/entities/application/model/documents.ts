@@ -32,3 +32,21 @@ export function documentChecklist(companyType: 'ООО' | 'ИП'): ApplicationDo
     },
   ];
 }
+
+const SLOT_DOC_TYPE: Record<string, string> = {
+  bs: 'financial_statements',
+  stmt: 'other_bank_statement',
+  supply: 'supply_contract',
+};
+
+export function backendDocType(idOrTitle: string): string {
+  if (SLOT_DOC_TYPE[idOrTitle]) return SLOT_DOC_TYPE[idOrTitle];
+  if (/отч[её]тност/i.test(idOrTitle)) return 'financial_statements';
+  if (/выписк.*(друг|другом)/i.test(idOrTitle)) return 'other_bank_statement';
+  if (/договор/i.test(idOrTitle)) return 'supply_contract';
+  return idOrTitle;
+}
+
+export function slotForDocType(docType: string): string | undefined {
+  return Object.entries(SLOT_DOC_TYPE).find(([, type]) => type === docType)?.[0];
+}

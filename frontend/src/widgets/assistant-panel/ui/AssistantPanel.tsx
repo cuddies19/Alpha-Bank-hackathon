@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
+import { useSession } from '@/entities/session';
 import { useDemoSettings } from '@/features/demo-mode';
 import { routes, type AssistantScenario } from '@/shared/config';
 import { cx } from '@/shared/lib';
@@ -14,18 +15,11 @@ import {
   IconButton,
   QuickReplies,
 } from '@/shared/ui';
-import { useAssistantReply, type AssistantReply } from '../api/assistantApi';
+import { useAssistantReply } from '../api/assistantApi';
+import { appendChatEntry, useChatHistory, type ChatEntry } from '../model/chatHistory';
 import { useStreamedText } from '../lib/useStreamedText';
 import { ScenarioThread } from './scenarios';
 import styles from './AssistantPanel.module.css';
-
-interface LiveMessage {
-  id: number;
-  role: 'user' | 'assistant';
-  text: string[];
-  replies?: AssistantReply['replies'];
-  time: string;
-}
 
 const now = () => new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
 
@@ -40,7 +34,9 @@ export function AssistantPanel({ scenario, screen, firstName, onClose }: Assista
   const navigate = useNavigate();
   const settings = useDemoSettings();
   const reply = useAssistantReply();
-  const [messages, setMessages] = useState<LiveMessage[]>([]);
+  const user = useSession().persona?.login ?? 'guest';
+  const messages = useChatHistory(user);
+  const [openedAt] = useState(() => Date.now());
   const [draft, setDraft] = useState('');
   const [failed, setFailed] = useState<string | null>(null);
 
@@ -48,18 +44,22 @@ export function AssistantPanel({ scenario, screen, firstName, onClose }: Assista
 
   const send = (text: string) => {
     setFailed(null);
-    setMessages((list) => [...list, { id: Date.now(), role: 'user', text: [text], time: now() }]);
-    reply.mutate(text, {
-      onSuccess: (answer) =>
-        setMessages((list) => [
-          ...list,
-          { id: Date.now() + 1, role: 'assistant', text: answer.text, replies: answer.replies, time: now() },
-        ]),
-      onError: () => {
+    appendChatEntry(user, { id: Date.now(), role: 'user', text: [text], time: now() });
+    reply
+      .mutateAsync(text)
+      .then((answer) =>
+        appendChatEntry(user, {
+          id: Date.now() + 1,
+          role: 'assistant',
+          text: answer.text,
+          replies: answer.replies,
+          time: now(),
+        }),
+      )
+      .catch(() => {
         setFailed(text);
         setDraft(text);
-      },
-    });
+      });
   };
 
   return (
@@ -76,7 +76,7 @@ export function AssistantPanel({ scenario, screen, firstName, onClose }: Assista
         <div className={styles.thread} aria-live="polite">
           <ScenarioThread scenario={effectiveScenario} firstName={firstName} onReply={send} />
           {messages.map((m) => (
-            <LiveMessageView key={m.id} message={m} onNavigate={navigate} />
+            <LiveMessageView key={m.id} message={m} fresh={m.id >= openedAt} onNavigate={navigate} />
           ))}
           {reply.isPending ? <ChatMessage role="assistant" typing animate /> : null}
           {failed ? (
@@ -110,13 +110,27 @@ export function AssistantPanel({ scenario, screen, firstName, onClose }: Assista
   );
 }
 
-function LiveMessageView({ message, onNavigate }: { message: LiveMessage; onNavigate: (to: string) => void }) {
-  const streamed = useStreamedText(message.text, message.role === 'assistant');
+interface LiveMessageViewProps {
+  message: ChatEntry;
+  fresh: boolean;
+  onNavigate: (to: string) => void;
+}
+
+function LiveMessageView({ message, fresh, onNavigate }: LiveMessageViewProps) {
+  const streamed = useStreamedText(message.text, fresh && message.role === 'assistant');
   return (
     <div className={styles.thread}>
-      <ChatMessage role={message.role} time={streamed.done ? message.time : undefined} animate>
-        <span className="sr-only">{message.text.join(' ')}</span>
-        <div aria-hidden="true">{streamed.lines.map((line, index) => (line ? <p key={index}>{line}</p> : null))}</div>
+      <ChatMessage role={message.role} time={streamed.done ? message.time : undefined} animate={fresh}>
+        {streamed.done ? (
+          message.text.map((line, index) => <p key={index}>{line}</p>)
+        ) : (
+          <>
+            <span className="sr-only">{message.text.join(' ')}</span>
+            <div aria-hidden="true">
+              {streamed.lines.map((line, index) => (line ? <p key={index}>{line}</p> : null))}
+            </div>
+          </>
+        )}
       </ChatMessage>
       {streamed.done && message.replies?.length ? (
         <ChatEnter>

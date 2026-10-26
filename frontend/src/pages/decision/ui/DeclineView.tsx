@@ -3,7 +3,6 @@ import { routes } from '@/shared/config';
 import { formatMoney } from '@/shared/lib';
 import {
   AssistantMark,
-  Badge,
   Button,
   ButtonLink,
   Callout,
@@ -29,7 +28,6 @@ export function DeclineView({ app, decision }: { app: Application; decision: Dec
         title="Сейчас банк не может выдать кредит"
         eyebrow={
           <Cluster gap={3}>
-            <Badge tone="danger">Отказ</Badge>
             <Text as="span" variant="body-sm" tone="secondary">
               Заявка № {app.number} · {app.productName.toLowerCase()} {formatMoney(app.amount)}
             </Text>

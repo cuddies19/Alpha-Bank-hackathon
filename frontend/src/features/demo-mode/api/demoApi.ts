@@ -6,7 +6,11 @@ import * as server from '@/mocks/server';
 import type { DemoSettings } from '@/mocks/db';
 
 const settingsKey = ['demo', 'settings'] as const;
-const FAST_MULTIPLIER = 20;
+const API_STAGE_PAUSE_S = 5;
+const FAST_MULTIPLIER = 5;
+const MOCK_FAST_STAGE_S = 3;
+
+export const fastStageSeconds = USE_API ? API_STAGE_PAUSE_S / FAST_MULTIPLIER : MOCK_FAST_STAGE_S;
 
 type Settings = DemoSettings & { sources: Array<{ id: string; name: string; down: boolean }> };
 
@@ -15,7 +19,7 @@ async function apiSettings(): Promise<Settings> {
   const names = Object.fromEntries(server.getSettings().sources.map((s) => [s.id, s.name]));
   return {
     pipelineSpeed: state.speed > 1 ? 'fast' : 'normal',
-    assistantMode: server.getSettings().assistantMode,
+    assistantMode: 'model',
     sources: Object.entries(state.sources).map(([id, status]) => ({
       id,
       name: names[id] ?? id,
@@ -28,7 +32,6 @@ const demoApi = USE_API
   ? {
       settings: apiSettings,
       update: async (patch: Partial<DemoSettings>) => {
-        if (patch.assistantMode) server.updateSettings({ assistantMode: patch.assistantMode });
         if (patch.pipelineSpeed) {
           await http('/demo/speed', {
             method: 'POST',
@@ -44,7 +47,9 @@ const demoApi = USE_API
           auth: false,
         });
       },
-      applyScenario: async (_scenario: server.DemoScenario) => {},
+      applyScenario: async (_scenario: server.DemoScenario): Promise<void> => {
+        throw new Error('Этот сценарий есть только в режиме моков');
+      },
       reset: async () => {
         await http('/demo/reset', { method: 'POST', auth: false });
         server.reset();
@@ -60,6 +65,7 @@ const demoApi = USE_API
     };
 
 export const demoScenariosAvailable = !USE_API;
+export const assistantModeSwitchAvailable = !USE_API;
 
 export function useDemoSettings(enabled = true) {
   return useQuery({ queryKey: settingsKey, queryFn: demoApi.settings, enabled });

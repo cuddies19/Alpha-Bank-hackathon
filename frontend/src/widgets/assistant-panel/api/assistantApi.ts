@@ -45,7 +45,7 @@ async function apiReply(message: string): Promise<AssistantReply> {
 export function useAssistantReply() {
   return useMutation({
     mutationFn: async (message: string) => {
-      if (USE_API && server.getSettings().assistantMode === 'model') return apiReply(message);
+      if (USE_API) return apiReply(message);
       await new Promise((resolve) => setTimeout(resolve, THINKING_MS));
       return mockResponse(() => server.assistantReply(message));
     },

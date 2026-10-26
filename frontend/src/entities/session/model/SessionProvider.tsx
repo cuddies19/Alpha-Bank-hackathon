@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { UNAUTHORIZED_EVENT, queryClient } from '@/shared/api';
 import { sessionApi } from '../api/sessionApi';
+import { rememberLogin } from './lastLogin';
 import type { Persona } from './types';
 import { SessionContext } from './context';
 
@@ -23,6 +24,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     setPersona(next);
     try {
       sessionStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      rememberLogin(next.login);
     } catch {}
   }, []);
 

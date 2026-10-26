@@ -10,11 +10,13 @@ import {
   formatMonths,
   formatStamp,
   parseRuDate,
+  toIsoDate,
   loadLabel,
   paymentShare,
 } from '@/shared/lib';
-import type { IconName } from '@/shared/ui';
-import { REQUESTABLE_DOCUMENTS, documentChecklist } from '../model/documents';
+import type { IconName, StageStatus, TrackerStage } from '@/shared/ui';
+import { REQUESTABLE_DOCUMENTS, backendDocType, documentChecklist, slotForDocType } from '../model/documents';
+import { bkiLoans, egrulResponse, ruleOf, sourceCheckOf, statementCashFlow, turnoverOf } from './pipelineMappers';
 import type {
   Application,
   ApplicationCase,
@@ -23,21 +25,17 @@ import type {
   ApplicationStatus,
   BankStage,
   CaseDocument,
-  CheckStatus,
   ClosedReason,
   Decision,
   DecisionInput,
   DecisionOutcome,
   DraftInput,
   DraftPatch,
-  ProductRuleResult,
   QueueItem,
   QueueTag,
   RiskClass,
   SigningFile,
   SlaLevel,
-  SourceCheck,
-  SourceId,
   TimelineStep,
   UploadInput,
 } from '../model/types';
@@ -96,38 +94,12 @@ const EVENT_ICON: Partial<Record<Dto.ApplicationStatus, IconName>> = {
 
 const CONSENT_KEYS = { pd: 'personal_data', bki: 'bki_request', ops: 'terms' } as const;
 
-const SOURCE_ID: Record<string, SourceId> = {
-  egrul: 'egrul',
-  fns: 'fns',
-  bki: 'bki',
-  statement: 'statement',
-  scoring: 'scoring',
-};
-
-const CHECK_STATUS: Record<Dto.SourceStatus, CheckStatus> = {
-  ok: 'ok',
-  warn: 'warn',
-  fail: 'fail',
-  unavailable: 'fail',
-};
-
 const RISK_LABEL: Record<string, string> = {
   A: 'низкий риск',
   B: 'умеренный риск',
   C: 'повышенный риск',
   D: 'высокий риск',
   E: 'очень высокий риск',
-};
-
-const RULE_LABEL: Record<string, string> = {
-  amount_limit: 'Сумма в лимите продукта',
-  term_limit: 'Срок в лимите продукта',
-  business_age: 'Возраст бизнеса',
-  tax_debt: 'Нет налоговой задолженности',
-  risk_class: 'Класс риска',
-  credit_history: 'Кредитная история',
-  payment_share: 'Доля платежа в потоке',
-  debt_load: 'Доля платежа в потоке',
 };
 
 const DECIDED: Dto.ApplicationStatus[] = [
@@ -139,6 +111,37 @@ const DECIDED: Dto.ApplicationStatus[] = [
   'signing',
   'signed',
 ];
+
+const DECISION_STATUSES: Dto.ApplicationStatus[] = ['approved', 'counter_offer', 'rejected', 'client_action'];
+
+function reasonsFromComment(comment: string): Array<{ text: string }> {
+  const body = comment.includes(':') ? comment.slice(comment.indexOf(':') + 1) : comment;
+  return body
+    .split(/,\s*/)
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .map((part) => ({ text: part[0].toUpperCase() + part.slice(1) }));
+}
+
+const STAGE_STATUS: Record<string, StageStatus> = {
+  done: 'done',
+  current: 'current',
+  pending: 'pending',
+};
+
+function stagesOf(dto: Detail): TrackerStage[] {
+  return (dto.stages ?? []).map((stage) => ({
+    title: stage.title,
+    status:
+      stage.status === 'current' && dto.status === 'client_action'
+        ? 'attention'
+        : stage.status === 'current' && (dto.status === 'rejected' || dto.status === 'withdrawn')
+          ? 'failed'
+          : (STAGE_STATUS[stage.status] ?? 'pending'),
+    time: stage.at ? formatClock(stage.at) : undefined,
+    description: stage.description ?? undefined,
+  }));
+}
 
 export function shortPersonName(fullName: string) {
   const [first, last] = fullName.trim().split(/\s+/);
@@ -168,10 +171,11 @@ function documentsOf(dto: Detail): ApplicationDocument[] {
       size: formatSize(file.size_bytes),
       message: file.status === 'rejected' ? 'Банк попросил заменить файл' : undefined,
     } as const;
-    const slot = slots.find((s) => s.id === file.doc_type);
+    const slotId = slotForDocType(file.doc_type) ?? file.doc_type;
+    const slot = slots.find((s) => s.id === slotId);
     if (slot) Object.assign(slot, fields);
     else {
-      const known = REQUESTABLE_DOCUMENTS[file.doc_type];
+      const known = REQUESTABLE_DOCUMENTS[slotForDocType(file.doc_type) ?? file.doc_type];
       extra.push({
         id: `file-${file.id}`,
         title: known?.title ?? file.filename,
@@ -218,17 +222,28 @@ function decisionOf(
   const payment = d.monthly_payment ?? annuityPayment({ principal: amount, ratePct: rate, months: term, roundTo: 100 });
   const share = paymentShare(payment, base.cashFlow);
   const decidedAt = new Date(d.decided_at);
+  const decisionEntry = (dto.history ?? []).findLast((h) => DECISION_STATUSES.includes(h.to_status));
+  const auto = decisionEntry?.actor_type === 'system';
   const decidedBy =
-    'decided_by_name' in d && d.decided_by_name ? shortPersonName(d.decided_by_name) : 'Специалист банка';
+    'decided_by_name' in d && d.decided_by_name
+      ? shortPersonName(d.decided_by_name)
+      : auto
+        ? 'auto'
+        : decisionEntry?.actor_name
+          ? shortPersonName(decisionEntry.actor_name)
+          : 'Специалист банка';
+  const systemReasons = auto && decisionEntry?.comment ? reasonsFromComment(decisionEntry.comment) : [];
   const requestedDocs =
     d.outcome === 'request'
       ? (d.requested_documents ?? []).map((id) => {
           const known = REQUESTABLE_DOCUMENTS[id];
-          const uploaded = (dto.documents ?? []).find((f) => f.doc_type === id && new Date(f.uploaded_at) >= decidedAt);
+          const uploaded = (dto.documents ?? []).findLast(
+            (f) => f.doc_type === id || f.doc_type === backendDocType(id),
+          );
           return {
             id,
             title: known?.title ?? id,
-            note: known?.note ?? 'Запрошено специалистом',
+            note: known?.note ?? 'Запросил банк',
             status: uploaded ? ('ok' as const) : ('missing' as const),
             fileName: uploaded?.filename,
             size: uploaded ? formatSize(uploaded.size_bytes) : undefined,
@@ -250,6 +265,7 @@ function decisionOf(
         ? { amount: base.amount, term: base.term, payment: base.payment, share: requestedShare }
         : undefined,
     firstPayment: formatDay(addMonths(decidedAt, 1)),
+    firstPaymentDate: toIsoDate(addMonths(decidedAt, 1)),
     validUntil: formatDay(new Date(decidedAt.getTime() + OFFER_VALID_DAYS * 86_400_000)),
     summary:
       d.outcome === 'counter' && base.cashFlow > 0
@@ -267,13 +283,13 @@ function decisionOf(
                 tone: 'warning',
               },
             ]
-          : [],
+          : systemReasons,
     requestedDocs,
     deadline:
       d.outcome === 'request' ? formatDay(new Date(decidedAt.getTime() + OFFER_VALID_DAYS * 86_400_000)) : undefined,
     message: d.client_message ?? undefined,
     declineReason: d.decline_reason ?? undefined,
-    declineDetails: d.client_message ?? undefined,
+    declineDetails: d.client_message && d.client_message !== d.decline_reason ? d.client_message : undefined,
   };
 }
 
@@ -334,6 +350,7 @@ function toApplication(dto: Detail, cashFlow: number): Application {
     consents: consentsOf(dto.consents, consentAt),
     documents: documentsOf(dto),
     timeline: timelineOf(dto),
+    stages: stagesOf(dto),
     events: eventsOf(dto),
     closedReason: CLOSED[dto.status],
     assignee: dto.taken_by_name ? shortPersonName(dto.taken_by_name) : undefined,
@@ -436,50 +453,60 @@ async function upload(applicationId: string, docType: string, file: File | undef
   await http<Dto.DocumentOut>(`/applications/${applicationId}/documents`, { method: 'POST', form });
 }
 
+const COUNTER_SHARE = 0.26;
+const COUNTER_STEP = 100_000;
+
+function comfortAmount(cashFlow: number, rate: number, term: number) {
+  if (cashFlow <= 0) return 0;
+  const payment = cashFlow * COUNTER_SHARE;
+  const r = rate / 1200;
+  const principal = r > 0 ? (payment * (1 - Math.pow(1 + r, -term))) / r : payment * term;
+  return Math.max(0, Math.floor(principal / COUNTER_STEP) * COUNTER_STEP);
+}
+
 function caseOf(dto: Dto.BankApplicationDetail): ApplicationCase {
   rememberProduct(dto.product);
-  const app = toApplication(dto, 0);
+  const cashFlow = statementCashFlow(dto.checks);
+  const app = toApplication(dto, cashFlow);
   const score = dto.score;
   const riskClass = riskOf(score?.risk_class);
-  const rules: ProductRuleResult[] = (dto.rules ?? []).map((r) => ({
-    rule: RULE_LABEL[r.code] ?? r.code,
-    value: r.value,
-    threshold: r.threshold,
-    passed: r.passed,
-  }));
+  const rules = (dto.rules ?? []).map(ruleOf);
   const passed = rules.filter((r) => r.passed).length;
   const outcome = outcomeOf(dto.recommendation) ?? 'request';
-  const checks: SourceCheck[] = (dto.checks ?? []).map((c) => ({
-    id: SOURCE_ID[c.source] ?? 'egrul',
-    name: c.source_label,
-    status: CHECK_STATUS[c.status],
-    summary: c.status === 'ok' ? 'Ответ получен' : c.status === 'warn' ? 'Есть замечания' : 'Источник не ответил',
-    time: `${(c.response_time_ms / 1000).toFixed(1).replace('.', ',')} с${c.attempts > 1 ? ` × ${c.attempts}` : ''}`,
-    details: Object.entries(c.response ?? {})
-      .filter(([, value]) => value !== null && typeof value !== 'object')
-      .slice(0, 6)
-      .map(([term, value]) => ({ term, details: String(value) })),
-  }));
+  const checks = (dto.checks ?? []).map(sourceCheckOf);
   const company = dto.company;
+  const egrul = egrulResponse(dto.checks);
   const who = company.name;
+  const turnover = turnoverOf(dto.checks);
+  const totalIncome = Math.round(turnover.reduce((sum, m) => sum + m.income, 0) * 1_000_000);
   const documents: CaseDocument[] = (dto.documents ?? []).map((d) => ({
     id: String(d.id),
-    name: REQUESTABLE_DOCUMENTS[d.doc_type]?.title ?? d.filename,
+    name:
+      REQUESTABLE_DOCUMENTS[slotForDocType(d.doc_type) ?? d.doc_type]?.title ??
+      (/[а-яё]/i.test(d.doc_type) ? d.doc_type : d.filename),
     meta: `${d.filename.split('.').pop()?.toUpperCase() ?? 'PDF'} · ${formatSize(d.size_bytes)}`,
     status: d.status === 'accepted' ? 'Принят' : d.status === 'rejected' ? 'Нужно заменить' : 'Загружен',
     tone: d.status === 'accepted' ? 'success' : d.status === 'rejected' ? 'danger' : 'info',
     who,
     when: formatStamp(d.uploaded_at),
   }));
+  const failedRule = rules.find((r) => !r.passed);
+  const counterAmount = outcome === 'counter' ? comfortAmount(cashFlow, app.rate, app.term) : app.amount;
+  const counterPayment = annuityPayment({
+    principal: counterAmount,
+    ratePct: app.rate,
+    months: app.term,
+    roundTo: 100,
+  });
   return {
     application: app,
-    cashFlow: 0,
+    cashFlow,
     recommendation: {
       outcome,
       text: dto.recommendation_reason ?? 'Конвейер ещё не дал рекомендацию — решение за специалистом.',
-      amount: app.amount,
+      amount: counterAmount,
       term: app.term,
-      share: 0,
+      share: paymentShare(counterPayment, cashFlow),
     },
     scoring:
       score && riskClass
@@ -506,12 +533,12 @@ function caseOf(dto: Dto.BankApplicationDetail): ApplicationCase {
       : passed === rules.length
         ? { tone: 'success', title: 'Итог правил: можно одобрить', text: 'Все правила продукта пройдены.' }
         : {
-            tone: 'danger',
+            tone: outcome === 'counter' ? 'warning' : 'danger',
             title: `Итог правил: ${passed} из ${rules.length} пройдены`,
-            text: 'Проверьте непройденные правила перед решением.',
+            text: failedRule ? `Не пройдено: «${failedRule.rule}».` : 'Проверьте непройденные правила перед решением.',
           },
     checks,
-    checksAt: checks.length ? formatStamp(dto.checks![0].checked_at) : '—',
+    checksAt: dto.checks?.length ? formatStamp(dto.checks[0].checked_at) : '—',
     client: {
       rows: [
         { term: 'Название', details: company.name },
@@ -520,14 +547,26 @@ function caseOf(dto: Dto.BankApplicationDetail): ApplicationCase {
           term: 'Регистрация',
           details: company.registration_date ? formatDay(company.registration_date, { year: true }) : '—',
         },
-        { term: 'ОКВЭД', details: company.okved ?? '—' },
-        { term: 'Адрес', details: company.address ?? '—' },
+        { term: 'ОКВЭД', details: company.okved ?? String(egrul?.okved ?? '—') },
+        { term: 'Адрес', details: company.address ?? String(egrul?.address ?? '—') },
         { term: 'Телефон', details: company.phone ?? '—' },
       ],
-      director: [{ term: 'ФИО', details: company.director ?? '—' }],
-      turnover: [],
-      turnoverStats: [],
-      obligations: [],
+      director: [{ term: 'ФИО', details: company.director ?? String(egrul?.head_name ?? '—') }],
+      turnover,
+      turnoverStats: turnover.length
+        ? [
+            { term: `Поступления за ${turnover.length} мес.`, details: formatMoney(totalIncome) },
+            { term: 'Средний чистый поток', details: `${formatMoney(cashFlow)} в месяц` },
+          ]
+        : [],
+      obligations: bkiLoans(dto.checks).map((loan) => ({
+        creditor: loan.bank,
+        kind: 'Кредит',
+        rest: loan.balance_rub,
+        payment: loan.monthly_payment_rub,
+        until: '—',
+        source: 'БКИ',
+      })),
     },
     history: [...(dto.history ?? [])]
       .sort((a, b) => b.created_at.localeCompare(a.created_at))
@@ -575,7 +614,7 @@ export const httpApplicationApi = {
       current.documents.find((d) => d.id === documentId) ??
       current.documents.find((d) => d.required && (d.status === 'missing' || d.status === 'error')) ??
       current.documents.find((d) => d.status === 'missing' || d.status === 'error');
-    await upload(applicationId, slot && !slot.id.startsWith('file-') ? slot.id : 'other', file);
+    await upload(applicationId, slot && !slot.id.startsWith('file-') ? backendDocType(slot.id) : 'other', file);
     return loadDetail(applicationId);
   },
   removeDocument: async (_applicationId: string, _documentId: string): Promise<Application> => {
@@ -594,11 +633,16 @@ export const httpApplicationApi = {
     const requested =
       current.decision?.requestedDocs?.find((d) => d.id === documentId) ??
       current.decision?.requestedDocs?.find((d) => d.status === 'missing' || d.status === 'error');
-    await upload(applicationId, requested?.id ?? 'other', file);
+    await upload(applicationId, requested ? backendDocType(requested.id) : 'other', file);
     return loadDetail(applicationId);
   },
-  respondToRequest: (id: string, _comment: string) =>
-    detailFrom(http(`/applications/${id}/resubmit`, { method: 'POST' })),
+  respondToRequest: async (id: string, _comment: string) => {
+    const dto = await http<Dto.ApplicationDetail>(`/applications/${id}`);
+    if (dto.status === 'client_action' && !(dto.documents ?? []).length) {
+      throw new ApiError('Загрузите запрошенные документы — заявка уйдёт на проверку сама', 422);
+    }
+    return detailFrom(Promise.resolve(dto));
+  },
   signingDocuments: async (id: string): Promise<SigningFile[]> => {
     const app = await loadDetail(id);
     const d = app.decision;

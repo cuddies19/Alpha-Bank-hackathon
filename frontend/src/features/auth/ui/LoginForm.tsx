@@ -21,7 +21,8 @@ export function LoginForm() {
     mutationFn: () => sessionApi.login(login, password),
     onSuccess: (persona) => {
       signIn(persona);
-      const from = (location.state as { from?: string } | null)?.from;
+      const state = location.state as { from?: string; login?: string | null } | null;
+      const from = state?.login === persona.login ? state.from : undefined;
       navigate(
         from && from.startsWith(persona.role === 'bank' ? routes.bank.queue() : routes.client.home())
           ? from

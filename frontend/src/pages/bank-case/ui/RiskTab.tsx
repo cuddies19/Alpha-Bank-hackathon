@@ -1,4 +1,4 @@
-import { RiskClassBadge, SCORE_RANGE_LABEL, ScoreFactors, ScoreScale } from '@/entities/application';
+import { RiskClassBadge, ScoreFactors, ScoreScale } from '@/entities/application';
 import { Alert, Badge, EmptyState, Heading, Section, Stack, Table, Td, Text, Th } from '@/shared/ui';
 import { useCaseData } from './useCaseData';
 import styles from './tabs.module.css';
@@ -15,7 +15,6 @@ export function RiskTab() {
     <>
       <Section
         title="Скоринг"
-        eyebrow="Часть 1"
         gap={5}
         aside={
           scoring ? (
@@ -28,29 +27,29 @@ export function RiskTab() {
         {scoring ? (
           <>
             <div className={styles.score}>
-              <div className={styles.scoreValue}>
-                <Text as="span" variant="amount-xl" numeric>
-                  {scoring.score}
-                </Text>
-                <Text as="span" tone="secondary">
-                  по шкале {SCORE_RANGE_LABEL}
-                </Text>
-              </div>
+              <Text as="span" variant="amount-xl" numeric>
+                {scoring.score}
+              </Text>
               <RiskClassBadge
                 riskClass={scoring.riskClass}
                 label={`Класс ${scoring.riskClass} · ${scoring.riskLabel}`}
+                className={styles.riskBadge}
               />
-              <Text as="span" variant="body-sm" tone="secondary">
-                PD на 12 мес. — {scoring.pd}
-              </Text>
+              {scoring.pd !== '—' ? (
+                <Text as="span" variant="body-sm" tone="secondary">
+                  PD на 12 мес. — {scoring.pd}
+                </Text>
+              ) : null}
             </div>
             <ScoreScale score={scoring.score} riskClass={scoring.riskClass} />
-            <Stack gap={3} className={styles.divided}>
-              <Heading level={3} variant="body-strong">
-                Факторы и их вклад в балл
-              </Heading>
-              <ScoreFactors factors={scoring.factors} />
-            </Stack>
+            {scoring.factors.length ? (
+              <Stack gap={3} className={styles.divided}>
+                <Heading level={3} variant="body-strong">
+                  Факторы и их вклад в балл
+                </Heading>
+                <ScoreFactors factors={scoring.factors} />
+              </Stack>
+            ) : null}
             <Text variant="body-sm" tone="secondary">
               Балл — оценка вероятности дефолта. Он не принимает решение, а входит в правила продукта как один из
               порогов.
@@ -60,7 +59,7 @@ export function RiskTab() {
           <EmptyState compact icon="alert" title="Балла нет" description={noScoreReason} />
         )}
       </Section>
-      <Section title={`Кредитные правила продукта «${application.productName}»`} eyebrow="Часть 2">
+      <Section title={`Кредитные правила продукта «${application.productName}»`}>
         <Table plain flat caption="Кредитные правила">
           <thead>
             <tr>
@@ -77,8 +76,8 @@ export function RiskTab() {
                 <Td nowrap strong={!rule.passed}>
                   {rule.value}
                 </Td>
-                <Td nowrap>{rule.threshold}</Td>
-                <Td>
+                <Td tone="secondary">{rule.threshold}</Td>
+                <Td nowrap>
                   <Badge tone={rule.passed ? 'success' : 'danger'}>{rule.passed ? 'Да' : 'Нет'}</Badge>
                 </Td>
               </tr>
