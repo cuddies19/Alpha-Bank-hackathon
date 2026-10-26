@@ -374,6 +374,7 @@ cd backend && uv run ruff check . && uv run pytest
 cd frontend && npm run lint && npm run build
 ```
 
+### Документация
 
 | Что | Где |
 | --- | --- |
@@ -382,7 +383,7 @@ cd frontend && npm run lint && npm run build
 | Модель данных | [docs/data-model.md](docs/data-model.md) |
 | Контракты внешних источников | [docs/integrations.md](docs/integrations.md) |
 | OpenAPI и Swagger | [docs/openapi.json](docs/openapi.json), <http://localhost:8000/docs> |
-| Тестовые сценарии | [frontend/TESTING.md](frontend/TESTING.md) — через интерфейс, [docs/manual-testing.md](docs/manual-testing.md) — через API |
+| Тестовые сценарии | [docs/manual-testing.md](docs/manual-testing.md) — через API |
 | Презентация | [Кредитный_кабинет_—_презентация_продукта.pdf](<Кредитный_кабинет_—_презентация_продукта.pdf>) |
 | Продуктовая концепция | [Концепция/](Концепция/) |
 | Сторонние компоненты и смоделированные интеграции | [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) |
