@@ -4,7 +4,13 @@ import { useCaseData } from './useCaseData';
 import styles from './tabs.module.css';
 
 export function RiskTab() {
-  const { scoring, rules, rulesSummary, application } = useCaseData();
+  const { scoring, rules, rulesSummary, application, checks } = useCaseData();
+  const bkiFailed = checks.some((c) => c.id === 'bki' && c.status === 'fail');
+  const noScoreReason = bkiFailed
+    ? 'Кредитная история не пришла — без неё модель не считает балл. Правила продукта проверены без него.'
+    : rules.length
+      ? 'Модель не посчитала балл по этой заявке. Правила продукта проверены без него.'
+      : 'Заявка ещё не прошла автоматическую проверку — балл появится после неё.';
   return (
     <>
       <Section
@@ -51,12 +57,7 @@ export function RiskTab() {
             </Text>
           </>
         ) : (
-          <EmptyState
-            compact
-            icon="alert"
-            title="Балла нет"
-            description="Кредитная история не пришла — без неё модель не считает балл. Правила продукта проверены без него."
-          />
+          <EmptyState compact icon="alert" title="Балла нет" description={noScoreReason} />
         )}
       </Section>
       <Section title={`Кредитные правила продукта «${application.productName}»`} eyebrow="Часть 2">
