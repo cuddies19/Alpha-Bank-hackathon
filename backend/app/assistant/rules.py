@@ -103,7 +103,7 @@ def account_reply(db: Session, user: User) -> ChatResponse:
         return reply("Данные по компании доступны в кабинете клиента.")
     text = (
         f"{data['company']}: остаток на счёте {rub(data['balance'])}, "
-        f"чистый поток за полгода {rub(data['net_flow'])}."
+        f"чистый поток в среднем {rub(data['avg_net_flow'])} в месяц."
     )
     if data["loans"]:
         text += f" Платежи по действующим кредитам: {rub(data['loan_payments'])} в месяц."

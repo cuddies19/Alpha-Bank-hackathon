@@ -15,6 +15,7 @@ from app.schemas.products import (
     RecommendationItem,
     RecommendationResponse,
 )
+from app.services import statements
 
 
 def add_months(value: date, months: int) -> date:
@@ -167,12 +168,65 @@ def recommend(
     return RecommendationResponse(items=items, summary=summary)
 
 
-def cashflow(db: Session, company: Company) -> CashflowResponse:
+def _money(value: Any) -> int | None:
+    if isinstance(value, bool):
+        return None
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _cashflow_from_statement(
+    statement: dict[str, Any], loan_payments: int
+) -> CashflowResponse | None:
+    raw_months = statement.get("months")
+    if not isinstance(raw_months, list) or not raw_months:
+        return None
+
+    rows: list[tuple[str, int, int]] = []
+    for item in raw_months:
+        if not isinstance(item, dict):
+            return None
+        month = item.get("month")
+        inflow = _money(item.get("inflow_rub"))
+        outflow = _money(item.get("outflow_rub"))
+        if not isinstance(month, str) or not month or inflow is None or outflow is None:
+            return None
+        rows.append((month, inflow, outflow))
+    rows.sort(key=lambda row: row[0])
+
+    balance = _money(statement.get("balance_rub")) or 0
+    nets = [inflow - outflow for _, inflow, outflow in rows]
+    balances = [0] * len(rows)
+    running = balance
+    for index in range(len(rows) - 1, -1, -1):
+        balances[index] = running
+        running -= nets[index]
+
+    months = [
+        CashflowMonth(
+            month=month,
+            inflows=inflow,
+            outflows=outflow,
+            net_flow=net,
+            balance=balances[index],
+        )
+        for index, ((month, inflow, outflow), net) in enumerate(zip(rows, nets, strict=True))
+    ]
+    return CashflowResponse(
+        balance=balance,
+        inflows=sum(inflow for _, inflow, _ in rows),
+        net_flow=sum(nets),
+        loan_payments=loan_payments,
+        months=months,
+    )
+
+
+def _generated_cashflow(company: Company, loan_payments: int) -> CashflowResponse:
     base_inflow = 380_000 + (company.id * 37_000) % 190_000
     coefficients = [1.0, 0.88, 1.12, 0.95, 1.06, 0.92]
     outflows_share = [0.71, 0.76, 0.69, 0.73, 0.70, 0.77]
-    loans = list(db.scalars(select(Loan).where(Loan.company_id == company.id)))
-    loan_payments = sum(loan.monthly_payment for loan in loans)
     balance = 250_000 + (company.id * 53_000) % 300_000
 
     today = date.today()
@@ -201,3 +255,14 @@ def cashflow(db: Session, company: Company) -> CashflowResponse:
         loan_payments=loan_payments,
         months=months,
     )
+
+
+def cashflow(db: Session, company: Company) -> CashflowResponse:
+    loans = list(db.scalars(select(Loan).where(Loan.company_id == company.id)))
+    loan_payments = sum(loan.monthly_payment for loan in loans)
+    statement = statements.load(db, company)
+    if statement:
+        result = _cashflow_from_statement(statement, loan_payments)
+        if result is not None:
+            return result
+    return _generated_cashflow(company, loan_payments)

@@ -50,6 +50,7 @@ def account_summary(db: Session, user: User) -> dict[str, Any]:
         "company": user.company.name,
         "balance": cash.balance,
         "net_flow": cash.net_flow,
+        "avg_net_flow": round(cash.net_flow / len(cash.months)) if cash.months else cash.net_flow,
         "loan_payments": cash.loan_payments,
         "loans": [
             {
