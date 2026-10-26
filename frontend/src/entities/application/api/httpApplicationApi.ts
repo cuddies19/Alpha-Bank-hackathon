@@ -123,24 +123,43 @@ function reasonsFromComment(comment: string): Array<{ text: string }> {
     .map((part) => ({ text: part[0].toUpperCase() + part.slice(1) }));
 }
 
-const STAGE_STATUS: Record<string, StageStatus> = {
-  done: 'done',
-  current: 'current',
-  pending: 'pending',
+const STAGE_ORDER = ['submitted', 'processing', 'manual_review', 'decision', 'signing', 'issued'];
+
+const STAGE_POSITION: Record<Dto.ApplicationStatus, { done: number; current: number; currentStatus?: StageStatus }> = {
+  draft: { done: -1, current: 0 },
+  submitted: { done: 0, current: 1 },
+  processing: { done: 0, current: 1 },
+  manual_review: { done: 1, current: 2 },
+  client_action: { done: 1, current: 2, currentStatus: 'attention' },
+  approved: { done: 3, current: 4 },
+  counter_offer: { done: 3, current: 4 },
+  signing: { done: 3, current: 4 },
+  signed: { done: 4, current: 5 },
+  issued: { done: 5, current: -1 },
+  rejected: { done: 2, current: 3, currentStatus: 'failed' },
+  client_declined: { done: 3, current: 4, currentStatus: 'failed' },
+  withdrawn: { done: 2, current: 3, currentStatus: 'failed' },
 };
 
 function stagesOf(dto: Detail): TrackerStage[] {
-  return (dto.stages ?? []).map((stage) => ({
-    title: stage.title,
-    status:
-      stage.status === 'current' && dto.status === 'client_action'
-        ? 'attention'
-        : stage.status === 'current' && (dto.status === 'rejected' || dto.status === 'withdrawn')
-          ? 'failed'
-          : (STAGE_STATUS[stage.status] ?? 'pending'),
-    time: stage.at ? formatClock(stage.at) : undefined,
-    description: stage.description ?? undefined,
-  }));
+  const position = STAGE_POSITION[dto.status];
+  const reviewed = (dto.history ?? []).some((h) => h.to_status === 'manual_review' || h.to_status === 'client_action');
+  const byKey = new Map((dto.stages ?? []).map((stage) => [stage.key, stage]));
+  return STAGE_ORDER.flatMap((key, index) => {
+    const stage = byKey.get(key);
+    if (!stage) return [];
+    if (key === 'manual_review' && !reviewed && position.done >= index) return [];
+    const status: StageStatus =
+      index <= position.done ? 'done' : index === position.current ? (position.currentStatus ?? 'current') : 'pending';
+    return [
+      {
+        title: stage.title,
+        status,
+        time: stage.at && status !== 'pending' ? formatClock(stage.at) : undefined,
+        description: stage.description ?? undefined,
+      },
+    ];
+  });
 }
 
 export function shortPersonName(fullName: string) {
@@ -266,7 +285,7 @@ function decisionOf(
         : undefined,
     firstPayment: formatDay(addMonths(decidedAt, 1)),
     firstPaymentDate: toIsoDate(addMonths(decidedAt, 1)),
-    validUntil: formatDay(new Date(decidedAt.getTime() + OFFER_VALID_DAYS * 86_400_000)),
+    validUntil: formatDay(new Date(decidedAt.getTime() + OFFER_VALID_DAYS * 86400000)),
     summary:
       d.outcome === 'counter' && base.cashFlow > 0
         ? `Платёж на ${formatMoney(base.amount)} занял бы ${requestedShare}% вашего денежного потока. С этой суммой — ${loadLabel(share)}.`
@@ -286,7 +305,7 @@ function decisionOf(
           : systemReasons,
     requestedDocs,
     deadline:
-      d.outcome === 'request' ? formatDay(new Date(decidedAt.getTime() + OFFER_VALID_DAYS * 86_400_000)) : undefined,
+      d.outcome === 'request' ? formatDay(new Date(decidedAt.getTime() + OFFER_VALID_DAYS * 86400000)) : undefined,
     message: d.client_message ?? undefined,
     declineReason: d.decline_reason ?? undefined,
     declineDetails: d.client_message && d.client_message !== d.decline_reason ? d.client_message : undefined,
@@ -300,9 +319,9 @@ function slaOf(dto: Detail | Dto.BankQueueItem, now = Date.now()): QueueItem['sl
     dto.submitted_at;
   if (!startedAt) return { text: '—', level: 'ok' };
   const left = new Date(startedAt).getTime() + REVIEW_SLA_MS - now;
-  const minutes = Math.round(Math.abs(left) / 60_000);
+  const minutes = Math.round(Math.abs(left) / 60000);
   const text = `${minutes >= 60 ? `${Math.floor(minutes / 60)} ч ` : ''}${minutes % 60} мин`;
-  const level: SlaLevel = left < 0 ? 'late' : left < 60 * 60_000 ? 'warn' : 'ok';
+  const level: SlaLevel = left < 0 ? 'late' : left < 60 * 60000 ? 'warn' : 'ok';
   return { text: left < 0 ? `просрочено на ${text}` : text, level };
 }
 
@@ -457,7 +476,7 @@ async function upload(applicationId: string, docType: string, file: File | undef
 }
 
 const COUNTER_SHARE = 0.26;
-const COUNTER_STEP = 100_000;
+const COUNTER_STEP = 100000;
 
 function comfortAmount(cashFlow: number, rate: number, term: number) {
   if (cashFlow <= 0) return 0;
@@ -481,7 +500,7 @@ function caseOf(dto: Dto.BankApplicationDetail): ApplicationCase {
   const egrul = egrulResponse(dto.checks);
   const who = company.name;
   const turnover = turnoverOf(dto.checks);
-  const totalIncome = Math.round(turnover.reduce((sum, m) => sum + m.income, 0) * 1_000_000);
+  const totalIncome = Math.round(turnover.reduce((sum, m) => sum + m.income, 0) * 1000000);
   const documents: CaseDocument[] = (dto.documents ?? []).map((d) => ({
     id: String(d.id),
     name:
@@ -548,13 +567,17 @@ function caseOf(dto: Dto.BankApplicationDetail): ApplicationCase {
         { term: 'ИНН / ОГРН', details: `${company.inn} / ${company.ogrn}` },
         {
           term: 'Регистрация',
-          details: company.registration_date ? formatDay(company.registration_date, { year: true }) : '—',
+          details: egrul?.registration_date
+            ? formatDay(String(egrul.registration_date), { year: true })
+            : company.registration_date
+              ? formatDay(company.registration_date, { year: true })
+              : '—',
         },
-        { term: 'ОКВЭД', details: company.okved ?? String(egrul?.okved ?? '—') },
-        { term: 'Адрес', details: company.address ?? String(egrul?.address ?? '—') },
+        { term: 'ОКВЭД', details: String(egrul?.okved ?? company.okved ?? '—') },
+        { term: 'Адрес', details: String(egrul?.address ?? company.address ?? '—') },
         { term: 'Телефон', details: company.phone ?? '—' },
       ],
-      director: [{ term: 'ФИО', details: company.director ?? String(egrul?.head_name ?? '—') }],
+      director: [{ term: 'ФИО', details: String(egrul?.head_name ?? company.director ?? '—') }],
       turnover,
       turnoverStats: turnover.length
         ? [

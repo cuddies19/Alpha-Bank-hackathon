@@ -1,7 +1,7 @@
 import { useYearTurnover } from '@/entities/account';
 import { useRemoveDocument, useUploadDocument, type ApplicationDocument } from '@/entities/application';
 import { USE_API } from '@/shared/config';
-import { formatMoney } from '@/shared/lib';
+import { formatMoney, plural } from '@/shared/lib';
 import {
   AsyncContent,
   Badge,
@@ -34,6 +34,22 @@ const formatSize = (bytes: number) =>
     ? `${(bytes / 1024 / 1024).toFixed(1).replace('.', ',')} МБ`
     : `${Math.max(1, Math.round(bytes / 1024))} КБ`;
 
+const AXIS_TICKS = 5;
+
+function axisLabels(labels: string[]) {
+  const step = Math.max(1, Math.ceil(labels.length / AXIS_TICKS));
+  return labels
+    .filter((_, index) => index % step === 0 || index === labels.length - 1)
+    .map((label) => label.slice(0, 3));
+}
+
+function turnoverAria(months: Array<{ label: string; income: number }>) {
+  if (!months.length) return 'Поступлений по счёту нет';
+  const first = months[0];
+  const last = months[months.length - 1];
+  return `Поступления по месяцам: от ${first.income} млн ₽ в ${first.label} до ${last.income} млн ₽ в ${last.label}`;
+}
+
 export function FinanceStep({ app }: StepProps) {
   const turnover = useYearTurnover(app.companyId);
   const upload = useUploadDocument();
@@ -63,7 +79,10 @@ export function FinanceStep({ app }: StepProps) {
       <AsyncContent query={turnover} skeleton={<CardSkeleton lines={4} />}>
         {(data) => (
           <>
-            <Section title="Обороты за 12 месяцев" aside={<Badge icon="document">Из выписки по счёту</Badge>}>
+            <Section
+              title={`Обороты за ${data.months.length} ${plural(data.months.length, ['месяц', 'месяца', 'месяцев'])}`}
+              aside={<Badge icon="document">Из выписки по счёту</Badge>}
+            >
               <div className={styles.turnover}>
                 <Stack gap={1}>
                   <Text as="span" variant="label" tone="secondary">
@@ -77,15 +96,19 @@ export function FinanceStep({ app }: StepProps) {
                   className={styles.sparkline}
                   variant="compact"
                   height={80}
-                  max={4.5}
+                  max={Math.max(...data.months.map((m) => m.income), 0.1) * 1.1}
                   series={[{ label: 'Поступления', color: 'var(--ink)' }]}
                   groups={data.months.map((m) => ({ label: m.label, values: [m.income] }))}
-                  xLabels={['ноя', 'фев', 'май', 'авг', 'окт']}
-                  ariaLabel="Поступления по месяцам: пик в ноябре и декабре, спад летом, рост к октябрю"
+                  xLabels={axisLabels(data.months.map((m) => m.label))}
+                  ariaLabel={turnoverAria(data.months)}
                 />
               </div>
             </Section>
-            <Section title="Действующие кредиты" gap={3} aside={<Badge icon="document">Из выписки по счёту</Badge>}>
+            <Section
+              title="Действующие кредиты"
+              gap={3}
+              aside={<Badge icon="document">{USE_API ? 'Кредиты в нашем банке' : 'Из выписки по счёту'}</Badge>}
+            >
               {data.existingLoans.length ? (
                 <DescriptionList
                   variant="rows"

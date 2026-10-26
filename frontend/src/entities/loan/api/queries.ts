@@ -11,7 +11,7 @@ function toLoan(dto: Dto.LoanOut, now = new Date()): Loan {
   const today = now.toISOString().slice(0, 10);
   const paid = schedule.filter((row) => row.date < today);
   const next = schedule.find((row) => row.date >= today);
-  const days = next ? Math.max(0, Math.round((new Date(next.date).getTime() - now.getTime()) / 86_400_000)) : 0;
+  const days = next ? Math.max(0, Math.round((new Date(next.date).getTime() - now.getTime()) / 86400000)) : 0;
   const last = schedule.at(-1);
   return {
     id: String(dto.id),

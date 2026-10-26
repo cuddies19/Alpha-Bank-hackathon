@@ -5,8 +5,8 @@ import { annuityPayment, formatApproxMoney, formatMonths } from '@/shared/lib';
 import { Alert, ChatMessage, Chip, MetricTile, PaymentLoadMeter, ProductCard, QuickReplies } from '@/shared/ui';
 import styles from './AssistantPanel.module.css';
 
-const CASH_FLOW = 610_000;
-const LINE = { amount: 3_000_000, term: 18, rate: 21.5 };
+const CASH_FLOW = 610000;
+const LINE = { amount: 3000000, term: 18, rate: 21.5 };
 const LINE_PAYMENT = annuityPayment({ principal: LINE.amount, ratePct: LINE.rate, months: LINE.term, roundTo: 100 });
 
 export interface ScenarioThreadProps {

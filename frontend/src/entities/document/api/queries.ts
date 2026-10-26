@@ -89,7 +89,7 @@ export function useClientDocuments(companyId: string) {
     queryKey: documentKeys.list(companyId),
     queryFn: () => documentApi.list(companyId),
     refetchInterval: (query) =>
-      !USE_API && query.state.data?.some((d) => d.tone === 'info' || d.tone === 'neutral') ? 1_500 : false,
+      !USE_API && query.state.data?.some((d) => d.tone === 'info' || d.tone === 'neutral') ? 1500 : false,
   });
 }
 

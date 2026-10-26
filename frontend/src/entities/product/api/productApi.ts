@@ -64,7 +64,7 @@ function comfortAmount(cashFlow: number, rate: number, term: number) {
   const payment = cashFlow * COMFORT_SHARE;
   const r = rate / 1200;
   const principal = r > 0 ? (payment * (1 - Math.pow(1 + r, -term))) / r : payment * term;
-  return Math.max(0, Math.floor(principal / 100_000) * 100_000);
+  return Math.max(0, Math.floor(principal / 100000) * 100000);
 }
 
 async function getRecommendation(): Promise<Recommendation> {

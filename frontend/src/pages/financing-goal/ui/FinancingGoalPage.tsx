@@ -22,7 +22,7 @@ import {
 import { NeedSummary } from '@/widgets/need-summary';
 import styles from './FinancingGoalPage.module.css';
 
-const AMOUNT = { min: 500_000, max: 5_000_000, step: 100_000 };
+const AMOUNT = { min: 500000, max: 5000000, step: 100000 };
 const WHEN = ['До 1 ноября', 'В течение ноября', 'Не срочно'];
 const TERMS = [6, 12, 18, 24];
 const SOURCES = ['Выручка с маркетплейсов', 'Оплата по контракту', 'Текущая выручка'];
@@ -42,7 +42,7 @@ export function FinancingGoalPage() {
   const [goalId, setGoalId] = useState(initialGoal);
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Answers>({
-    amount: 3_000_000,
+    amount: 3000000,
     when: WHEN[0],
     term: 18,
     source: SOURCES[0],

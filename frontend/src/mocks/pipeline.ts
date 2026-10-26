@@ -4,12 +4,12 @@ import { ANALYST } from './data/bank';
 import { db, notificationsFor } from './db';
 import { clock, clockSeconds, stamp, uid } from './time';
 
-const STEP_MS = { normal: 8_000, fast: 3_000 } as const;
+const STEP_MS = { normal: 8000, fast: 3000 } as const;
 const FLOW: ApplicationStatus[] = ['submitted', 'completeness_check', 'enrichment', 'scoring', 'rules'];
 
 export const SHARE_LIMIT = 30;
 const COUNTER_TARGET_SHARE = 26;
-const AUTO_LIMIT = 1_000_000;
+const AUTO_LIMIT = 1000000;
 export const REVIEW_SLA_MS = 2 * 60 * 60 * 1000;
 
 export function isInPipeline(status: ApplicationStatus) {
@@ -41,9 +41,9 @@ function notify(app: Application, id: string, title: string, text: string, to: s
 }
 
 export function comfortAmount(app: Pick<Application, 'rate' | 'term' | 'cashFlow'>): number {
-  const perRuble = annuityPayment({ principal: 1_000_000, ratePct: app.rate, months: app.term }) / 1_000_000;
+  const perRuble = annuityPayment({ principal: 1000000, ratePct: app.rate, months: app.term }) / 1000000;
   const target = (app.cashFlow * COUNTER_TARGET_SHARE) / 100;
-  return Math.floor(target / perRuble / 100_000) * 100_000;
+  return Math.floor(target / perRuble / 100000) * 100000;
 }
 
 function autoApprove(app: Application, ms: number): Decision {

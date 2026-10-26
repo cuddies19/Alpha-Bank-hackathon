@@ -5,11 +5,11 @@ export const ACCOUNT_SUMMARIES: Record<string, AccountSummary> = {
     greetingName: 'Игорь',
     updatedAt: '24 октября, 10:42',
     accountMask: '4821',
-    balance: 1_240_500,
-    incomes30d: 3_860_000,
+    balance: 1240500,
+    incomes30d: 3860000,
     incomeDelta: { value: '+12%', label: 'к сентябрю' },
-    netCashFlow: 610_000,
-    loanPayments: 38_000,
+    netCashFlow: 610000,
+    loanPayments: 38000,
     loanPaymentsHint: 'в месяц, 1 кредит в другом банке',
     insight: {
       title: 'Через 12 дней возможен кассовый разрыв',
@@ -42,7 +42,7 @@ export const ACCOUNT_SUMMARIES: Record<string, AccountSummary> = {
 export const YEAR_TURNOVER: Record<string, YearTurnover> = {
   'dom-i-uyut': {
     period: 'ноябрь 2025 — октябрь 2026',
-    totalIncome: 33_210_000,
+    totalIncome: 33210000,
     months: [
       { label: 'ноя', income: 3.9, outcome: 3.2 },
       { label: 'дек', income: 4.1, outcome: 3.5 },
@@ -57,6 +57,6 @@ export const YEAR_TURNOVER: Record<string, YearTurnover> = {
       { label: 'сен', income: 3.45, outcome: 2.8 },
       { label: 'окт', income: 3.86, outcome: 3.15 },
     ],
-    existingLoans: [{ title: 'Кредит в другом банке', rest: 450_000, payment: 38_000 }],
+    existingLoans: [{ title: 'Кредит в другом банке', rest: 450000, payment: 38000 }],
   },
 };

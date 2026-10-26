@@ -1,4 +1,4 @@
-import { formatMoney } from '@/shared/lib';
+import { formatMoney, plural } from '@/shared/lib';
 import { BarChart, DescriptionList, Legend, Note, Section, Table, Td, Th } from '@/shared/ui';
 import { useCaseData } from './useCaseData';
 
@@ -9,7 +9,8 @@ const SERIES = [
 
 export function ClientTab() {
   const { client } = useCaseData();
-  const max = Math.ceil(Math.max(...client.turnover.map((m) => m.income)) * 1.1);
+  const max = Math.ceil(Math.max(...client.turnover.map((m) => m.income), 0.1) * 1.1);
+  const months = client.turnover.length;
   return (
     <>
       <Section title="Компания">
@@ -19,13 +20,16 @@ export function ClientTab() {
         <DescriptionList items={client.director} />
         <Note icon="shield">Персональные данные скрыты. Полный просмотр записывается в журнал аудита.</Note>
       </Section>
-      <Section title="Обороты по счёту за 12 месяцев" aside={<Legend items={SERIES} />}>
+      <Section
+        title={`Обороты по счёту за ${months} ${plural(months, ['месяц', 'месяца', 'месяцев'])}`}
+        aside={<Legend items={SERIES} />}
+      >
         <BarChart
           variant="compact"
           series={SERIES}
           max={max}
           groups={client.turnover.map((m) => ({ label: m.label, values: [m.income, m.outcome] }))}
-          ariaLabel="Поступления и списания по месяцам за последние 12 месяцев"
+          ariaLabel={`Поступления и списания по месяцам за последние ${months} мес.`}
         />
         <DescriptionList items={client.turnoverStats} />
       </Section>

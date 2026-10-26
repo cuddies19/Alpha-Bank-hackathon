@@ -27,7 +27,7 @@ import { advance, isInPipeline, REVIEW_SLA_MS, submit } from './pipeline';
 import { clock, clockSeconds, stamp, uid } from './time';
 
 const UPLOAD_MS = 900;
-const CHECK_MS = 2_600;
+const CHECK_MS = 2600;
 export const SIGN_CODE = '482913';
 
 function find(id: string): Application {
@@ -247,14 +247,14 @@ export function getAccountSummary(companyId: string): AccountSummary {
   const persona = PERSONAS.find((p) => p.companyId === companyId);
   const template = ACCOUNT_SUMMARIES['dom-i-uyut'];
   const app = db.applications.find((a) => a.companyId === companyId);
-  const scale = (app?.cashFlow ?? 400_000) / template.netCashFlow;
+  const scale = (app?.cashFlow ?? 400000) / template.netCashFlow;
   return {
     ...template,
     greetingName: persona?.name.split(' ')[0] ?? '',
     accountMask: c.accountMask,
     balance: Math.round((template.balance * scale) / 100) * 100,
     incomes30d: Math.round((template.incomes30d * scale) / 1000) * 1000,
-    netCashFlow: app?.cashFlow ?? 400_000,
+    netCashFlow: app?.cashFlow ?? 400000,
     loanPayments: 0,
     loanPaymentsHint: 'в месяц, кредитов нет',
     insight: undefined,
@@ -738,10 +738,10 @@ function bankStage(status: ApplicationStatus): QueueItem['bankStage'] | null {
 function liveSla(app: Application, now: number): Application['sla'] {
   if (app.status !== 'manual_review' || !app.reviewStartedMs) return app.sla ?? { text: '—', level: 'ok' };
   const left = app.reviewStartedMs + REVIEW_SLA_MS - now;
-  const minutes = Math.round(Math.abs(left) / 60_000);
+  const minutes = Math.round(Math.abs(left) / 60000);
   const text = `${minutes >= 60 ? `${Math.floor(minutes / 60)} ч ` : ''}${minutes % 60} мин`;
   if (left < 0) return { text: `просрочено на ${text}`, level: 'late' };
-  return { text, level: left < 60 * 60_000 ? 'warn' : 'ok' };
+  return { text, level: left < 60 * 60000 ? 'warn' : 'ok' };
 }
 
 export function listQueue(): QueueItem[] {
@@ -1017,7 +1017,7 @@ export function assistantReply(message: string): AssistantReply {
   if (/почему|сумм|платёж|платеж|нагрузк/.test(text)) {
     return {
       text: [
-        `Платёж на 3 000 000 ₽ — ${formatApproxMoney(196_500)} в месяц, это 32% денежного потока: на грани.`,
+        `Платёж на 3 000 000 ₽ — ${formatApproxMoney(196500)} в месяц, это 32% денежного потока: на грани.`,
         'При 2 400 000 ₽ платёж будет 157 200 ₽ — 26% потока, комфортная нагрузка.',
       ],
       replies: [{ label: 'Открыть варианты', to: '/client/financing/offers' }],

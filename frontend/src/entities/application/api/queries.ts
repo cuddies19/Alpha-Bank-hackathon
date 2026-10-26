@@ -4,16 +4,25 @@ import type { Application, DecisionInput, DraftInput, DraftPatch, UploadInput } 
 import { applicationApi } from './applicationApi';
 import { applicationKeys } from './keys';
 
-const POLL_MS = 1_500;
+const POLL_MS = 1500;
+const REVIEW_POLL_MS = 5000;
 
-function needsPolling(app: Application | undefined) {
+function pollInterval(app: Application | undefined): number | false {
   if (!app) return false;
   const uploading = (s: string) => s === 'uploading' || s === 'checking';
-  return (
+  if (
     isProcessing(app.status) ||
     app.documents.some((d) => uploading(d.status)) ||
     Boolean(app.decision?.requestedDocs?.some((d) => uploading(d.status)))
-  );
+  ) {
+    return POLL_MS;
+  }
+  return app.status === 'manual_review' ? REVIEW_POLL_MS : false;
+}
+
+function listPollInterval(list: Application[] | undefined): number | false {
+  const intervals = (list ?? []).map(pollInterval).filter((ms): ms is number => ms !== false);
+  return intervals.length ? Math.min(...intervals) : false;
 }
 
 export function useCompanyApplications(companyId: string | undefined) {
@@ -21,7 +30,7 @@ export function useCompanyApplications(companyId: string | undefined) {
     queryKey: applicationKeys.list(companyId ?? ''),
     queryFn: () => applicationApi.listForCompany(companyId!),
     enabled: Boolean(companyId),
-    refetchInterval: (query) => (query.state.data?.some(needsPolling) ? POLL_MS : false),
+    refetchInterval: (query) => listPollInterval(query.state.data),
   });
 }
 
@@ -30,7 +39,7 @@ export function useApplication(id: string | undefined) {
     queryKey: applicationKeys.detail(id ?? ''),
     queryFn: () => applicationApi.get(id!),
     enabled: Boolean(id),
-    refetchInterval: (query) => (needsPolling(query.state.data) ? POLL_MS : false),
+    refetchInterval: (query) => pollInterval(query.state.data),
   });
 }
 
@@ -38,7 +47,7 @@ export function useApplicationQueue() {
   return useQuery({
     queryKey: applicationKeys.queue(),
     queryFn: applicationApi.queue,
-    refetchInterval: 5_000,
+    refetchInterval: 5000,
   });
 }
 

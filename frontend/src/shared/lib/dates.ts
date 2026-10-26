@@ -39,7 +39,7 @@ export function formatStamp(value: string | Date): string {
 export function formatRelativeDay(value: string | Date, now = new Date()): string {
   const d = toDate(value);
   const day = (x: Date) => new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime();
-  const diff = Math.round((day(now) - day(d)) / 86_400_000);
+  const diff = Math.round((day(now) - day(d)) / 86400000);
   if (diff === 0) return `Сегодня, ${formatDay(d)}`;
   if (diff === 1) return `Вчера, ${formatDay(d)}`;
   return formatDay(d, { year: d.getFullYear() !== now.getFullYear() });

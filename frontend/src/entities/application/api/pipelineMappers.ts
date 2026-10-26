@@ -227,7 +227,7 @@ export function turnoverOf(checks: Dto.SourceCheckOut[] | undefined) {
   const short = ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
   return statementMonths(checks).map((m) => ({
     label: short[Number(m.month.slice(5, 7)) - 1] ?? m.month,
-    income: Math.round(num(m.inflow_rub) / 10_000) / 100,
-    outcome: Math.round(num(m.outflow_rub) / 10_000) / 100,
+    income: Math.round(num(m.inflow_rub) / 10000) / 100,
+    outcome: Math.round(num(m.outflow_rub) / 10000) / 100,
   }));
 }

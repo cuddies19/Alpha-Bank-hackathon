@@ -41,7 +41,7 @@ const MONTH_DATIVE = [
   'декабрю',
 ];
 
-const millions = (value: number) => Math.round(value / 10_000) / 100;
+const millions = (value: number) => Math.round(value / 10000) / 100;
 
 function monthOf(key: string) {
   const [year, month] = key.split('-').map(Number);

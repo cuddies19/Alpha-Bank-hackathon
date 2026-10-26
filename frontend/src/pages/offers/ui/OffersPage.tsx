@@ -36,7 +36,7 @@ import {
 } from '@/shared/ui';
 import styles from './OffersPage.module.css';
 
-const AMOUNT = { min: 500_000, max: 5_000_000, step: 100_000 };
+const AMOUNT = { min: 500000, max: 5000000, step: 100000 };
 const TERM = { min: 6, max: 36, step: 1 };
 
 export function OffersPage() {

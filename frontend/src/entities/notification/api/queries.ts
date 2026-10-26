@@ -60,7 +60,7 @@ export function useNotifications(companyId: string | undefined) {
     queryKey: notificationKeys.list(companyId ?? ''),
     queryFn: () => notificationApi.list(companyId!),
     enabled: Boolean(companyId),
-    refetchInterval: 10_000,
+    refetchInterval: 10000,
   });
 }
 

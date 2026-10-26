@@ -33,7 +33,7 @@ const listSources = USE_API
   : () => mockResponse(() => server.listSources());
 
 export function useSources() {
-  return useQuery({ queryKey: integrationKeys.sources, queryFn: listSources, refetchInterval: 30_000 });
+  return useQuery({ queryKey: integrationKeys.sources, queryFn: listSources, refetchInterval: 30000 });
 }
 
 export function usePipelineStats() {

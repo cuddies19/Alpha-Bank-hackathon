@@ -25,7 +25,7 @@ const SCORE: Record<RiskClass, { score: number; label: string; pd: string }> = {
 function turnoverFor(app: Application) {
   const detailed = YEAR_TURNOVER[app.companyId];
   if (detailed) return detailed.months;
-  const scale = app.cashFlow / 610_000;
+  const scale = app.cashFlow / 610000;
   return YEAR_TURNOVER['dom-i-uyut'].months.map((m) => ({
     label: m.label,
     income: +(m.income * scale).toFixed(2),
@@ -194,7 +194,7 @@ export function buildCase(app: Application): ApplicationCase {
     })) as ApplicationCase['history'];
   const turnover = turnoverFor(app);
   const totalIncome =
-    YEAR_TURNOVER[app.companyId]?.totalIncome ?? Math.round(turnover.reduce((s, m) => s + m.income, 0) * 1_000_000);
+    YEAR_TURNOVER[app.companyId]?.totalIncome ?? Math.round(turnover.reduce((s, m) => s + m.income, 0) * 1000000);
 
   const recommendationText =
     outcome === 'counter'
