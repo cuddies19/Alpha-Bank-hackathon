@@ -159,7 +159,10 @@ function TurnoverSection({ data }: { data: AccountSummary }) {
     >
       <BarChart
         series={SERIES}
-        groups={data.months.map((m) => ({ label: m.label, values: [m.income, m.outcome] }))}
+        groups={data.months.map((m) => ({
+          label: data.months.length > 6 ? m.label.slice(0, 3) : m.label,
+          values: [m.income, m.outcome],
+        }))}
         max={max}
         yLabels={yLabels}
         ariaLabel={`Столбики по месяцам: поступления от ${first.income} млн ₽ в ${first.label} до ${last.income} млн ₽ в ${last.label}`}
