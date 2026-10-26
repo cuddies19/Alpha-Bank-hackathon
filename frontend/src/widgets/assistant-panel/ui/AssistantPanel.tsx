@@ -3,8 +3,19 @@ import { useNavigate } from 'react-router';
 import { useDemoSettings } from '@/features/demo-mode';
 import { routes, type AssistantScenario } from '@/shared/config';
 import { cx } from '@/shared/lib';
-import { Alert, AssistantMark, Button, ChatComposer, ChatMessage, Chip, IconButton, QuickReplies } from '@/shared/ui';
+import {
+  Alert,
+  AssistantMark,
+  Button,
+  ChatComposer,
+  ChatEnter,
+  ChatMessage,
+  Chip,
+  IconButton,
+  QuickReplies,
+} from '@/shared/ui';
 import { useAssistantReply, type AssistantReply } from '../api/assistantApi';
+import { useStreamedText } from '../lib/useStreamedText';
 import { ScenarioThread } from './scenarios';
 import styles from './AssistantPanel.module.css';
 
@@ -65,36 +76,23 @@ export function AssistantPanel({ scenario, screen, firstName, onClose }: Assista
         <div className={styles.thread} aria-live="polite">
           <ScenarioThread scenario={effectiveScenario} firstName={firstName} onReply={send} />
           {messages.map((m) => (
-            <div key={m.id} className={styles.thread}>
-              <ChatMessage role={m.role} time={m.time}>
-                {m.text.map((line) => (
-                  <p key={line}>{line}</p>
-                ))}
-              </ChatMessage>
-              {m.replies?.length ? (
-                <QuickReplies>
-                  {m.replies.map((r) => (
-                    <Chip key={r.label} onClick={() => navigate(r.to)}>
-                      {r.label}
-                    </Chip>
-                  ))}
-                </QuickReplies>
-              ) : null}
-            </div>
+            <LiveMessageView key={m.id} message={m} onNavigate={navigate} />
           ))}
-          {reply.isPending ? <ChatMessage role="assistant" typing /> : null}
+          {reply.isPending ? <ChatMessage role="assistant" typing animate /> : null}
           {failed ? (
-            <Alert
-              tone="danger"
-              title="Сообщение не отправлено"
-              action={
-                <Button size="sm" onClick={() => send(failed)}>
-                  Повторить
-                </Button>
-              }
-            >
-              <p>Нет связи с сервером. Проверьте интернет и повторите — текст сохранён.</p>
-            </Alert>
+            <ChatEnter>
+              <Alert
+                tone="danger"
+                title="Сообщение не отправлено"
+                action={
+                  <Button size="sm" onClick={() => send(failed)}>
+                    Повторить
+                  </Button>
+                }
+              >
+                <p>Нет связи с сервером. Проверьте интернет и повторите — текст сохранён.</p>
+              </Alert>
+            </ChatEnter>
           ) : null}
         </div>
       </div>
@@ -109,5 +107,28 @@ export function AssistantPanel({ scenario, screen, firstName, onClose }: Assista
         />
       </div>
     </aside>
+  );
+}
+
+function LiveMessageView({ message, onNavigate }: { message: LiveMessage; onNavigate: (to: string) => void }) {
+  const streamed = useStreamedText(message.text, message.role === 'assistant');
+  return (
+    <div className={styles.thread}>
+      <ChatMessage role={message.role} time={streamed.done ? message.time : undefined} animate>
+        <span className="sr-only">{message.text.join(' ')}</span>
+        <div aria-hidden="true">{streamed.lines.map((line, index) => (line ? <p key={index}>{line}</p> : null))}</div>
+      </ChatMessage>
+      {streamed.done && message.replies?.length ? (
+        <ChatEnter>
+          <QuickReplies>
+            {message.replies.map((r) => (
+              <Chip key={r.label} onClick={() => onNavigate(r.to)}>
+                {r.label}
+              </Chip>
+            ))}
+          </QuickReplies>
+        </ChatEnter>
+      ) : null}
+    </div>
   );
 }
