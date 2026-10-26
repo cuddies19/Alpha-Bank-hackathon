@@ -1,0 +1,38 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.roomy {
+  gap: var(--space-3);
+}
+
+.item {
+  display: flex;
+  gap: var(--space-2);
+  align-items: flex-start;
+}
+
+.roomy .item {
+  gap: var(--space-3);
+}
+
+.mark {
+  flex: none;
+  margin-top: 1px;
+  color: var(--ink-secondary);
+}
+
+.success {
+  color: var(--success);
+}
+.warning {
+  color: var(--warning);
+}
+.danger {
+  color: var(--danger);
+}
+.info {
+  color: var(--info);
+}

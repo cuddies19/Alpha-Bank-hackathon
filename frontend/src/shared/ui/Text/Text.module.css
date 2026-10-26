@@ -1,0 +1,47 @@
+.secondary {
+  color: var(--ink-secondary);
+}
+.success {
+  color: var(--success);
+}
+.warning {
+  color: var(--warning);
+}
+.danger {
+  color: var(--danger);
+}
+.info {
+  color: var(--info);
+}
+.accent {
+  color: var(--accent-text);
+}
+.inherit {
+  color: inherit;
+}
+
+.numeric {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.withIcon {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+p.withIcon,
+div.withIcon {
+  display: flex;
+  align-items: flex-start;
+}
+
+p.withIcon > svg,
+div.withIcon > svg {
+  margin-top: 1px;
+}
+
+.regular {
+  font-weight: 400;
+}

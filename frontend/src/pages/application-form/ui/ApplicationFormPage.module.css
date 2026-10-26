@@ -1,0 +1,36 @@
+.footer {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-6);
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+}
+
+.status {
+  flex: 1 1 200px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--ink-secondary);
+}
+
+.ok {
+  color: var(--success);
+}
+
+.warn {
+  color: var(--warning);
+}
+
+@media (max-width: 767px) {
+  .footer {
+    padding: var(--space-4);
+  }
+
+  .footer > a,
+  .footer > button {
+    flex: 1 1 auto;
+  }
+}

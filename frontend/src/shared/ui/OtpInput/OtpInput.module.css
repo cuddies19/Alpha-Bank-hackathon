@@ -1,0 +1,33 @@
+.otp {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.cell {
+  width: 48px;
+  height: 56px;
+  padding: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  text-align: center;
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.cell:focus {
+  outline: none;
+  border-color: var(--ink);
+  box-shadow: var(--focus-ring);
+}
+
+@media (max-width: 399px) {
+  .cell {
+    width: 42px;
+    height: 52px;
+  }
+}

@@ -1,0 +1,94 @@
+.row {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+  font-size: 15px;
+  line-height: 22px;
+  cursor: pointer;
+}
+
+.compact {
+  padding: var(--space-1) 0;
+}
+
+.box {
+  appearance: none;
+  flex: none;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  border-radius: 6px;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1.5px var(--line-strong);
+  display: grid;
+  place-content: center;
+  cursor: pointer;
+}
+
+.box:checked {
+  background: var(--ink);
+  box-shadow: none;
+}
+
+.box:checked::after {
+  content: '';
+  width: 10px;
+  height: 5px;
+  border-left: 2px solid var(--surface);
+  border-bottom: 2px solid var(--surface);
+  transform: translateY(-1px) rotate(-45deg);
+}
+
+.box:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+.consent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: 14px var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.missing {
+  background: var(--warning-soft);
+  box-shadow: inset 0 0 0 1px var(--warning);
+}
+
+.details {
+  padding-left: 34px;
+}
+
+.summary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 600;
+  color: var(--link);
+  list-style: none;
+}
+
+.summary::-webkit-details-marker {
+  display: none;
+}
+
+.summary svg {
+  transition: transform 0.15s;
+}
+
+.details[open] .summary svg {
+  transform: rotate(90deg);
+}
+
+.text {
+  margin-top: var(--space-2);
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--ink-secondary);
+}

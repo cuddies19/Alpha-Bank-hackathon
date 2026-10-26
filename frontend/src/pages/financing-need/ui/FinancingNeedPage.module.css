@@ -1,0 +1,34 @@
+.goal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  align-items: flex-start;
+  min-height: 148px;
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.goal:hover {
+  box-shadow: var(--shadow-md);
+  color: var(--ink);
+}
+
+.goalIcon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: var(--surface-muted);
+  box-shadow: inset 0 0 0 1px var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+}
+
+.secondary {
+  color: var(--ink-secondary);
+}

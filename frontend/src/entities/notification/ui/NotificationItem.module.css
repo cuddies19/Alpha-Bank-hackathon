@@ -1,0 +1,46 @@
+.item {
+  display: grid;
+  grid-template-columns: 8px minmax(0, 1fr);
+  gap: var(--space-3);
+  align-items: flex-start;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.item:hover {
+  background: var(--surface-muted);
+  color: var(--ink);
+}
+
+.unread {
+  background: var(--surface-muted);
+}
+
+.dot {
+  margin-top: 7px;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.secondary {
+  color: var(--ink-secondary);
+}
+
+.time {
+  color: var(--ink-secondary);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
