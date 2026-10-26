@@ -51,7 +51,7 @@ export function DocumentsPage() {
   const numberOf = (id: string) => applications.data?.find((a) => a.id === id)?.number ?? id;
   const targetNumber = targetApp ? numberOf(targetApp) : '';
 
-  const onFiles = (files: FileList) => {
+  const onFiles = (files: File[]) => {
     if (!targetApp) return;
     for (const file of Array.from(files)) {
       uploadExtra.mutate(

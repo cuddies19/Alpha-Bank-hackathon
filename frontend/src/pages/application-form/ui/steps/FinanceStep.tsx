@@ -66,7 +66,7 @@ export function FinanceStep({ app }: StepProps) {
       message: d.message,
     }));
 
-  const onFiles = async (files: FileList) => {
+  const onFiles = async (files: File[]) => {
     for (const file of Array.from(files)) {
       await upload
         .mutateAsync({ applicationId: app.id, name: file.name, size: formatSize(file.size), file })
@@ -155,7 +155,7 @@ export function FinanceStep({ app }: StepProps) {
           files={uploaded}
           onFiles={(files) => void onFiles(files)}
           onRemove={USE_API ? undefined : (id) => remove.mutate(id)}
-          hint="PDF, JPG или PNG до 20 МБ. Проверим файл сразу после загрузки"
+          hint="PDF, JPG или PNG до 10 МБ. Проверим файл сразу после загрузки"
         />
         {upload.isError ? <ErrorState error={upload.error} title="Файл не загрузился" /> : null}
       </Section>

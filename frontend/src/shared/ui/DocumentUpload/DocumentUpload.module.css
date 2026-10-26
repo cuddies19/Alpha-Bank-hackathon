@@ -47,6 +47,17 @@
   color: var(--ink-secondary);
 }
 
+.problems {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  color: var(--danger);
+}
+
+.problems p {
+  margin: 0;
+}
+
 .list {
   display: flex;
   flex-direction: column;

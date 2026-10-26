@@ -66,7 +66,7 @@ export function RequestedDocsView({ app, answered, onAnswered }: RequestedDocsVi
       progress: d.progress,
     }));
 
-  const onFiles = async (list: FileList) => {
+  const onFiles = async (list: File[]) => {
     for (const file of Array.from(list)) {
       await upload
         .mutateAsync({ applicationId: app.id, name: file.name, size: formatSize(file.size), file })

@@ -78,6 +78,21 @@ async function apiTarget(persona: Persona) {
   return latest ? applicationRoute(latest) : persona.home;
 }
 
+const RESET_COPY = demoScenariosAvailable
+  ? {
+      heading: 'Демо-данные',
+      button: 'Сбросить демо-данные',
+      question: 'Сбросить все заявки и решения?',
+      details: 'Сценарии начнутся заново. Тестовые учётки останутся.',
+    }
+  : {
+      heading: 'Настройки стенда',
+      button: 'Вернуть источники и скорость',
+      question: 'Вернуть настройки стенда?',
+      details:
+        'Все источники снова заработают, скорость конвейера станет обычной. Заявки останутся. Полный сброс базы: docker compose down -v.',
+    };
+
 export interface DemoPanelProps {
   open: boolean;
   onClose: () => void;
@@ -115,7 +130,7 @@ export function DemoPanel({ open, onClose }: DemoPanelProps) {
     await reset.mutateAsync();
     setConfirmReset(false);
     onClose();
-    navigate(routes.login());
+    if (demoScenariosAvailable) navigate(routes.login());
   };
 
   const data = settings.data;
@@ -213,11 +228,11 @@ export function DemoPanel({ open, onClose }: DemoPanelProps) {
       ) : null}
 
       <section className={styles.group}>
-        <h3 className={`label ${styles.heading}`}>Демо-данные</h3>
+        <h3 className={`label ${styles.heading}`}>{RESET_COPY.heading}</h3>
         {confirmReset ? (
           <Alert
             tone="warning"
-            title="Сбросить все заявки и решения?"
+            title={RESET_COPY.question}
             action={
               <Cluster>
                 <Button size="sm" onClick={() => setConfirmReset(false)}>
@@ -229,11 +244,11 @@ export function DemoPanel({ open, onClose }: DemoPanelProps) {
               </Cluster>
             }
           >
-            <p>Сценарии начнутся заново. Тестовые учётки останутся.</p>
+            <p>{RESET_COPY.details}</p>
           </Alert>
         ) : (
           <Stack gap={0} selfStart>
-            <Button onClick={() => setConfirmReset(true)}>Сбросить демо-данные</Button>
+            <Button onClick={() => setConfirmReset(true)}>{RESET_COPY.button}</Button>
           </Stack>
         )}
       </section>

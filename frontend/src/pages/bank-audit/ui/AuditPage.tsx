@@ -68,7 +68,7 @@ export function AuditPage() {
     <PageContainer spacing="tight">
       <PageHeader
         title="Журнал аудита"
-        description="Каждое действие системы, сотрудника и клиента. Персональные данные скрыты."
+        description="Каждое действие системы, сотрудника и клиента: кто, когда, что было и что стало."
       />
       <Cluster>
         <Select

@@ -18,7 +18,7 @@ export function ClientTab() {
       </Section>
       <Section title="Руководитель">
         <DescriptionList items={client.director} />
-        <Note icon="shield">Персональные данные скрыты. Полный просмотр записывается в журнал аудита.</Note>
+        <Note icon="shield">Паспортные данные руководителя в карточке не показываются.</Note>
       </Section>
       <Section
         title={`Обороты по счёту за ${months} ${plural(months, ['месяц', 'месяца', 'месяцев'])}`}
