@@ -7,7 +7,7 @@ import {
   type RequestedDocument,
 } from '@/entities/application';
 import { routes } from '@/shared/config';
-import { formatMoney, formatMonths } from '@/shared/lib';
+import { formatMoney, formatMonths, daysFromNowLabel } from '@/shared/lib';
 import {
   Alert,
   Badge,
@@ -143,7 +143,7 @@ export function RequestedDocsView({ app, answered, onAnswered }: RequestedDocsVi
                 Отправить на повторное рассмотрение
               </Button>
               <Note icon="calendar" tone="warning" center>
-                Ответьте до {app.decision?.deadline ?? '30 октября'}, иначе заявка закроется
+                Ответьте до {app.decision?.deadline ?? daysFromNowLabel(7)}, иначе заявка закроется
               </Note>
             </Cluster>
             {respond.isError ? <ErrorState error={respond.error} title="Не удалось отправить документы" /> : null}

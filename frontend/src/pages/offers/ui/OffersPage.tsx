@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
 import { useCreateDraft } from '@/entities/application';
-import { useRecommendation, type Offer, type Recommendation } from '@/entities/product';
+import { needFromSearch, useRecommendation, type Offer, type Recommendation } from '@/entities/product';
 import { useCompanyId } from '@/entities/session';
 import { routes } from '@/shared/config';
 import {
@@ -41,7 +41,8 @@ const TERM = { min: 6, max: 36, step: 1 };
 
 export function OffersPage() {
   const companyId = useCompanyId();
-  const recommendation = useRecommendation(companyId);
+  const [params] = useSearchParams();
+  const recommendation = useRecommendation(companyId, needFromSearch(params));
   return (
     <PageContainer>
       <AsyncContent query={recommendation}>{(data) => <Offers data={data} companyId={companyId} />}</AsyncContent>
@@ -51,9 +52,8 @@ export function OffersPage() {
 
 function Offers({ data, companyId }: { data: Recommendation; companyId: string }) {
   const navigate = useNavigate();
-  const [params] = useSearchParams();
-  const [amount, setAmount] = useState(() => Number(params.get('amount')) || data.need.amount);
-  const [term, setTerm] = useState(() => Number(params.get('term')) || data.need.term);
+  const [amount, setAmount] = useState(data.need.amount);
+  const [term, setTerm] = useState(data.need.term);
   const createDraft = useCreateDraft(companyId, {
     onSuccess: (draft) => navigate(routes.client.applicationForm(draft.id)),
   });
@@ -88,9 +88,16 @@ function Offers({ data, companyId }: { data: Recommendation; companyId: string }
   return (
     <>
       <PageHeader
-        title="Варианты под закупку к распродаже"
-        back={{ to: routes.client.financingDialog(), children: 'Изменить задачу' }}
-        description={`${data.need.goal} · около ${formatMoney(data.need.amount)} · деньги нужны ${data.need.neededBy.toLowerCase()} · возврат из выручки маркетплейсов`}
+        title="Варианты финансирования"
+        back={{ to: routes.client.financing(), children: 'Изменить задачу' }}
+        description={[
+          data.need.goal,
+          `около ${formatMoney(data.need.amount)}`,
+          data.need.neededBy ? `деньги нужны ${data.need.neededBy.toLowerCase()}` : null,
+          data.need.repaymentSource ? `возврат: ${data.need.repaymentSource.toLowerCase()}` : null,
+        ]
+          .filter(Boolean)
+          .join(' · ')}
       />
       {createDraft.isError ? <ErrorState error={createDraft.error} title="Не удалось создать заявку" /> : null}
       <div className={styles.offers}>

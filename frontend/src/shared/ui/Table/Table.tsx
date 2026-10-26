@@ -156,6 +156,19 @@ export interface PagerProps {
   onChange: (page: number) => void;
 }
 
+const MAX_PLAIN_PAGES = 5;
+
+function pageList(page: number, pages: number): Array<number | 'gap'> {
+  if (pages <= MAX_PLAIN_PAGES) return Array.from({ length: pages }, (_, i) => i + 1);
+  const around = [page - 1, page, page + 1].filter((n) => n > 1 && n < pages);
+  const list: Array<number | 'gap'> = [1];
+  if (around[0] > 2) list.push('gap');
+  list.push(...around);
+  if (around[around.length - 1] < pages - 1) list.push('gap');
+  list.push(pages);
+  return list;
+}
+
 export function Pager({ summary, page, pages, onChange }: PagerProps) {
   return (
     <div className={styles.pager}>
@@ -170,17 +183,23 @@ export function Pager({ summary, page, pages, onChange }: PagerProps) {
         >
           ‹
         </button>
-        {Array.from({ length: pages }, (_, i) => i + 1).map((n) => (
-          <button
-            key={n}
-            type="button"
-            className={cx(styles.page, n === page && styles.pageOn)}
-            aria-current={n === page ? 'page' : undefined}
-            onClick={() => onChange(n)}
-          >
-            {n}
-          </button>
-        ))}
+        {pageList(page, pages).map((n, index) =>
+          n === 'gap' ? (
+            <span key={`gap-${index}`} className={styles.pageGap} aria-hidden="true">
+              …
+            </span>
+          ) : (
+            <button
+              key={n}
+              type="button"
+              className={cx(styles.page, n === page && styles.pageOn)}
+              aria-current={n === page ? 'page' : undefined}
+              onClick={() => onChange(n)}
+            >
+              {n}
+            </button>
+          ),
+        )}
         <button
           type="button"
           className={styles.page}

@@ -1,4 +1,4 @@
-import { formatMoney, formatMonthsLong, paymentShare } from '@/shared/lib';
+import { formatMoney, formatMonthsLong, paymentShare, daysFromNowLabel } from '@/shared/lib';
 import type { StageStatus, TrackerStage } from '@/shared/ui';
 import type { Application, ApplicationStatus } from '../model/types';
 
@@ -37,7 +37,7 @@ function needsInfoStages(app: Application): TrackerStage[] {
     {
       title: 'Нужны документы',
       status: 'attention',
-      time: `до ${app.decision?.deadline ?? '30 октября'}`,
+      time: `до ${app.decision?.deadline ?? daysFromNowLabel(7)}`,
       description: 'Без отчётности и выписки банк не увидит всю выручку и долги компании.',
     },
     { title: 'Решение', status: 'pending' },
@@ -86,7 +86,7 @@ export function buildClientStages(app: Application): TrackerStage[] {
       key: 'decided',
       title: 'Решение',
       time: t.decided,
-      hint: app.status === 'counter_offer' ? `до ${decision?.validUntil ?? '31 октября'}` : undefined,
+      hint: app.status === 'counter_offer' ? `до ${decision?.validUntil ?? daysFromNowLabel(7)}` : undefined,
       note:
         app.status === 'counter_offer' && decision
           ? `Банк предлагает ${formatMoney(decision.amount)} на ${formatMonthsLong(decision.term)}. Примите предложение или откажитесь.`

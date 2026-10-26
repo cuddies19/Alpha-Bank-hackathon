@@ -10,7 +10,7 @@ import {
 } from '@/entities/application';
 import { sessionApi, useSession } from '@/entities/session';
 import { features, routes } from '@/shared/config';
-import { annuityPayment, formatMoney, formatMonths, parseMoney } from '@/shared/lib';
+import { annuityPayment, formatMoney, formatMonths, parseMoney, daysFromNowLabel } from '@/shared/lib';
 import {
   Alert,
   Badge,
@@ -54,7 +54,7 @@ const DECLINE_MESSAGE =
 
 function decisionTerms(decision: Decision) {
   if (decision.outcome === 'request')
-    return `${decision.requestedDocs?.length ?? 0} док. до ${decision.deadline ?? '30 октября'}`;
+    return `${decision.requestedDocs?.length ?? 0} док. до ${decision.deadline ?? daysFromNowLabel(7)}`;
   if (decision.outcome === 'decline') return decision.declineReason ?? 'Отказ';
   return `${formatMoney(decision.amount)} на ${formatMonths(decision.term)}`;
 }
@@ -105,7 +105,7 @@ function DecisionForm({ caseData }: DecisionPanelProps) {
   const shareFails = caseData.rules.some((r) => r.rule.startsWith('Доля платежа') && !r.passed);
   const terms =
     outcome === 'request'
-      ? `${docs.length} док. до 30 октября`
+      ? `${docs.length} док. до ${daysFromNowLabel(7)}`
       : outcome === 'decline'
         ? declineReason
         : outcome === 'approve'

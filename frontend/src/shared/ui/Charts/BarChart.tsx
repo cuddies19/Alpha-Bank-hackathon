@@ -91,7 +91,7 @@ export function BarChart({
           ))}
         </div>
       </div>
-      <div className={cx('caption', styles.xAxis)} aria-hidden="true">
+      <div className={cx('caption', styles.xAxis, axis.length > 8 && styles.denseAxis)} aria-hidden="true">
         {axis.map((label) => (
           <span key={label}>{label}</span>
         ))}

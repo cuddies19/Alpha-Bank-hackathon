@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useSession } from '@/entities/session';
 import { useDemoSettings } from '@/features/demo-mode';
-import { routes, type AssistantScenario } from '@/shared/config';
+import { USE_API, routes, type AssistantScenario } from '@/shared/config';
 import { cx } from '@/shared/lib';
 import {
   Alert,
@@ -40,7 +40,8 @@ export function AssistantPanel({ scenario, screen, firstName, onClose }: Assista
   const [draft, setDraft] = useState('');
   const [failed, setFailed] = useState<string | null>(null);
 
-  const effectiveScenario: AssistantScenario = settings.data?.assistantMode === 'rules' ? 'simplified' : scenario;
+  const effectiveScenario: AssistantScenario =
+    settings.data?.assistantMode === 'rules' ? 'simplified' : USE_API && scenario === 'dialog' ? 'start' : scenario;
 
   const send = (text: string) => {
     setFailed(null);

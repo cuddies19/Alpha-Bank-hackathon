@@ -26,6 +26,21 @@ const MONTH_NAMES = [
   'декабрь',
 ];
 
+const MONTH_PREPOSITIONAL = [
+  'январе',
+  'феврале',
+  'марте',
+  'апреле',
+  'мае',
+  'июне',
+  'июле',
+  'августе',
+  'сентябре',
+  'октябре',
+  'ноябре',
+  'декабре',
+];
+
 const MONTH_DATIVE = [
   'январю',
   'февралю',
@@ -80,7 +95,9 @@ async function getSummary(): Promise<AccountSummary> {
   const delta = last && prev && prev.inflows ? Math.round(((last.inflows - prev.inflows) / prev.inflows) * 100) : 0;
   const netCashFlow = months.length ? Math.round(cashflow.net_flow / months.length) : cashflow.net_flow;
   const turnover = toMonths(cashflow);
-  const peak = turnover.reduce((a, b) => (b.income > a.income ? b : a), turnover[0]);
+  const peakIndex = turnover.reduce((best, m, i) => (m.income > turnover[best].income ? i : best), 0);
+  const peak = turnover[peakIndex];
+  const peakMonth = months[peakIndex];
   return {
     greetingName: me.full_name.split(' ')[0] ?? '',
     updatedAt: formatStamp(new Date()),
@@ -96,7 +113,9 @@ async function getSummary(): Promise<AccountSummary> {
     loanPaymentsHint: cashflow.loan_payments ? 'в месяц по действующим кредитам' : 'в месяц, кредитов нет',
     period: periodOf(cashflow),
     months: turnover,
-    chartSummary: peak ? `Больше всего поступлений было в месяце «${peak.label}» — ${peak.income} млн ₽.` : '',
+    chartSummary: peakMonth
+      ? `Больше всего поступлений было в ${MONTH_PREPOSITIONAL[monthOf(peakMonth.month).index]} — ${String(peak.income).replace('.', ',')} млн ₽.`
+      : '',
     events: [],
   };
 }

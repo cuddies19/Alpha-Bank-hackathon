@@ -1,3 +1,4 @@
+import { daysFromNowLabel } from '@/shared/lib';
 import type { Tone } from '@/shared/ui';
 import type { Application, ApplicationStatus, DecisionOutcome, RiskClass } from '../model/types';
 
@@ -87,9 +88,9 @@ export function clientTodo(app: Application): string {
     case 'draft':
       return `Заполнить шаг ${app.draftStep ?? 1} и отправить`;
     case 'needs_info':
-      return `Загрузить документы до ${app.decision?.deadline ?? '30 октября'}`;
+      return `Загрузить документы до ${app.decision?.deadline ?? daysFromNowLabel(7)}`;
     case 'counter_offer':
-      return `Принять или отказаться до ${app.decision?.validUntil ?? '31 октября'}`;
+      return `Принять или отказаться до ${app.decision?.validUntil ?? daysFromNowLabel(7)}`;
     case 'approved':
       return 'Подписать документы';
     case 'issued':

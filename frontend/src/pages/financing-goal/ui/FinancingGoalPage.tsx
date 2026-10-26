@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from 'react';
 import { useSearchParams } from 'react-router';
-import { FINANCING_GOALS } from '@/entities/product';
+import { FINANCING_GOALS, needToSearch } from '@/entities/product';
 import { routes } from '@/shared/config';
 import { formatMoney, formatMonths, parseMoney, plural } from '@/shared/lib';
 import {
@@ -128,7 +128,13 @@ export function FinancingGoalPage() {
     </>,
   ];
 
-  const offersUrl = `${routes.client.offers()}?amount=${answers.amount}&term=${answers.term}`;
+  const offersUrl = `${routes.client.offers()}?${needToSearch({
+    goal: goal.title,
+    amount: answers.amount,
+    term: answers.term,
+    neededBy: answers.when,
+    repaymentSource: answers.source,
+  })}`;
 
   return (
     <PageContainer>

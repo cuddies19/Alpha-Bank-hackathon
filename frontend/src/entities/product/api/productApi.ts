@@ -3,6 +3,7 @@ import { cachedGet, http, mockResponse } from '@/shared/api';
 import { USE_API } from '@/shared/config';
 import { annuityPayment, formatApproxMoney, formatMoney, formatMonths, formatPercent } from '@/shared/lib';
 import * as server from '@/mocks/server';
+import { mergeNeed, type NeedRequest } from '../model/needParams';
 import type { Offer, Product, ProductId, Recommendation } from '../model/types';
 
 const CODE_TO_ID: Record<string, ProductId> = {
@@ -67,8 +68,9 @@ function comfortAmount(cashFlow: number, rate: number, term: number) {
   return Math.max(0, Math.floor(principal / 100000) * 100000);
 }
 
-async function getRecommendation(): Promise<Recommendation> {
-  const base = server.getRecommendation('');
+async function getRecommendation(request: NeedRequest): Promise<Recommendation> {
+  const mock = server.getRecommendation('');
+  const base = { ...mock, need: mergeNeed(mock.need, request) };
   const [response, products, cashFlow] = await Promise.all([
     http<Dto.RecommendationResponse>('/recommendations', {
       method: 'POST',
@@ -134,8 +136,15 @@ async function getRecommendation(): Promise<Recommendation> {
 }
 
 export const productApi = USE_API
-  ? { list: listProducts, recommendation: (_companyId: string) => getRecommendation() }
+  ? {
+      list: listProducts,
+      recommendation: (_companyId: string, request: NeedRequest = {}) => getRecommendation(request),
+    }
   : {
       list: () => mockResponse(() => server.listProducts()),
-      recommendation: (companyId: string) => mockResponse(() => server.getRecommendation(companyId)),
+      recommendation: (companyId: string, request: NeedRequest = {}) =>
+        mockResponse(() => {
+          const data = server.getRecommendation(companyId);
+          return { ...data, need: mergeNeed(data.need, request) };
+        }),
     };

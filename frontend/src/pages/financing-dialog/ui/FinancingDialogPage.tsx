@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useLocation } from 'react-router';
-import { useRecommendation, type FinancingNeed } from '@/entities/product';
+import { needToSearch, parseNeedText, useRecommendation, type FinancingNeed } from '@/entities/product';
 import { useCompanyId } from '@/entities/session';
-import { routes } from '@/shared/config';
+import { USE_API, routes } from '@/shared/config';
 import { formatMoney, parseMoney } from '@/shared/lib';
 import {
   AsyncContent,
@@ -40,20 +40,27 @@ export function FinancingDialogPage() {
 function NeedForm({ need }: { need: FinancingNeed }) {
   const location = useLocation();
   const task = (location.state as { task?: string } | null)?.task;
-  const [goal, setGoal] = useState(need.goal);
-  const [amount, setAmount] = useState(need.amount);
-  const [neededBy, setNeededBy] = useState(need.neededBy);
-  const [term, setTerm] = useState(String(need.term));
-  const [source, setSource] = useState(need.repaymentSource);
+  const fromTask = USE_API && task ? parseNeedText(task) : null;
+  const [goal, setGoal] = useState(fromTask ? task! : need.goal);
+  const [amount, setAmount] = useState(fromTask ? (fromTask.amount ?? 0) : need.amount);
+  const [neededBy, setNeededBy] = useState(fromTask ? '' : need.neededBy);
+  const [term, setTerm] = useState(String(fromTask ? (fromTask.term ?? 12) : need.term));
+  const [source, setSource] = useState(fromTask ? SOURCES[2] : need.repaymentSource);
   const [pledge, setPledge] = useState(need.pledge);
   const complete = Boolean(goal && amount > 0 && Number(term) > 0);
-  const offersUrl = `${routes.client.offers()}?amount=${amount}&term=${Number(term) || need.term}`;
+  const offersUrl = `${routes.client.offers()}?${needToSearch({
+    goal,
+    amount,
+    term: Number(term) || need.term,
+    neededBy,
+    repaymentSource: source,
+  })}`;
 
   return (
     <>
       <Section gap={3}>
         <SourceTag ai>Ваша задача из диалога</SourceTag>
-        <blockquote className="body-lg">«{task ?? need.quote}»</blockquote>
+        <blockquote className="body-lg">«{task ?? (USE_API ? goal : need.quote)}»</blockquote>
       </Section>
       <Section
         title="Что поняли о задаче"
@@ -81,7 +88,7 @@ function NeedForm({ need }: { need: FinancingNeed }) {
             inputMode="numeric"
             value={term}
             onChange={(e) => setTerm(e.target.value.replace(/\D/g, ''))}
-            hint={need.termHint}
+            hint={fromTask ? undefined : need.termHint}
           />
         </Grid>
         <Stack gap={2}>

@@ -74,3 +74,7 @@ export function addMonths(value: string | Date, months: number): Date {
 export function todayLabel(opts: { year?: boolean } = {}): string {
   return formatDay(new Date(), opts);
 }
+
+export function daysFromNowLabel(days: number): string {
+  return formatDay(new Date(Date.now() + days * 86400000));
+}

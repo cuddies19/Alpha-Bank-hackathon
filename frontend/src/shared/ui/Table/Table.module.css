@@ -189,6 +189,21 @@
   color: var(--ink-inverse);
 }
 
+.pageGap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  color: var(--ink-secondary);
+}
+
+@media (max-width: 599px) {
+  .page {
+    min-width: 32px;
+    padding: 0 var(--space-1);
+  }
+}
+
 .page:disabled {
   color: var(--ink-disabled);
   cursor: not-allowed;

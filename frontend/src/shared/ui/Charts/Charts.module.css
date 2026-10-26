@@ -30,14 +30,18 @@
 }
 
 .group {
+  flex: 1 1 0;
+  min-width: 0;
   height: 100%;
   display: flex;
   align-items: flex-end;
+  justify-content: center;
   gap: 4px;
 }
 
 .bar {
-  width: 22px;
+  flex: 0 1 22px;
+  min-width: 3px;
   border-radius: 4px 4px 0 0;
 }
 
@@ -47,6 +51,13 @@
   margin-left: 56px;
   padding-top: var(--space-2);
   color: var(--ink-secondary);
+}
+
+.xAxis > span {
+  flex: 1 1 0;
+  min-width: 0;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .compact {
@@ -97,8 +108,12 @@
 }
 
 @media (max-width: 599px) {
+  .denseAxis > span:nth-child(even) {
+    visibility: hidden;
+  }
+
   .bar {
-    width: 12px;
+    flex-basis: 12px;
   }
 
   .group {

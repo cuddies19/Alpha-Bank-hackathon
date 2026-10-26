@@ -10,7 +10,15 @@ import {
   type Application,
 } from '@/entities/application';
 import { routes } from '@/shared/config';
-import { formatApproxMoney, formatMoney, formatMonths, formatMonthsLong, formatPercent, loadLabel } from '@/shared/lib';
+import {
+  formatApproxMoney,
+  formatMoney,
+  formatMonths,
+  formatMonthsLong,
+  formatPercent,
+  loadLabel,
+  daysFromNowLabel,
+} from '@/shared/lib';
 import {
   Alert,
   Amount,
@@ -201,7 +209,7 @@ function StatusBanner({ app }: { app: Application }) {
         }
       >
         <p>
-          {d?.requestedDocs?.map((r) => r.title).join(' и ')}. Ответьте до {d?.deadline ?? '30 октября'}.
+          {d?.requestedDocs?.map((r) => r.title).join(' и ')}. Ответьте до {d?.deadline ?? daysFromNowLabel(7)}.
         </p>
       </Alert>
     );

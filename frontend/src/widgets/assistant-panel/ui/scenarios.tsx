@@ -117,7 +117,7 @@ export function ScenarioThread({ scenario, firstName, onReply }: ScenarioThreadP
 
   return (
     <>
-      <ChatMessage role="assistant" time="10:30">
+      <ChatMessage role="assistant">
         <p>
           Добрый день{firstName ? `, ${firstName}` : ''}. Помогу подобрать финансирование под задачу бизнеса и посчитаю,
           какой платёж будет комфортным.
