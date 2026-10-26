@@ -86,7 +86,7 @@ OLGA=$(login olga.kravtsova)
 
 | # | Запрос | Ожидание |
 |---|---|---|
-| 2.1.1 | `GET /me/cashflow` | 200, `balance`, `inflows`, `net_flow`, `loan_payments`, ровно 6 элементов `months` |
+| 2.1.1 | `GET /me/cashflow` | 200, `balance`, `inflows`, `net_flow`, `loan_payments`, 12 элементов `months` из выписки; средний поток `net_flow / 12` равен `avg_net_flow_rub` выписки (у Игоря 610 000 ₽) |
 | 2.1.2 | `GET /calculator?amount=3000000&term_months=18` | 200, `monthly_payment > 0`, `total_payment > amount` |
 | 2.1.3 | `POST /recommendations` `{"task":"Закупка партии к распродаже","amount":3000000,"term_months":18}` | 200, 1–2 рекомендации, у каждой `match_score`, `reason`, `monthly_payment` |
 | 2.1.4 | `GET /products` | 200, у продуктов есть лимиты суммы/срока и ставка |
