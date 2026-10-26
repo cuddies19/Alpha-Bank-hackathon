@@ -206,6 +206,10 @@ export function DemoPanel({ open, onClose }: DemoPanelProps) {
             </section>
           ) : null}
         </>
+      ) : settings.isError ? (
+        <Alert tone="info" title="Настройки стенда недоступны">
+          <p>Скорость конвейера и источники можно менять только на dev-стенде (APP_ENV=dev).</p>
+        </Alert>
       ) : null}
 
       <section className={styles.group}>

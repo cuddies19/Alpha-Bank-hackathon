@@ -413,12 +413,35 @@ export interface RuleResultOut {
   comment?: string | null;
 }
 
+export interface ScoreFeatures {
+  business_age_months: number;
+  income_last_year_rub: number;
+  tax_debt_rub: number;
+  max_overdue_days_12m: number;
+  max_overdue_days_24m: number;
+  inquiries_30d: number;
+  avg_net_flow_rub: number;
+  marketplace_share: number;
+  revenue_to_other_bank: boolean;
+  monthly_payments_rub: number;
+}
+
 export interface ScoreOut {
   score: number;
   risk_class: string;
   model_version: string;
   factors?: Array<Record<string, unknown>>;
   created_at: string;
+}
+
+export interface ScoreRequest {
+  inn: string;
+  features: ScoreFeatures;
+}
+
+export interface ScoreResponse {
+  score: number;
+  risk_class: string;
 }
 
 export interface SignRequest {
