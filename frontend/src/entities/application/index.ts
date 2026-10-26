@@ -2,6 +2,7 @@ export type * from './model/types';
 export { applicationKeys } from './api/keys';
 export { applicationApi } from './api/applicationApi';
 export { REQUESTABLE_DOCUMENTS } from './model/documents';
+export { RISK_BANDS, SCORE_MAX, SCORE_MIN, SCORE_RANGE_LABEL } from './model/scoreScale';
 export {
   useApplication,
   useApplicationCase,

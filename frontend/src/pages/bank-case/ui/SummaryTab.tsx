@@ -1,5 +1,5 @@
 import { Link } from 'react-router';
-import { CheckStatusIcon, OUTCOME_RESULT } from '@/entities/application';
+import { CheckStatusIcon, OUTCOME_RESULT, SCORE_MAX } from '@/entities/application';
 import { routes } from '@/shared/config';
 import { formatMoney, formatMonths, formatPercent } from '@/shared/lib';
 import { Badge, ButtonLink, DescriptionList, Section, SourceTag, Text, type Tone } from '@/shared/ui';
@@ -35,7 +35,7 @@ export function SummaryTab() {
               Скоринг
             </Text>
             <span className="body-strong">
-              {data.scoring ? `${data.scoring.score} из 1000 · класс ${data.scoring.riskClass}` : 'нет данных'}
+              {data.scoring ? `${data.scoring.score} из ${SCORE_MAX} · класс ${data.scoring.riskClass}` : 'нет данных'}
             </span>
           </Link>
           <Link className={styles.tile} to={routes.bank.application(app.id, 'risk')}>

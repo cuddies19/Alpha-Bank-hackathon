@@ -1,30 +1,35 @@
 import { cx } from '@/shared/lib';
+import { RISK_BANDS, SCORE_MIN, SCORE_RANGE_LABEL, scorePosition } from '../model/scoreScale';
 import type { RiskClass, ScoringFactor } from '../model/types';
 import styles from './scoring.module.css';
 
-const CLASSES: RiskClass[] = ['E', 'D', 'C', 'B', 'A'];
-const BOUNDS = [0, 400, 550, 630, 750, 1000];
+const COLUMNS = RISK_BANDS.map((band) => `${band.to - band.from}fr`).join(' ');
+const BOUNDS = [SCORE_MIN, ...RISK_BANDS.map((band) => band.to)];
 
 export function ScoreScale({ score, riskClass }: { score: number; riskClass: RiskClass }) {
   return (
-    <div className={styles.score} role="img" aria-label={`Балл ${score} из 1000, класс риска ${riskClass}`}>
-      <div className={styles.track}>
-        {CLASSES.map((c) => (
-          <span key={c} className={cx(styles.segment, c === riskClass && styles.segmentOn)} />
+    <div
+      className={styles.score}
+      role="img"
+      aria-label={`Балл ${score} по шкале ${SCORE_RANGE_LABEL}, класс риска ${riskClass}`}
+    >
+      <div className={styles.track} style={{ gridTemplateColumns: COLUMNS }}>
+        {RISK_BANDS.map((band) => (
+          <span key={band.riskClass} className={cx(styles.segment, band.riskClass === riskClass && styles.segmentOn)} />
         ))}
-        <span className={styles.marker} style={{ left: `${score / 10}%` }} />
+        <span className={styles.marker} style={{ left: `${scorePosition(score)}%` }} />
       </div>
-      <div className={cx('caption', styles.labels)} aria-hidden="true">
-        {CLASSES.map((c) => (
-          <span key={c} className={c === riskClass ? styles.labelOn : undefined}>
-            {c}
+      <div className={cx('caption', styles.labels)} style={{ gridTemplateColumns: COLUMNS }} aria-hidden="true">
+        {RISK_BANDS.map((band) => (
+          <span key={band.riskClass} className={band.riskClass === riskClass ? styles.labelOn : undefined}>
+            {band.riskClass}
           </span>
         ))}
       </div>
       <div className={cx('caption', styles.ends)} aria-hidden="true">
-        {BOUNDS.map((b) => (
-          <span key={b} style={{ left: `${b / 10}%` }}>
-            {b}
+        {BOUNDS.map((bound) => (
+          <span key={bound} style={{ left: `${scorePosition(bound)}%` }}>
+            {bound}
           </span>
         ))}
       </div>

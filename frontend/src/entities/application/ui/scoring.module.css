@@ -7,7 +7,6 @@
 .track,
 .labels {
   display: grid;
-  grid-template-columns: 40fr 15fr 8fr 12fr 25fr;
   gap: 3px;
 }
 

@@ -1,4 +1,4 @@
-import { RiskClassBadge, ScoreFactors, ScoreScale } from '@/entities/application';
+import { RiskClassBadge, SCORE_RANGE_LABEL, ScoreFactors, ScoreScale } from '@/entities/application';
 import { Alert, Badge, EmptyState, Heading, Section, Stack, Table, Td, Text, Th } from '@/shared/ui';
 import { useCaseData } from './useCaseData';
 import styles from './tabs.module.css';
@@ -27,7 +27,7 @@ export function RiskTab() {
                   {scoring.score}
                 </Text>
                 <Text as="span" tone="secondary">
-                  из 1000
+                  по шкале {SCORE_RANGE_LABEL}
                 </Text>
               </div>
               <RiskClassBadge
