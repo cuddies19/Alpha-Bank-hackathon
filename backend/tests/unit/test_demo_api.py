@@ -3,6 +3,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.api.demo import get_mocks
+from app.config import Settings, get_settings
 from app.db import get_db
 from app.main import app
 from app.pipeline import demo
@@ -53,6 +54,12 @@ def api(db, admin):
     yield TestClient(app)
     app.dependency_overrides.clear()
     app.dependency_overrides.update(saved)
+
+
+@pytest.fixture
+def prod_env(api):
+    """Run the app as if APP_ENV=prod."""
+    app.dependency_overrides[get_settings] = lambda: Settings(app_env="prod", jwt_secret="x" * 32)
 
 
 @pytest.fixture
@@ -138,3 +145,9 @@ def test_reset_when_mocks_down(api, db, mocks_down) -> None:
 @pytest.mark.positive
 def test_default_mocks_client_uses_settings() -> None:
     assert get_mocks().url.endswith("/_admin/sources")
+
+
+@pytest.mark.negative
+def test_demo_hidden_outside_dev(api, prod_env) -> None:
+    assert api.get("/demo/state").status_code == 404
+    assert api.post("/demo/reset").status_code == 404

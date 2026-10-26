@@ -70,8 +70,7 @@ def test_non_json_answer_becomes_error_for_that_source(run, sources, expected) -
     sources.bki.set_dataset("bad_json")
     res = run()
     assert res["bki"]["status"] == "error"
-    assert res["bki"]["attempts"] == 0
-    assert res["bki"]["latency_ms"] == 0
+    assert res["bki"]["attempts"] == 1
     assert res["bki"]["payload"] is None
     assert res["bki"]["message"] == expected["unexpected_message"]
     assert res["fns"]["status"] == "ok"

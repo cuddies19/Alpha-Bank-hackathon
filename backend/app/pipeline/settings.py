@@ -4,7 +4,9 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class PipelineSettings(BaseSettings):
-    model_config = SettingsConfigDict(env_prefix="PIPELINE_")
+    model_config = SettingsConfigDict(
+        env_prefix="PIPELINE_", env_file=(".env", "../.env"), extra="ignore"
+    )
 
     # normal = 5 s pause between stages, fast = 1 s.
     speed: Literal["normal", "fast"] = "normal"

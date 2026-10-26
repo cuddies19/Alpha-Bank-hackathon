@@ -127,6 +127,7 @@ async def _run(
         if missing:
             store.move(s, app_id, "client_action", missing_text(missing))
             return
+        # No separate consent id yet: the application number stands in (docs/integrations.md).
         inn, consent_id = app.company.inn, app.number
         application = {
             "product": app.product.code,

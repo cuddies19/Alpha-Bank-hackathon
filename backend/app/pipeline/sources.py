@@ -59,7 +59,11 @@ async def _fetch(
             result.update(status="error", message=_UNEXPECTED)
             break
         if response is not None and response.status_code == 200:
-            result.update(status="ok", payload=response.json(), message=None)
+            try:
+                result.update(status="ok", payload=response.json(), message=None)
+            except ValueError:
+                log.error("source %s: answer is not JSON", source)
+                result.update(status="error", message=_UNEXPECTED)
             break
         if response is not None and response.status_code < 500:
             # Bad request (e.g. 422): retrying will not help.
@@ -86,23 +90,9 @@ async def enrich(
     pause_s: float,
     transport: httpx.AsyncBaseTransport | None = None,
 ) -> dict[str, dict[str, Any]]:
-    """Query all sources in parallel. Never raises because of a single source."""
+    """Query all sources in parallel. Never raises: _fetch turns any failure into a status."""
     async with httpx.AsyncClient(base_url=mocks_url, transport=transport) as client:
         results = await asyncio.gather(
-            *(_fetch(client, s, inn, consent_id, timeout_s, attempts, pause_s) for s in SOURCES),
-            return_exceptions=True,
+            *(_fetch(client, s, inn, consent_id, timeout_s, attempts, pause_s) for s in SOURCES)
         )
-    out: dict[str, dict[str, Any]] = {}
-    for source, res in zip(SOURCES, results, strict=True):
-        if isinstance(res, BaseException):
-            log.error("source %s failed", source, exc_info=res)
-            res = {
-                "source": source,
-                "status": "error",
-                "attempts": 0,
-                "latency_ms": 0,
-                "payload": None,
-                "message": _UNEXPECTED,
-            }
-        out[source] = res
-    return out
+    return dict(zip(SOURCES, results, strict=True))
