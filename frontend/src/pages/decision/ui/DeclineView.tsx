@@ -2,8 +2,6 @@ import type { Application, Decision } from '@/entities/application';
 import { routes } from '@/shared/config';
 import { formatMoney } from '@/shared/lib';
 import {
-  AssistantMark,
-  Button,
   ButtonLink,
   Callout,
   Cluster,
@@ -13,14 +11,11 @@ import {
   ProductCard,
   ReasonList,
   Section,
-  Stack,
   StepList,
   Text,
 } from '@/shared/ui';
-import { useAssistantPanel } from '@/widgets/assistant-panel';
 
 export function DeclineView({ app, decision }: { app: Application; decision: Decision }) {
-  const assistant = useAssistantPanel();
   return (
     <>
       <PageHeader
@@ -66,20 +61,16 @@ export function DeclineView({ app, decision }: { app: Application; decision: Dec
           }
         />
       ) : null}
-      <Section title={decision.improvePlan ? 'Что улучшить за 3 месяца' : 'Что дальше'} headingLevel={3}>
-        {decision.improvePlan ? <StepList items={decision.improvePlan} /> : null}
-        {decision.reapplyAfter ? (
-          <Callout icon="calendar">
-            Подать заявку снова можно после <b>{decision.reapplyAfter}</b>.
-          </Callout>
-        ) : null}
-        <Stack gap={0} selfStart>
-          <Button onClick={assistant.show}>
-            <AssistantMark size="sm" />
-            Поговорить с ассистентом
-          </Button>
-        </Stack>
-      </Section>
+      {decision.improvePlan || decision.reapplyAfter ? (
+        <Section title={decision.improvePlan ? 'Что улучшить за 3 месяца' : 'Когда подать снова'} headingLevel={3}>
+          {decision.improvePlan ? <StepList items={decision.improvePlan} /> : null}
+          {decision.reapplyAfter ? (
+            <Callout icon="calendar">
+              Подать заявку снова можно после <b>{decision.reapplyAfter}</b>.
+            </Callout>
+          ) : null}
+        </Section>
+      ) : null}
     </>
   );
 }

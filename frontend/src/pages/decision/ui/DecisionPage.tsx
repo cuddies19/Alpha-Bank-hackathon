@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Navigate, useParams } from 'react-router';
-import { ApplicationStateNotice, useApplication, type Application } from '@/entities/application';
+import { ApplicationStateNotice, isProcessing, useApplication, type Application } from '@/entities/application';
 import { routes } from '@/shared/config';
 import { AsyncContent, PageContainer } from '@/shared/ui';
 import { ApprovedView } from './ApprovedView';
@@ -32,8 +32,10 @@ function DecisionSwitch({
   answered: boolean;
   onAnswered: () => void;
 }) {
-  if (answered || app.status === 'needs_info') {
-    return <RequestedDocsView key={app.id} app={app} answered={answered} onAnswered={onAnswered} />;
+  const rechecking =
+    Boolean(app.recheckingDocuments) || (app.decision?.outcome === 'request' && isProcessing(app.status));
+  if (answered || rechecking || app.status === 'needs_info') {
+    return <RequestedDocsView key={app.id} app={app} answered={answered || rechecking} onAnswered={onAnswered} />;
   }
   if (app.status === 'issued') return <Navigate to={routes.client.issued(app.id)} replace />;
   const decision = app.decision;

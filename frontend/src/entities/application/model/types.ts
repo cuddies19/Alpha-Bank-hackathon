@@ -122,6 +122,7 @@ export interface Application {
   documents: ApplicationDocument[];
   timeline: Partial<Record<TimelineStep, string>>;
   stages?: TrackerStage[];
+  recheckingDocuments?: boolean;
   events: ApplicationEvent[];
   decision?: Decision;
   sourceIssue?: string;

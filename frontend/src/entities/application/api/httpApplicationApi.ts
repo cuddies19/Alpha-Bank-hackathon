@@ -351,6 +351,9 @@ function toApplication(dto: Detail, cashFlow: number): Application {
     documents: documentsOf(dto),
     timeline: timelineOf(dto),
     stages: stagesOf(dto),
+    recheckingDocuments:
+      (dto.status === 'submitted' || dto.status === 'processing') &&
+      (dto.history ?? []).some((h) => h.to_status === 'client_action'),
     events: eventsOf(dto),
     closedReason: CLOSED[dto.status],
     assignee: dto.taken_by_name ? shortPersonName(dto.taken_by_name) : undefined,
@@ -470,7 +473,7 @@ function caseOf(dto: Dto.BankApplicationDetail): ApplicationCase {
   const app = toApplication(dto, cashFlow);
   const score = dto.score;
   const riskClass = riskOf(score?.risk_class);
-  const rules = (dto.rules ?? []).map(ruleOf);
+  const rules = [...new Map((dto.rules ?? []).map((rule) => [rule.code, rule])).values()].map(ruleOf);
   const passed = rules.filter((r) => r.passed).length;
   const outcome = outcomeOf(dto.recommendation) ?? 'request';
   const checks = (dto.checks ?? []).map(sourceCheckOf);
