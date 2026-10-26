@@ -4,6 +4,10 @@
 
 ## Запуск
 
+Всё вместе в Docker, из корня репозитория: `docker compose up --build` → <http://localhost:3000>. Образ: `frontend/Dockerfile` (сборка на Node 22.14.0 и nginx, конфиг `frontend/nginx.conf`).
+
+Для разработки:
+
 ```bash
 docker compose up -d   # из корня репозитория: бэкенд на http://localhost:8000
 npm install

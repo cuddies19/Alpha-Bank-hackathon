@@ -97,6 +97,19 @@ services:
       timeout: 3s
       retries: 3
 
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_MODE: api
+        VITE_FEATURE_DEMO: ${VITE_FEATURE_DEMO:-true}
+        VITE_DEMO_PASSWORD: ${VITE_DEMO_PASSWORD:-${DEMO_PASSWORD:-demo123}}
+    ports:
+      - "${FRONTEND_PORT:-3000}:80"
+    depends_on:
+      api:
+        condition: service_healthy
+
 volumes:
   pgdata:
   uploads:
