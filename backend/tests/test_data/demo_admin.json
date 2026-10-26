@@ -1,0 +1,18 @@
+{
+  "modes": {
+    "egrul": {"mode": "ok", "delay_ms": null},
+    "fns": {"mode": "slow", "delay_ms": 1500},
+    "bki": {"mode": "error", "delay_ms": null},
+    "statement": {"mode": "down", "delay_ms": null}
+  },
+  "statuses": {"egrul": "ok", "fns": "warn", "bki": "fail", "statement": "unavailable"},
+  "unknown_mode": {"egrul": {"mode": "weird", "delay_ms": null}},
+  "all_unavailable": {"egrul": "unavailable", "fns": "unavailable", "bki": "unavailable", "statement": "unavailable"},
+  "set_status": [
+    {"status": "ok", "latency_ms": 700, "body": {"mode": "ok", "delay_ms": null}},
+    {"status": "warn", "latency_ms": 1500, "body": {"mode": "slow", "delay_ms": 1500}},
+    {"status": "warn", "latency_ms": null, "body": {"mode": "slow", "delay_ms": null}},
+    {"status": "fail", "latency_ms": null, "body": {"mode": "error", "delay_ms": null}},
+    {"status": "unavailable", "latency_ms": null, "body": {"mode": "down", "delay_ms": null}}
+  ]
+}

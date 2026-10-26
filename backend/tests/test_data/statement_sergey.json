@@ -1,0 +1,72 @@
+{
+  "status_code": 200,
+  "body": {
+    "months": [
+      {
+        "month": "2025-11",
+        "inflow_rub": 560000,
+        "outflow_rub": 500000
+      },
+      {
+        "month": "2025-12",
+        "inflow_rub": 640000,
+        "outflow_rub": 520000
+      },
+      {
+        "month": "2026-01",
+        "inflow_rub": 590000,
+        "outflow_rub": 510000
+      },
+      {
+        "month": "2026-02",
+        "inflow_rub": 580000,
+        "outflow_rub": 510000
+      },
+      {
+        "month": "2026-03",
+        "inflow_rub": 610000,
+        "outflow_rub": 515000
+      },
+      {
+        "month": "2026-04",
+        "inflow_rub": 620000,
+        "outflow_rub": 520000
+      },
+      {
+        "month": "2026-05",
+        "inflow_rub": 600000,
+        "outflow_rub": 515000
+      },
+      {
+        "month": "2026-06",
+        "inflow_rub": 570000,
+        "outflow_rub": 495000
+      },
+      {
+        "month": "2026-07",
+        "inflow_rub": 600000,
+        "outflow_rub": 510000
+      },
+      {
+        "month": "2026-08",
+        "inflow_rub": 630000,
+        "outflow_rub": 520000
+      },
+      {
+        "month": "2026-09",
+        "inflow_rub": 615000,
+        "outflow_rub": 520000
+      },
+      {
+        "month": "2026-10",
+        "inflow_rub": 605000,
+        "outflow_rub": 505000
+      }
+    ],
+    "balance_rub": 140000,
+    "avg_net_flow_rub": 90000,
+    "marketplace_share": 0.0,
+    "revenue_to_other_bank": false,
+    "inflow_30d_rub": 610000
+  }
+}

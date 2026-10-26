@@ -6,7 +6,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import applications, assistant, auth, bank, demo, loans, me, notifications
+from app.api import applications, assistant, auth, bank, demo, loans, me, notifications, score
 from app.config import get_settings
 from app.db import SessionLocal
 from app.errors import install_error_handlers
@@ -62,6 +62,7 @@ def create_app() -> FastAPI:
     app.include_router(bank.router)
     app.include_router(assistant.router)
     app.include_router(demo.router)
+    app.include_router(score.router)
 
     @app.get("/health", tags=["service"])
     def health() -> dict[str, str]:

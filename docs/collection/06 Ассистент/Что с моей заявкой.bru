@@ -1,0 +1,30 @@
+meta {
+  name: Что с моей заявкой
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{api}}/assistant/chat
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{igorToken}}
+}
+
+body:json {
+  {
+    "message": "Что с моей заявкой?"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.message: isString
+}
+
+docs {
+  Вопрос ассистенту: «Что с моей заявкой?».
+}

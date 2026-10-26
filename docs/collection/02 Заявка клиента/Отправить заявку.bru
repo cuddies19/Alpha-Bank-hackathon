@@ -1,0 +1,23 @@
+meta {
+  name: Отправить заявку
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{api}}/applications/{{igorAppId}}/submit
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{igorToken}}
+}
+
+assert {
+  res.status: in [200, 202]
+}
+
+docs {
+  Отправка заявки в банк. Дальше работает конвейер проверок.
+}

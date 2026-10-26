@@ -1,0 +1,20 @@
+{
+  "status_code": 200,
+  "body": {
+    "loans": [
+      {
+        "bank": "Банк Пример",
+        "balance_rub": 300000,
+        "monthly_payment_rub": 21000
+      },
+      {
+        "bank": "Банк Образец",
+        "balance_rub": 150000,
+        "monthly_payment_rub": 12000
+      }
+    ],
+    "max_overdue_days_12m": 74,
+    "max_overdue_days_24m": 74,
+    "inquiries_30d": 3
+  }
+}

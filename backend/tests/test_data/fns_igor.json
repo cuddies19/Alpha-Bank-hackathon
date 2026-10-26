@@ -1,0 +1,12 @@
+{
+  "status_code": 200,
+  "body": {
+    "tax_debt_rub": 0,
+    "address_unreliable": false,
+    "income_last_year_rub": 44800000,
+    "expenses_last_year_rub": 41900000,
+    "avg_headcount": 6,
+    "tax_regime": "usn_income",
+    "mass_director": false
+  }
+}

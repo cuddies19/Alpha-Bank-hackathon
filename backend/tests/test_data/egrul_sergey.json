@@ -1,0 +1,14 @@
+{
+  "status_code": 200,
+  "body": {
+    "inn": "770498765432",
+    "ogrnip": "319774600987654",
+    "entity_type": "ip",
+    "full_name": "ИП Фомин С. В.",
+    "status": "active",
+    "registration_date": "2019-05-20",
+    "okved": "45.20",
+    "address": "г. Москва, ул. Промышленная, д. 14",
+    "head_name": "Фомин С. В."
+  }
+}

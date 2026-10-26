@@ -1,0 +1,30 @@
+{
+  "parse": {
+    "valid": {"input": "bki=down, fns=slow", "expected": {"bki": "down", "fns": "slow"}},
+    "empty": {"input": "", "expected": {}},
+    "bad_entries": ["bki=broken", "nope=down"],
+    "error_text": "bad mode entry"
+  },
+  "listing": {"source": "egrul", "expected": {"mode": "ok", "delay_ms": null}},
+  "set_slow": {"source": "fns", "body": {"mode": "slow"}},
+  "set_slow_custom": {"source": "fns", "body": {"mode": "slow", "delay_ms": 5000}, "delay_ms": 5000},
+  "set_slow_statement": {"source": "statement", "body": {"mode": "slow", "delay_ms": 5000}, "delay_s": 5.0, "latency_header": "5000"},
+  "set_down": {"source": "bki", "body": {"mode": "down"}},
+  "set_error": {"source": "bki", "body": {"mode": "error"}},
+  "set_ok": {"source": "bki", "body": {"mode": "ok"}},
+  "error_fns": {"source": "fns", "body": {"mode": "error"}, "detail": {"detail": "source error"}},
+  "admin_errors": [
+    {"source": "nope", "body": {"mode": "ok"}, "status": 404},
+    {"source": "bki", "body": {"mode": "weird"}, "status": 422},
+    {"source": "bki", "body": {"mode": "slow", "delay_ms": -1}, "status": 422}
+  ],
+  "reset": {
+    "default_modes": "bki=down,fns=slow",
+    "changed": {"source": "egrul", "body": {"mode": "error"}},
+    "expected_modes": {"bki": "down", "egrul": "ok"},
+    "slow_source": "fns"
+  },
+  "jitter": {"ms": 250, "header": "250", "sleep_s": 0.25},
+  "error_response": {"status": 500, "detail": {"detail": "source error"}, "latency_header": "X-Mock-Latency-Ms"},
+  "live": {"down_hang_s": 2, "client_timeout_s": 1.0, "max_wait_s": 1.9}
+}

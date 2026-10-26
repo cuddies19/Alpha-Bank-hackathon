@@ -1,0 +1,46 @@
+{
+  "today": "2026-10-20",
+  "features": {
+    "business_age_months": 28,
+    "income_last_year_rub": 44800000,
+    "tax_debt_rub": 0,
+    "max_overdue_days_12m": 0,
+    "max_overdue_days_24m": 0,
+    "inquiries_30d": 2,
+    "avg_net_flow_rub": 610000,
+    "marketplace_share": 0.85,
+    "revenue_to_other_bank": false,
+    "monthly_payments_rub": 38000
+  },
+  "empty_features": {
+    "business_age_months": null,
+    "income_last_year_rub": null,
+    "tax_debt_rub": null,
+    "max_overdue_days_12m": null,
+    "max_overdue_days_24m": null,
+    "inquiries_30d": null,
+    "avg_net_flow_rub": null,
+    "marketplace_share": null,
+    "revenue_to_other_bank": null,
+    "monthly_payments_rub": null
+  },
+  "broken_features": {
+    "business_age_months": null,
+    "income_last_year_rub": null,
+    "tax_debt_rub": null,
+    "max_overdue_days_12m": null,
+    "max_overdue_days_24m": null,
+    "inquiries_30d": null,
+    "avg_net_flow_rub": null,
+    "marketplace_share": null,
+    "revenue_to_other_bank": null,
+    "monthly_payments_rub": null
+  },
+  "stub": {"status": "ok", "score": 640, "risk_class": "B", "source": "stub", "message": null},
+  "ds_ok": {"status": "ok", "score": 712, "risk_class": "B", "source": "ds", "message": null},
+  "ds_flaky": {"status": "ok", "score": 500, "risk_class": "D", "source": "ds", "message": null},
+  "timeout_message": "Скоринг не ответил, 3 попытки по 3 с",
+  "bad_request_message": "Скоринг: некорректный запрос (HTTP 422)",
+  "bad_body_message": "Скоринг вернул непонятный ответ",
+  "crash_message": "Ошибка при запросе к скорингу"
+}

@@ -1,0 +1,117 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lint:
+    name: lint (${{ matrix.service }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - service: mocks
+            format_paths: .
+          - service: backend
+            # Core code is checked by backend.yml; here we format only our parts.
+            format_paths: app/pipeline app/rules tests/unit tests/integration tests/conftest.py tests/source_mocks.py
+    defaults:
+      run:
+        working-directory: ${{ matrix.service }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: ${{ matrix.service }}/uv.lock
+          python-version: "3.12"
+
+      - name: Sync dependencies
+        run: uv sync --locked
+
+      - name: Ruff check
+        run: uv run ruff check .
+
+      - name: Ruff format
+        run: uv run ruff format --check ${{ matrix.format_paths }}
+
+  build:
+    name: docker build
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build images
+        run: docker compose build
+
+  unit:
+    name: unit tests (${{ matrix.service }})
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        service: [mocks, backend]
+    defaults:
+      run:
+        working-directory: ${{ matrix.service }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: ${{ matrix.service }}/uv.lock
+          python-version: "3.12"
+
+      - name: Sync dependencies
+        run: uv sync --locked
+
+      - name: Run unit tests
+        run: uv run pytest -q tests/unit
+
+  integration:
+    name: integration tests (${{ matrix.service }})
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        service: [mocks, backend]
+    defaults:
+      run:
+        working-directory: ${{ matrix.service }}
+    env:
+      DATABASE_URL: postgresql+psycopg://cabinet:cabinet@localhost:5432/cabinet
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: cabinet
+          POSTGRES_PASSWORD: cabinet
+          POSTGRES_DB: cabinet
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U cabinet -d cabinet"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: ${{ matrix.service }}/uv.lock
+          python-version: "3.12"
+
+      - name: Sync dependencies
+        run: uv sync --locked
+
+      - name: Run integration tests
+        run: uv run pytest -q tests/integration

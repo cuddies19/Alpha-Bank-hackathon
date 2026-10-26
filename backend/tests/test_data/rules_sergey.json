@@ -1,0 +1,137 @@
+{
+  "application": {
+    "inn": "770498765432",
+    "product": "credit",
+    "rate": 21.5,
+    "amount_rub": 1500000,
+    "term_months": 24,
+    "documents": []
+  },
+  "score": {
+    "risk_class": "B"
+  },
+  "sources": {
+    "egrul": {
+      "source": "egrul",
+      "status": "ok",
+      "payload": {
+        "inn": "770498765432",
+        "ogrnip": "319774600987654",
+        "entity_type": "ip",
+        "full_name": "ИП Фомин С. В.",
+        "status": "active",
+        "registration_date": "2019-05-20",
+        "okved": "45.20",
+        "address": "г. Москва, ул. Промышленная, д. 14",
+        "head_name": "Фомин С. В."
+      }
+    },
+    "fns": {
+      "source": "fns",
+      "status": "ok",
+      "payload": {
+        "tax_debt_rub": 0,
+        "address_unreliable": false,
+        "income_last_year_rub": 7400000,
+        "expenses_last_year_rub": 6800000,
+        "avg_headcount": 3,
+        "tax_regime": "usn_income",
+        "mass_director": false
+      }
+    },
+    "bki": {
+      "source": "bki",
+      "status": "ok",
+      "payload": {
+        "loans": [
+          {
+            "bank": "Банк Пример",
+            "balance_rub": 300000,
+            "monthly_payment_rub": 21000
+          },
+          {
+            "bank": "Банк Образец",
+            "balance_rub": 150000,
+            "monthly_payment_rub": 12000
+          }
+        ],
+        "max_overdue_days_12m": 74,
+        "max_overdue_days_24m": 74,
+        "inquiries_30d": 3
+      }
+    },
+    "statement": {
+      "source": "statement",
+      "status": "ok",
+      "payload": {
+        "months": [
+          {
+            "month": "2025-11",
+            "inflow_rub": 560000,
+            "outflow_rub": 500000
+          },
+          {
+            "month": "2025-12",
+            "inflow_rub": 640000,
+            "outflow_rub": 520000
+          },
+          {
+            "month": "2026-01",
+            "inflow_rub": 590000,
+            "outflow_rub": 510000
+          },
+          {
+            "month": "2026-02",
+            "inflow_rub": 580000,
+            "outflow_rub": 510000
+          },
+          {
+            "month": "2026-03",
+            "inflow_rub": 610000,
+            "outflow_rub": 515000
+          },
+          {
+            "month": "2026-04",
+            "inflow_rub": 620000,
+            "outflow_rub": 520000
+          },
+          {
+            "month": "2026-05",
+            "inflow_rub": 600000,
+            "outflow_rub": 515000
+          },
+          {
+            "month": "2026-06",
+            "inflow_rub": 570000,
+            "outflow_rub": 495000
+          },
+          {
+            "month": "2026-07",
+            "inflow_rub": 600000,
+            "outflow_rub": 510000
+          },
+          {
+            "month": "2026-08",
+            "inflow_rub": 630000,
+            "outflow_rub": 520000
+          },
+          {
+            "month": "2026-09",
+            "inflow_rub": 615000,
+            "outflow_rub": 520000
+          },
+          {
+            "month": "2026-10",
+            "inflow_rub": 605000,
+            "outflow_rub": 505000
+          }
+        ],
+        "balance_rub": 140000,
+        "avg_net_flow_rub": 90000,
+        "marketplace_share": 0.0,
+        "revenue_to_other_bank": false,
+        "inflow_30d_rub": 610000
+      }
+    }
+  }
+}

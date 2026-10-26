@@ -1,0 +1,23 @@
+meta {
+  name: Уведомления
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{api}}/notifications
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{igorToken}}
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  Уведомления клиента о ходе заявки.
+}

@@ -1,0 +1,31 @@
+meta {
+  name: Вход Ольга
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{api}}/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "login": "olga.kravtsova",
+    "password": "demo123"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.access_token: isString
+}
+
+script:post-response {
+  bru.setVar("olgaToken", res.body.access_token);
+}
+
+docs {
+  Вход как Ольга (olga.kravtsova). Токен сохраняется в переменную olgaToken.
+}

@@ -46,6 +46,18 @@ DATABASE_URL=sqlite:///./local.db uv run uvicorn app.main:app --reload
 | `seeds/` | демо-данные | DS |
 | `docs/` | OpenAPI, ER-диаграмма, машина состояний | Евгений / Интеграции |
 
+## Интеграции и демо
+
+Схема и пайплайн: [docs/architecture.md](docs/architecture.md). Контракты источников: [docs/integrations.md](docs/integrations.md).
+
+- Запуск: `docker compose up --build` (API, воркер, Postgres, моки на порту 8090).
+- Скорость конвейера: `PIPELINE_SPEED=fast` — пауза между этапами 1 с вместо 5 с.
+- Сломать источник для жюри: экран `/demo` (`POST /demo/sources/{source}`) или напрямую админка моков, например `curl -X POST localhost:8090/_admin/sources/bki -H 'content-type: application/json' -d '{"mode":"down"}'`. Вернуть всё: `POST /demo/reset`.
+- Коллекция Bruno: `docs/collection` (описание в её README).
+- Переменные `PIPELINE_*`: `SPEED`, `SOURCE_TIMEOUT_S`, `SOURCE_ATTEMPTS`, `RETRY_PAUSE_S`, `MOCKS_URL`, `SCORING_URL`, `SAFETY_POLL_S`.
+- Переменные `ASSISTANT_*`: `MODE` (`auto`, `llm`, `rules`), `OLLAMA_URL`, `MODEL` (по умолчанию `qwen2.5:3b-instruct`), `TIMEOUT_S`. Ollama в compose нет: ассистент только ходит по адресу `ASSISTANT_OLLAMA_URL`, без него отвечает по правилам.
+- Сторонние компоненты: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
 ## Проверки
 
 ```bash

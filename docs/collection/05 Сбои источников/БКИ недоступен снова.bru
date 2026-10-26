@@ -1,0 +1,25 @@
+meta {
+  name: БКИ недоступен снова
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{mocks}}/_admin/sources/bki
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "mode": "down"
+  }
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  Снова выключаем БКИ перед заявкой Анны.
+}

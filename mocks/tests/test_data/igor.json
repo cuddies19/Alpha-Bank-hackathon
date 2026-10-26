@@ -1,0 +1,35 @@
+{
+  "inn": "7701234567",
+  "bki_request": {"inn": "7701234567", "consent_id": "cns-1"},
+  "egrul": {
+    "inn": "7701234567",
+    "entity_type": "ul",
+    "status": "active",
+    "registration_date": "2024-06-12",
+    "okved": "47.91",
+    "head_name": "Соколов И. А."
+  },
+  "fns": {
+    "tax_debt_rub": 0,
+    "address_unreliable": false,
+    "income_last_year_rub": 44800000,
+    "expenses_last_year_rub": 41900000,
+    "avg_headcount": 6
+  },
+  "bki": {
+    "loan": {"balance_rub": 450000, "monthly_payment_rub": 38000},
+    "loans_count": 1,
+    "max_overdue_days_12m": 0,
+    "max_overdue_days_24m": 0,
+    "inquiries_30d": 2
+  },
+  "statement": {
+    "avg_net_flow_rub": 610000,
+    "balance_rub": 1240500,
+    "inflow_30d_rub": 3860000,
+    "marketplace_share": 0.85,
+    "revenue_to_other_bank": false,
+    "months_count": 12
+  },
+  "statement_months": {"params": {"months": 3}, "count": 3}
+}

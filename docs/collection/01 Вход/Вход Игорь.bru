@@ -1,0 +1,31 @@
+meta {
+  name: Вход Игорь
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{api}}/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "login": "igor.sokolov",
+    "password": "demo123"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.access_token: isString
+}
+
+script:post-response {
+  bru.setVar("igorToken", res.body.access_token);
+}
+
+docs {
+  Вход как Игорь (igor.sokolov). Токен сохраняется в переменную igorToken.
+}

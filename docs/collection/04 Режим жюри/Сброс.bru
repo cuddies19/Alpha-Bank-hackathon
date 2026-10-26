@@ -1,0 +1,23 @@
+meta {
+  name: Сброс
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{api}}/demo/reset
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{olgaToken}}
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  Возвращает демо-данные и источники в исходное состояние.
+}

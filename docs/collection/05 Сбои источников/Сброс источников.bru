@@ -1,0 +1,19 @@
+meta {
+  name: Сброс источников
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{mocks}}/_admin/sources/_reset
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  Все источники снова в режиме ok.
+}

@@ -1,0 +1,37 @@
+meta {
+  name: Создать заявку Анны
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{api}}/applications
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{annaToken}}
+}
+
+body:json {
+  {
+    "product_id": 2,
+    "amount": 1000000,
+    "term_months": 24,
+    "purpose": "Закупка оборудования",
+    "consents": {"personal_data": true, "bki_request": true, "terms": true}
+  }
+}
+
+assert {
+  res.status: in [200, 201]
+}
+
+script:post-response {
+  bru.setVar("annaAppId", res.body.id);
+}
+
+docs {
+  Анна создаёт заявку на кредит 1 000 000 на 24 месяца.
+}

@@ -1,0 +1,8 @@
+[
+  {"attempts": 1, "timeout": 2.5, "text": "1 попытка по 2.5 с"},
+  {"attempts": 3, "timeout": 3, "text": "3 попытки по 3 с"},
+  {"attempts": 5, "timeout": 3, "text": "5 попыток по 3 с"},
+  {"attempts": 11, "timeout": 3, "text": "11 попыток по 3 с"},
+  {"attempts": 21, "timeout": 3, "text": "21 попытка по 3 с"},
+  {"attempts": 12, "timeout": 3, "text": "12 попыток по 3 с"}
+]

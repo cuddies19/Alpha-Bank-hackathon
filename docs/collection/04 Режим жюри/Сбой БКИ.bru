@@ -1,0 +1,29 @@
+meta {
+  name: Сбой БКИ
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{api}}/demo/sources/bki
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{olgaToken}}
+}
+
+body:json {
+  {
+    "status": "unavailable"
+  }
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  Делает БКИ недоступным со стороны банка.
+}

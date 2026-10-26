@@ -1,0 +1,23 @@
+meta {
+  name: Продукты
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{api}}/products
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{igorToken}}
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  Каталог продуктов банка: овердрафт, кредит, кредитная линия.
+}

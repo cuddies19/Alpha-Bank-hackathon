@@ -1,0 +1,30 @@
+meta {
+  name: Какой продукт подойдёт
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{api}}/assistant/chat
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{igorToken}}
+}
+
+body:json {
+  {
+    "message": "Какой продукт подойдёт для пополнения оборотных средств?"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.message: isString
+}
+
+docs {
+  Вопрос ассистенту: «Какой продукт подойдёт для пополнения оборотных средств?».
+}

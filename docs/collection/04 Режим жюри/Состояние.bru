@@ -1,0 +1,23 @@
+meta {
+  name: Состояние
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{api}}/demo/state
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{olgaToken}}
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  Текущее состояние демо: источники и скорость.
+}

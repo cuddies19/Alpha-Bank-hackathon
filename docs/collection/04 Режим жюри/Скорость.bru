@@ -1,0 +1,29 @@
+meta {
+  name: Скорость
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{api}}/demo/speed
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{olgaToken}}
+}
+
+body:json {
+  {
+    "multiplier": 10
+  }
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  Ускоряет конвейер в 10 раз.
+}
