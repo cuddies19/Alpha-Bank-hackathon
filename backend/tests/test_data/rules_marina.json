@@ -1,0 +1,132 @@
+{
+  "application": {
+    "inn": "7703345678",
+    "product": "credit",
+    "rate": 21.5,
+    "amount_rub": 4500000,
+    "term_months": 36,
+    "documents": []
+  },
+  "score": {
+    "risk_class": "B"
+  },
+  "sources": {
+    "egrul": {
+      "source": "egrul",
+      "status": "ok",
+      "payload": {
+        "inn": "7703345678",
+        "ogrn": "1187746123456",
+        "entity_type": "ul",
+        "full_name": "ООО «Лён и Дуб»",
+        "status": "active",
+        "registration_date": "2018-03-05",
+        "okved": "31.09",
+        "address": "г. Москва, ул. Лесная, д. 3",
+        "head_name": "Орлова М. Н."
+      }
+    },
+    "fns": {
+      "source": "fns",
+      "status": "ok",
+      "payload": {
+        "tax_debt_rub": 0,
+        "address_unreliable": false,
+        "income_last_year_rub": 96000000,
+        "expenses_last_year_rub": 89500000,
+        "avg_headcount": 38,
+        "tax_regime": "usn_income_expense",
+        "mass_director": false
+      }
+    },
+    "bki": {
+      "source": "bki",
+      "status": "ok",
+      "payload": {
+        "loans": [
+          {
+            "bank": "Банк Пример",
+            "balance_rub": 2100000,
+            "monthly_payment_rub": 95000
+          }
+        ],
+        "max_overdue_days_12m": 0,
+        "max_overdue_days_24m": 0,
+        "inquiries_30d": 1
+      }
+    },
+    "statement": {
+      "source": "statement",
+      "status": "ok",
+      "payload": {
+        "months": [
+          {
+            "month": "2025-11",
+            "inflow_rub": 6100000,
+            "outflow_rub": 5000000
+          },
+          {
+            "month": "2025-12",
+            "inflow_rub": 6400000,
+            "outflow_rub": 5150000
+          },
+          {
+            "month": "2026-01",
+            "inflow_rub": 6000000,
+            "outflow_rub": 4850000
+          },
+          {
+            "month": "2026-02",
+            "inflow_rub": 5900000,
+            "outflow_rub": 4850000
+          },
+          {
+            "month": "2026-03",
+            "inflow_rub": 6200000,
+            "outflow_rub": 5000000
+          },
+          {
+            "month": "2026-04",
+            "inflow_rub": 6300000,
+            "outflow_rub": 5120000
+          },
+          {
+            "month": "2026-05",
+            "inflow_rub": 6100000,
+            "outflow_rub": 4980000
+          },
+          {
+            "month": "2026-06",
+            "inflow_rub": 6000000,
+            "outflow_rub": 4860000
+          },
+          {
+            "month": "2026-07",
+            "inflow_rub": 5950000,
+            "outflow_rub": 4850000
+          },
+          {
+            "month": "2026-08",
+            "inflow_rub": 6250000,
+            "outflow_rub": 5040000
+          },
+          {
+            "month": "2026-09",
+            "inflow_rub": 6150000,
+            "outflow_rub": 4960000
+          },
+          {
+            "month": "2026-10",
+            "inflow_rub": 6200000,
+            "outflow_rub": 5090000
+          }
+        ],
+        "balance_rub": 3400000,
+        "avg_net_flow_rub": 1150000,
+        "marketplace_share": 0.05,
+        "revenue_to_other_bank": true,
+        "inflow_30d_rub": 6200000
+      }
+    }
+  }
+}

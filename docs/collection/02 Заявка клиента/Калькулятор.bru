@@ -1,0 +1,24 @@
+meta {
+  name: Калькулятор
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{api}}/calculator?amount=3000000&term_months=18&product_id=3
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{igorToken}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.monthly_payment: isNumber
+}
+
+docs {
+  Считает платёж по кредитной линии 3 000 000 на 18 месяцев.
+}

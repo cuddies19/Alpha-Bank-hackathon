@@ -1448,7 +1448,7 @@
           "assistant"
         ],
         "summary": "Chat",
-        "description": "Контрактная заглушка. Полноценный ассистент — зона Интеграций.",
+        "description": "Ассистент: отвечает на вопросы клиента, числа берёт из сервисов банка.",
         "operationId": "chat_assistant_chat_post",
         "requestBody": {
           "content": {
@@ -1617,6 +1617,48 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/DemoStateResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/score": {
+      "post": {
+        "tags": [
+          "scoring"
+        ],
+        "summary": "Score",
+        "description": "Return a preliminary demo risk score for the supplied company features.",
+        "operationId": "score_score_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScoreRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScoreResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
               }
             }
@@ -3985,6 +4027,75 @@
         ],
         "title": "RuleResultOut"
       },
+      "ScoreFeatures": {
+        "properties": {
+          "business_age_months": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Business Age Months"
+          },
+          "income_last_year_rub": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Income Last Year Rub"
+          },
+          "tax_debt_rub": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Tax Debt Rub"
+          },
+          "max_overdue_days_12m": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Max Overdue Days 12M"
+          },
+          "max_overdue_days_24m": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Max Overdue Days 24M"
+          },
+          "inquiries_30d": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Inquiries 30D"
+          },
+          "avg_net_flow_rub": {
+            "type": "integer",
+            "title": "Avg Net Flow Rub"
+          },
+          "marketplace_share": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Marketplace Share"
+          },
+          "revenue_to_other_bank": {
+            "type": "boolean",
+            "title": "Revenue To Other Bank"
+          },
+          "monthly_payments_rub": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Monthly Payments Rub"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "business_age_months",
+          "income_last_year_rub",
+          "tax_debt_rub",
+          "max_overdue_days_12m",
+          "max_overdue_days_24m",
+          "inquiries_30d",
+          "avg_net_flow_rub",
+          "marketplace_share",
+          "revenue_to_other_bank",
+          "monthly_payments_rub"
+        ],
+        "title": "ScoreFeatures",
+        "description": "Exactly the ten features agreed for POST /score."
+      },
       "ScoreOut": {
         "properties": {
           "score": {
@@ -4022,6 +4133,47 @@
           "created_at"
         ],
         "title": "ScoreOut"
+      },
+      "ScoreRequest": {
+        "properties": {
+          "inn": {
+            "type": "string",
+            "pattern": "^\\d{10}(\\d{2})?$",
+            "title": "Inn",
+            "description": "ИНН юридического лица или ИП"
+          },
+          "features": {
+            "$ref": "#/components/schemas/ScoreFeatures"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "inn",
+          "features"
+        ],
+        "title": "ScoreRequest"
+      },
+      "ScoreResponse": {
+        "properties": {
+          "score": {
+            "type": "integer",
+            "maximum": 850.0,
+            "minimum": 300.0,
+            "title": "Score"
+          },
+          "risk_class": {
+            "type": "string",
+            "pattern": "^[A-E]$",
+            "title": "Risk Class"
+          }
+        },
+        "type": "object",
+        "required": [
+          "score",
+          "risk_class"
+        ],
+        "title": "ScoreResponse"
       },
       "SignRequest": {
         "properties": {

@@ -1,0 +1,6 @@
+{
+  "count": 4,
+  "required_keys": ["inn", "egrul", "fns", "bki", "statement"],
+  "months_count": 12,
+  "igor": {"file": "7701234567.json", "avg_net_flow_rub": 610000}
+}

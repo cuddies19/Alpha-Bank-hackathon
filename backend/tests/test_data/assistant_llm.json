@@ -1,0 +1,95 @@
+{
+  "settings": {
+    "auto": {"mode": "auto", "ollama_url": "http://ollama:11434", "model": "test-model", "timeout_s": 5},
+    "llm": {"mode": "llm", "ollama_url": "http://ollama:11434", "model": "test-model", "timeout_s": 5},
+    "rules_with_url": {"mode": "rules", "ollama_url": "http://ollama:11434"},
+    "zero_timeout": {"mode": "auto", "ollama_url": "http://ollama:11434", "timeout_s": 0},
+    "auto_no_url": {"mode": "auto", "ollama_url": ""}
+  },
+  "plain_message": "Привет",
+  "answers": [
+    {
+      "name": "match_no_products",
+      "message": "Подбери продукт",
+      "no_products": true,
+      "replies": [
+        {"json": {"message": {"role": "assistant", "content": "", "tool_calls": [{"function": {"name": "match_products", "arguments": {}}}]}}},
+        {"json": {"message": {"role": "assistant", "content": "Продуктов нет."}}}
+      ],
+      "text": "Продуктов нет.",
+      "actions": [],
+      "tool_results": ["items"]
+    },
+    {
+      "name": "calc_payment",
+      "message": "Какой платёж при 3 млн на 18 месяцев?",
+      "replies": [
+        {"json": {"message": {"role": "assistant", "content": "", "tool_calls": [{"function": {"name": "calc_payment", "arguments": {"amount": 3000000, "term": 18}}}]}}},
+        {"json": {"message": {"role": "assistant", "content": "Платёж около 196 460 ₽ в месяц."}}}
+      ],
+      "text": "Платёж около 196 460 ₽ в месяц.",
+      "actions": ["open_calculator"],
+      "tool_results": ["196460"]
+    },
+    {
+      "name": "match_and_account",
+      "message": "Подбери продукт",
+      "replies": [
+        {"json": {"message": {"role": "assistant", "content": "", "tool_calls": [
+          {"function": {"name": "match_products", "arguments": {"task": "закупка"}}},
+          {"function": {"name": "account_summary"}}
+        ]}}},
+        {"json": {"message": {"role": "assistant", "content": "Подойдёт кредит."}}}
+      ],
+      "text": "Подойдёт кредит.",
+      "actions": ["open_calculator", "open_financing"],
+      "tool_results": ["product_name", "balance"]
+    },
+    {
+      "name": "application_tools",
+      "message": "Что с заявкой?",
+      "apps": ["igor_draft"],
+      "application_id": true,
+      "replies": [
+        {"json": {"message": {"role": "assistant", "content": "", "tool_calls": [
+          {"function": {"name": "application_status", "arguments": {"application_id": ""}}},
+          {"function": {"name": "explain_decision", "arguments": {"application_id": 0}}},
+          {"function": {"name": "completeness_check", "arguments": {}}}
+        ]}}},
+        {"json": {"message": {"role": "assistant", "content": "Заявка в черновике."}}}
+      ],
+      "text": "Заявка в черновике.",
+      "actions": ["open_application"],
+      "tool_results": ["Черновик"]
+    },
+    {
+      "name": "tool_errors",
+      "message": "Посчитай",
+      "replies": [
+        {"json": {"message": {"role": "assistant", "content": "", "tool_calls": [
+          {"function": {"name": "calc_payment", "arguments": {"term": 12}}},
+          {"function": {"name": "calc_payment", "arguments": {"amount": 0, "term": 12}}},
+          {"function": {"name": "calc_payment", "arguments": {"amount": "9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999", "term": 12}}},
+          {"function": {"name": "delete_everything", "arguments": {}}}
+        ]}}},
+        {"json": {"message": {"role": "assistant", "content": "  Не получилось посчитать.  "}}}
+      ],
+      "text": "Не получилось посчитать.",
+      "actions": [],
+      "tool_results": ["неверные аргументы", "больше нуля", "неизвестный инструмент", "int too large"]
+    }
+  ],
+  "failures": [
+    {"name": "timeout", "replies": [{"error": "timeout"}]},
+    {"name": "http_500", "replies": [{"status": 500, "json": {"error": "boom"}}]},
+    {"name": "bad_json", "replies": [{"text": "not json"}]},
+    {"name": "no_message", "replies": [{"json": {"done": true}}]},
+    {"name": "empty_text", "replies": [{"json": {"message": {"role": "assistant", "content": "   "}}}]},
+    {"name": "never_finishes", "replies": [
+      {"json": {"message": {"role": "assistant", "content": "", "tool_calls": [{"function": {"name": "account_summary"}}]}}},
+      {"json": {"message": {"role": "assistant", "content": "", "tool_calls": [{"function": {"name": "account_summary"}}]}}},
+      {"json": {"message": {"role": "assistant", "content": "", "tool_calls": [{"function": {"name": "account_summary"}}]}}},
+      {"json": {"message": {"role": "assistant", "content": "", "tool_calls": [{"function": {"name": "account_summary"}}]}}}
+    ]}
+  ]
+}

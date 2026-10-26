@@ -1,0 +1,23 @@
+meta {
+  name: Очередь
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{api}}/bank/applications
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{olgaToken}}
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  Очередь заявок андеррайтера.
+}

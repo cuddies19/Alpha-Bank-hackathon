@@ -1,0 +1,75 @@
+{
+  "igor": {
+    "inn": "7701234567",
+    "consent_id": "cns-1",
+    "product": "credit_line",
+    "amount": 3000000,
+    "term_months": 18,
+    "consents": {"personal_data": true, "bki_request": true, "terms": true},
+    "documents": ["financial_statements"]
+  },
+  "with_document": {
+    "inn": "7701234567",
+    "product": "overdraft",
+    "amount": 1000000,
+    "term_months": 12,
+    "consents": {"bki_request": true},
+    "documents": ["statement"]
+  },
+  "with_passport": {
+    "inn": "7701234567",
+    "product": "overdraft",
+    "amount": 1000000,
+    "term_months": 12,
+    "consents": {"bki_request": true},
+    "documents": ["passport"]
+  },
+  "no_consent": {
+    "inn": "7701234567",
+    "product": "overdraft",
+    "amount": 1000000,
+    "term_months": 12,
+    "consents": {"bki_request": false},
+    "documents": []
+  },
+  "empty_inn": {
+    "inn": "",
+    "product": "overdraft",
+    "amount": 1000000,
+    "term_months": 12,
+    "consents": {},
+    "documents": []
+  },
+  "any_purpose_large": {
+    "inn": "7701234567",
+    "product": "credit",
+    "amount": 4500000,
+    "term_months": 12,
+    "consents": {"bki_request": true},
+    "documents": []
+  },
+  "anna": {
+    "inn": "770212345678",
+    "product": "overdraft",
+    "amount": 500000,
+    "term_months": 12,
+    "consents": {"personal_data": true, "bki_request": true, "terms": true},
+    "documents": ["financial_statements"]
+  },
+  "marina": {
+    "inn": "7703345678",
+    "product": "credit",
+    "amount": 4500000,
+    "term_months": 36,
+    "consents": {"personal_data": true, "bki_request": true, "terms": true},
+    "documents": []
+  },
+  "sergey": {
+    "inn": "770498765432",
+    "product": "credit",
+    "amount": 1500000,
+    "term_months": 24,
+    "consents": {"personal_data": true, "bki_request": true, "terms": true},
+    "documents": ["financial_statements"]
+  }
+}

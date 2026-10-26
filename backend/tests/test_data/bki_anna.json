@@ -1,0 +1,9 @@
+{
+  "status_code": 200,
+  "body": {
+    "loans": [],
+    "max_overdue_days_12m": 0,
+    "max_overdue_days_24m": 0,
+    "inquiries_30d": 0
+  }
+}

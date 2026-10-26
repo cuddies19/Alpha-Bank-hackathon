@@ -1,0 +1,23 @@
+meta {
+  name: Отправить заявку Анны
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{api}}/applications/{{annaAppId}}/submit
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{annaToken}}
+}
+
+assert {
+  res.status: in [200, 202]
+}
+
+docs {
+  Отправка при выключенном БКИ.
+}

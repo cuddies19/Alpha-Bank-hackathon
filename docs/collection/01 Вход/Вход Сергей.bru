@@ -1,0 +1,31 @@
+meta {
+  name: Вход Сергей
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{api}}/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "login": "sergey.fomin",
+    "password": "demo123"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.access_token: isString
+}
+
+script:post-response {
+  bru.setVar("sergeyToken", res.body.access_token);
+}
+
+docs {
+  Вход как Сергей (sergey.fomin). Токен сохраняется в переменную sergeyToken.
+}

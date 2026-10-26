@@ -290,6 +290,9 @@ def application_detail(application: Application) -> ApplicationDetail:
 def recommendation_for(application: Application) -> tuple[str | None, str | None]:
     if application.status in {ApplicationStatus.draft, ApplicationStatus.submitted}:
         return None, None
+    saved = application.recommendation
+    if saved and saved.get("outcome") and saved.get("reason"):
+        return DecisionOutcome(saved["outcome"]).value, saved["reason"]
     score = application.latest_score
     failed = [rule for rule in application.rule_results if not rule.passed]
     if failed:

@@ -1,0 +1,24 @@
+meta {
+  name: Статус заявки Анны
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{api}}/applications/{{annaAppId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{annaToken}}
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  Ожидаем статус manual_review с причиной «Источник недоступен».
+  Повторите запрос, если конвейер ещё работает.
+}

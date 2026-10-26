@@ -1,0 +1,157 @@
+{
+  "applications": {
+    "igor_draft": {
+      "owner": "igor.sokolov",
+      "product_code": "credit_line",
+      "amount": 3000000,
+      "term_months": 18,
+      "purpose": "Закупка партии",
+      "consents": {"personal_data": true, "bki_request": true, "terms": true},
+      "status": "draft"
+    },
+    "igor_empty": {
+      "owner": "igor.sokolov",
+      "product_code": "credit_line",
+      "amount": 3000000,
+      "term_months": 18,
+      "purpose": "Закупка партии",
+      "consents": {"personal_data": true},
+      "status": "draft"
+    },
+    "igor_processing": {
+      "owner": "igor.sokolov",
+      "product_code": "credit_line",
+      "amount": 3000000,
+      "term_months": 18,
+      "purpose": "Закупка партии",
+      "consents": {"personal_data": true, "bki_request": true, "terms": true},
+      "status": "processing",
+      "submitted_at": "2026-10-01T10:00:00"
+    },
+    "igor_counter": {
+      "owner": "igor.sokolov",
+      "product_code": "credit_line",
+      "amount": 3000000,
+      "term_months": 18,
+      "purpose": "Закупка партии",
+      "consents": {"personal_data": true, "bki_request": true, "terms": true},
+      "status": "counter_offer",
+      "submitted_at": "2026-10-01T10:00:00",
+      "decision": {
+        "outcome": "counter",
+        "amount": 2500000,
+        "term_months": 12,
+        "rate": 22.0,
+        "monthly_payment": 237000,
+        "client_message": "Предлагаем меньшую сумму.",
+        "internal_comment": "SECRET-INTERNAL",
+        "decided_at": "2026-10-02T10:00:00"
+      }
+    },
+    "igor_rejected": {
+      "owner": "igor.sokolov",
+      "product_code": "credit_line",
+      "amount": 3000000,
+      "term_months": 18,
+      "purpose": "Закупка партии",
+      "consents": {"personal_data": true, "bki_request": true, "terms": true},
+      "status": "rejected",
+      "submitted_at": "2026-10-01T10:00:00",
+      "decision": {
+        "outcome": "decline",
+        "decline_reason": "Высокая долговая нагрузка.",
+        "internal_comment": "SECRET-INTERNAL",
+        "decided_at": "2026-10-02T10:00:00"
+      }
+    },
+    "igor_request": {
+      "owner": "igor.sokolov",
+      "product_code": "credit_line",
+      "amount": 3000000,
+      "term_months": 18,
+      "purpose": "Закупка партии",
+      "consents": {"personal_data": true, "bki_request": true, "terms": true},
+      "status": "client_action",
+      "submitted_at": "2026-10-01T10:00:00",
+      "decision": {
+        "outcome": "request",
+        "requested_documents": ["Выписка за 6 месяцев"],
+        "decided_at": "2026-10-02T10:00:00"
+      }
+    },
+    "anna_draft": {
+      "owner": "anna.belova",
+      "product_code": "credit",
+      "amount": 700000,
+      "term_months": 12,
+      "purpose": "Ремонт",
+      "consents": {},
+      "status": "draft"
+    }
+  },
+  "route_message": "Привет",
+  "bad_ids": [0, 2147483648],
+  "payment_check": {"amount": 3000000, "term": 18},
+  "loan": {"owner": "igor.sokolov", "application": "igor_draft", "amount": 1000000, "term_months": 12, "rate": 21.5, "monthly_payment": 92000},
+  "chat_cases": [
+    {"name": "payment", "user": "igor.sokolov", "message": "Какой платёж будет при 3 млн на 18 месяцев?", "contains": ["Кредит на любые цели", "3 000 000 ₽", "18 мес"], "actions": ["open_calculator"]},
+    {"name": "payment_no_numbers", "user": "igor.sokolov", "message": "Посчитай платёж", "contains": ["Назовите сумму и срок"], "actions": ["open_calculator"]},
+    {"name": "payment_bad_amount", "user": "igor.sokolov", "message": "Платёж при 0 млн на 12 мес", "contains": ["больше нуля"], "actions": ["open_calculator"]},
+    {"name": "finance", "user": "igor.sokolov", "message": "Нужны деньги на закупку к распродаже", "contains": ["Подойдёт", "предварительная оценка"], "actions": ["open_calculator", "open_financing"]},
+    {"name": "finance_with_numbers", "user": "igor.sokolov", "message": "Хочу кредит 500 тыс на год", "contains": ["500 000 ₽", "12 мес"], "actions": ["open_calculator", "open_financing"]},
+    {"name": "payment_huge_numbers", "user": "igor.sokolov", "message": "Платёж при 999999999999999999999999999999 млн на 999999999999999999999999999999 мес", "contains": ["платёж около"], "actions": ["open_calculator"]},
+    {"name": "payment_no_products", "user": "igor.sokolov", "no_products": true, "message": "Платёж при 3 млн на 18 мес", "contains": ["не удалось подобрать"], "actions": ["open_calculator"]},
+    {"name": "finance_no_products", "user": "igor.sokolov", "no_products": true, "message": "Нужны деньги на закупку", "contains": ["не удалось подобрать"], "actions": ["open_financing"]},
+    {"name": "unknown", "user": "igor.sokolov", "message": "Привет", "contains": ["Опишите задачу бизнеса"], "actions": ["open_financing"]},
+    {"name": "account_no_loans", "user": "igor.sokolov", "message": "Какой у меня баланс?", "contains": ["Действующих кредитов нет", "остаток на счёте"], "actions": ["open_financing"]},
+    {"name": "account_loans", "user": "igor.sokolov", "apps": ["igor_draft"], "loan": true, "message": "Какой у меня баланс?", "contains": ["Платежи по действующим кредитам: "], "actions": ["open_financing"]},
+    {"name": "account_underwriter", "user": "olga.kravtsova", "message": "Какой баланс?", "contains": ["кабинете клиента"], "actions": []},
+    {"name": "status_none", "user": "igor.sokolov", "message": "Что с моей заявкой?", "contains": ["нет заявок"], "actions": ["open_financing"]},
+    {"name": "status_draft", "user": "igor.sokolov", "apps": ["igor_draft"], "message": "Что с моей заявкой?", "contains": ["Черновик"], "actions": ["open_application"]},
+    {"name": "status_latest", "user": "igor.sokolov", "apps": ["igor_draft", "igor_processing"], "message": "Что с моей заявкой?", "contains": ["Проверяем данные", "Сейчас этап"], "actions": ["open_application"]},
+    {"name": "status_hides_internal", "user": "igor.sokolov", "apps": ["igor_counter"], "message": "Что с моей заявкой?", "contains": ["Встречное предложение", "Решение банка"], "not_contains": ["SECRET-INTERNAL"], "actions": ["open_application"]},
+    {"name": "status_rejected", "user": "igor.sokolov", "apps": ["igor_rejected"], "message": "Статус заявки", "contains": ["Отказ"], "not_contains": ["SECRET-INTERNAL", "Сейчас этап"], "actions": ["open_application"]},
+    {"name": "status_other_user", "user": "igor.sokolov", "apps": ["anna_draft"], "ref": "anna_draft", "message": "Что с заявкой?", "contains": ["нет заявок"], "not_contains": ["Черновик"], "actions": ["open_financing"]},
+    {"name": "status_given_id", "user": "igor.sokolov", "apps": ["igor_draft", "igor_processing"], "ref": "igor_draft", "message": "Что с заявкой?", "contains": ["Черновик"], "actions": ["open_application"]},
+    {"name": "decision_none", "user": "igor.sokolov", "message": "Почему отказ?", "contains": ["нет заявок"], "actions": ["open_financing"]},
+    {"name": "decision_missing", "user": "igor.sokolov", "apps": ["igor_processing"], "message": "Какое решение по заявке?", "contains": ["решения пока нет"], "actions": ["open_application"]},
+    {"name": "decision_counter", "user": "igor.sokolov", "apps": ["igor_counter"], "message": "Какое решение по заявке?", "contains": ["Встречное предложение", "2 500 000 ₽", "12 мес", "237 000 ₽", "Предлагаем меньшую сумму"], "not_contains": ["SECRET-INTERNAL"], "actions": ["open_application"]},
+    {"name": "decision_declined", "user": "igor.sokolov", "apps": ["igor_rejected"], "message": "Почему отказ?", "contains": ["Высокая долговая нагрузка"], "not_contains": ["SECRET-INTERNAL"], "actions": ["open_application"]},
+    {"name": "decision_request", "user": "igor.sokolov", "apps": ["igor_request"], "message": "Какое решение у банка?", "contains": ["Выписка за 6 месяцев"], "actions": ["open_application"]},
+    {"name": "complete_none", "user": "igor.sokolov", "message": "Чего не хватает?", "contains": ["нет заявок"], "actions": ["open_financing"]},
+    {"name": "complete_ready", "user": "igor.sokolov", "apps": ["igor_draft"], "message": "Чего не хватает для отправки?", "contains": ["можно отправлять"], "actions": ["open_application"]},
+    {"name": "complete_missing", "user": "igor.sokolov", "apps": ["igor_empty"], "message": "Чего не хватает для отправки?", "contains": ["согласие на запрос в БКИ", "согласие с условиями"], "actions": ["open_application"]},
+    {"name": "complete_sent", "user": "igor.sokolov", "apps": ["igor_processing"], "message": "Можно отправить заявку?", "contains": ["уже отправлена"], "actions": ["open_application"]},
+    {"name": "documents_generic", "user": "igor.sokolov", "message": "Какие документы понадобятся?", "contains": ["отчётность и выписка"], "actions": ["open_documents"]},
+    {"name": "documents_requested", "user": "igor.sokolov", "apps": ["igor_request"], "message": "Какие документы нужны?", "contains": ["Выписка за 6 месяцев"], "actions": ["open_documents"]}
+  ],
+  "amounts": [
+    ["3 млн", 3000000],
+    ["1,5 млн рублей", 1500000],
+    ["500 тыс", 500000],
+    ["1 200 000", 1200000],
+    ["2500000", 2500000],
+    ["999999999999999999999999999999 млн", 999999999000000],
+    ["999999999999999999999999999999", null],
+    ["на 18 месяцев", null]
+  ],
+  "terms": [
+    ["на 18 месяцев", 18],
+    ["18 мес", 18],
+    ["на 2 года", 24],
+    ["на год", 12],
+    ["на полгода", 6],
+    ["3 млн", null]
+  ],
+  "intents": [
+    ["какой у меня баланс", "account"],
+    ["чего не хватает", "complete"],
+    ["почему отказ", "decision"],
+    ["что с моей заявкой", "status"],
+    ["какой платёж", "payment"],
+    ["какие документы", "documents"],
+    ["какие документы нужны для заявки?", "documents"],
+    ["нужны деньги", "finance"],
+    ["привет", null]
+  ]
+}

@@ -1,0 +1,31 @@
+meta {
+  name: Вход Анна
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{api}}/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "login": "anna.belova",
+    "password": "demo123"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.access_token: isString
+}
+
+script:post-response {
+  bru.setVar("annaToken", res.body.access_token);
+}
+
+docs {
+  Вход как Анна (anna.belova). Токен сохраняется в переменную annaToken.
+}

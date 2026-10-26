@@ -1,0 +1,23 @@
+meta {
+  name: Карточка заявки
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{api}}/bank/applications/{{igorAppId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{olgaToken}}
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  Карточка с проверками источников и рекомендацией системы.
+}

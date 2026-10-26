@@ -99,3 +99,27 @@ stateDiagram-v2
     withdrawn --> submitted: client
     issued --> [*]
 ```
+
+## Рекомендация пайплайна
+
+Воркер пишет рекомендацию в `applications.recommendation` (JSON) в той же транзакции, что и смена статуса:
+
+```json
+{
+  "outcome": "approve | counter | request | decline | null",
+  "reason": "текст для андеррайтера (его показывает recommendation_for)",
+  "score": 640,
+  "class": "B",
+  "kind": "none | counter_offer | reduce_amount | request_data",
+  "amount": 2400000,
+  "term_months": 18,
+  "documents": ["..."],
+  "explanation": "текст для андеррайтера",
+  "payment_rub": 196460,
+  "share": 0.3221
+}
+```
+
+`amount` и `term_months` заполнены только для `kind = counter_offer`, иначе `null`. `documents` — запрошенные документы (пустой список, если не запрашивали). Если `outcome = null`, рекомендация считается по правилам и скорингу как раньше.
+
+Текст рекомендации видит только андеррайтер. В `status_history.comment` пайплайн пишет текст для клиента: «Передана специалисту» при ручном рассмотрении, «Нужны документы: ...» при запросе документов, причину отказа при отказе.

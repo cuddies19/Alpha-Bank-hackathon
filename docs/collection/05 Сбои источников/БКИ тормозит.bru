@@ -1,0 +1,26 @@
+meta {
+  name: БКИ тормозит
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{mocks}}/_admin/sources/bki
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "mode": "slow",
+    "delay_ms": 3000
+  }
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  Мок БКИ отвечает с задержкой 3 секунды.
+}

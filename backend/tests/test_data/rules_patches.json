@@ -1,0 +1,32 @@
+{
+  "liquidating": {"sources.egrul.payload.status": "liquidating"},
+  "class_e": {"score.risk_class": "E"},
+  "young_business": {"sources.egrul.payload.registration_date": "2026-06-01"},
+  "no_registration_date": {"sources.egrul.payload.registration_date": null},
+  "bad_registration_date": {"sources.egrul.payload.registration_date": "not-a-date"},
+  "no_risk_class": {"score.risk_class": null},
+  "overdue_limit_70": {"rules.bki_overdue.threshold": 70},
+  "share_30_4": {"sources.statement.payload.avg_net_flow_rub": 646000},
+  "amount_too_low": {"application.amount_rub": 100000},
+  "amount_too_high": {"application.amount_rub": 25000000},
+  "term_too_short": {"application.term_months": 6},
+  "term_too_long": {"application.term_months": 200},
+  "class_d": {"score.risk_class": "D"},
+  "class_c": {"score.risk_class": "C"},
+  "overdue_limit_90": {"rules.bki_overdue.threshold": 90},
+  "no_statement": {"sources.statement.status": "error", "sources.statement.payload": null},
+  "tiny_safe_amount": {
+    "application.amount_rub": 300000,
+    "application.term_months": 12,
+    "sources.statement.payload.avg_net_flow_rub": 70000
+  },
+  "amount_max_manual": {"application.amount_rub": 25000000, "rules.amount_max.on_fail": "manual_review"},
+  "has_all_documents": {
+    "application.documents": [{"type": "financial_statements"}],
+    "sources.statement.payload.revenue_to_other_bank": false
+  },
+  "source_down": {"sources.fns.status": "error"},
+  "statements_rule_overdraft_only": {"rules.financial_statements.products": ["overdraft"]},
+  "share_rule_narrowed": {"rules.payment_share.products": ["overdraft"], "rules.payment_share_max.threshold": 0.3},
+  "unknown_product": {"application.product": "factoring"}
+}

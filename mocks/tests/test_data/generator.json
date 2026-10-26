@@ -1,0 +1,11 @@
+{
+  "inns": ["1234567890", "123456789012"],
+  "other_inns": ["1234567890", "1234567891"],
+  "ul": {"inn": "1234567890", "entity_type": "ul", "ogrn_len": 13, "absent_key": "ogrnip"},
+  "ip": {"inn": "123456789012", "entity_type": "ip", "ogrn_len": 15, "ogrn_key": "ogrnip", "absent_key": "ogrn"},
+  "statement": {"inn": "1234567890", "months": 12},
+  "month_labels": [
+    {"months": 12, "first": "2025-11"},
+    {"months": 1, "all": ["2026-10"]}
+  ]
+}

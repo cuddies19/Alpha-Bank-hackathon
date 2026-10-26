@@ -1,0 +1,33 @@
+meta {
+  name: Решение
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{api}}/bank/applications/{{igorAppId}}/decision
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{olgaToken}}
+}
+
+body:json {
+  {
+    "outcome": "approve",
+    "amount": 3000000,
+    "term_months": 18,
+    "rate": 18.5,
+    "client_message": "Одобрено на запрошенных условиях"
+  }
+}
+
+assert {
+  res.status: in [200, 409]
+}
+
+docs {
+  Ольга одобряет заявку. 409, если заявка не в ручной проверке.
+}

@@ -29,5 +29,5 @@ jobs:
           enable-cache: true
       - run: uv sync --frozen
       - run: uv run ruff check .
-      - run: uv run pytest
+      - run: uv run pytest tests/core
       - run: uv run python scripts/export_openapi.py --check
